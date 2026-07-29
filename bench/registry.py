@@ -223,3 +223,70 @@ register(MeshVersion(
     object_units=_dcn_object_units,
     predicted_frame=_dcn_frame,
 ))
+
+
+# -------------------------------------------------------------------------- raw
+#
+# The floor, registered as an entrant rather than kept as a footnote.
+#
+# It holds no state beyond the current frame, learns nothing, and has zero parameters. Every
+# gate already computes it as a control, but computing a control and *entering* it are
+# different things: as a control it is a number in a caption, and as an entrant it appears in
+# the same table, in the same units, and cannot be skipped over. That matters here, because
+# on this benchmark raw pixels currently beat every architecture in the project at predicting
+# the world, and beat two of the three at decoding walls the agent cannot see.
+#
+# Anything that cannot beat this is not adding a representation. It is adding latency.
+
+
+class _RawState:
+    """A model with no model: the current frame, and nothing else."""
+
+    class _Cfg:
+        horizons = (1, 4, 16)
+        lattice_side = 0
+
+    def __init__(self):
+        from core.world.sensors import RETINA
+        self.cfg = self._Cfg()
+        self.learn = True                 # accepted and ignored; there is nothing to learn
+        self.frame = np.zeros((RETINA, RETINA), dtype=np.float64)
+        self.coalition = None
+
+    @property
+    def h(self):
+        return self.frame
+
+    def n_params(self) -> int:
+        return 0
+
+
+def _raw_build(seed: int = 0, side: int = 12, **kw):
+    return _RawState()
+
+
+def _raw_tick(state, s):
+    """Reassemble the frame from the sensory patches. No integration, no memory."""
+    from core.world import Sensors
+    from core.world.sensors import N_VISUAL
+    state.frame = Sensors().from_patches(np.asarray(s)[:N_VISUAL]).astype(np.float64)
+    return {}
+
+
+def _raw_frame(state, tau, sensors):
+    """Its forecast at every horizon is the current frame: copy-last, stated plainly."""
+    return state.frame.astype(np.float32)
+
+
+register(MeshVersion(
+    name="raw",
+    build=_raw_build,
+    tick=_raw_tick,
+    readout=lambda s: s.frame,
+    coalitions=lambda s: None,            # no grouping; the binding gate reports unmeasured
+    describe=lambda s: {"n_units": 0, "readout_dim": int(s.frame.size),
+                        "n_params": 0, "dynamics": "none — the current frame"},
+    unit_labels=_mesh_unit_labels,
+    object_units=lambda state, world, i, side: np.arange(state.frame.shape[0]),
+    predicted_frame=_raw_frame,
+))

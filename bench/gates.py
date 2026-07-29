@@ -228,9 +228,85 @@ def gate_coalitions(version, seed=3, side=12, ticks=8000, warmup=2000, **kw):
     return out
 
 
+# ---------------------------------------------------------------- tunnel maze
+
+
+def gate_tunnel(version, seed=0, side=12, ticks=14000, warmup=3000, **kw):
+    """Position while blind, against remembering only where you went in. Higher is better.
+
+    **The only gate in this battery where raw pixels cannot win.** Inside a covered corridor
+    every frame is byte-identical, so the image carries exactly zero positional information
+    and the pixel control is at chance by construction. Everywhere else in this repository
+    the world is observable enough that the answer is already in the frame, and a
+    representation can at best re-encode what the input already says — which is most of why
+    nothing has beaten raw pixels yet.
+
+    Here the answer is provably *not* in the frame. Position can only come from integrating
+    your own moves since you entered, so this gate asks the question the rest of the battery
+    cannot: does this architecture hold anything the current image does not contain?
+
+    Three references bracket it. **Frozen-at-entry** is the bar — a model that merely stores
+    "I went in at (r,c)" scores exactly this, so beating it is the definition of integrating.
+    **Raw pixels** are the floor, at chance. A perfect dead-reckoner is the ceiling, at zero.
+    """
+    from core.probes import decode_error
+    from core.world.maze import MazeConfig, MazeWorld
+
+    world = MazeWorld(MazeConfig(seed=seed, tunnels=True))
+    sensors = Sensors()
+    state = version.new(seed=0, side=side)
+    learn_until = int(ticks * 0.8)
+    rows = []
+
+    for t in range(ticks):
+        s_now, ret = sensors.observe(world)
+        state.learn = t < learn_until
+        version.tick(state, s_now)
+        if t > warmup and world.in_tunnel():
+            rows.append({"h": version.readout(state).ravel().copy(),
+                         "r": ret.ravel().copy(),
+                         "pos": world.pos.astype(float).copy(),
+                         "entry": np.array(world._tunnel_entry, dtype=float),
+                         "steps": world.steps_in_tunnel()})
+        world.step()
+
+    if len(rows) < 200:
+        return {"headline": None, "valid": False, "higher_is_better": True,
+                "reason": f"only {len(rows)} in-tunnel frames"}
+
+    Y = np.stack([r["pos"] for r in rows])
+    entry = np.stack([r["entry"] for r in rows])
+    cut = int(len(rows) * 0.6)
+
+    # matched capacity: a 2304-dim mesh state and a 1024-dim frame are not comparable
+    # decoders until they are given the same number of components
+    def probe(key):
+        return decode_error(np.stack([r[key] for r in rows]), Y, n_components=32)
+
+    err_model, err_retina = probe("h"), probe("r")
+    err_frozen = np.linalg.norm(entry[cut:] - Y[cut:], axis=1)
+    err_chance = np.linalg.norm(Y[:cut].mean(0) - Y[cut:], axis=1)
+
+    beats = 1.0 - float(err_model.mean()) / float(err_frozen.mean())
+    return {
+        "cells_error": float(err_model.mean()),
+        "frozen_at_entry": float(err_frozen.mean()),
+        "headline": beats,
+        "higher_is_better": True,
+        "control": {"retina": float(err_retina.mean()),
+                    "chance": float(err_chance.mean()),
+                    "n_frames": len(rows)},
+        # the pixel control must be at chance, or the corridors are leaking position and
+        # the whole point of this world is gone
+        "valid": bool(abs(float(err_retina.mean()) - float(err_chance.mean()))
+                      < 0.20 * float(err_chance.mean())),
+    }
+
+
 GATES = {
     "prediction": gate_prediction,
     "maze": gate_maze,
     "identity": gate_identity,
     "coalitions": gate_coalitions,
+    "tunnel": gate_tunnel,
 }

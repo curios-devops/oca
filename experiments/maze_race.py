@@ -38,7 +38,14 @@ from core.world import Sensors
 from core.world.maze import MazeConfig, MazeWorld
 from exp09_maze import RADIUS, _plan, fit_probe, visible_mask, wall_probe
 
-ENTRANTS = (("v1", "RPDU v1"), ("v2", "RPDU v2"), ("dcn", "DCN v3"))
+ENTRANTS = (("raw", "Raw pixels"), ("v1", "RPDU v1"), ("v2", "RPDU v2"), ("dcn", "DCN v3"))
+"""Raw pixels races too, rather than sitting in a caption as the control.
+
+It has no memory and no parameters: at every step it decodes the wall map from the frame in
+front of it and forgets. Any architecture that cannot beat it around this maze is not
+remembering anything the image did not already contain — and putting it in the same grid,
+under the same clock, is a much harder thing to look past than a number in a legend.
+"""
 
 
 def train(version, seed: int, side: int, ticks: int, warmup: int):

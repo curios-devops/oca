@@ -3,7 +3,7 @@ TRAIN ?= 8000
 TEST ?= 1500
 SIDE ?= 24
 
-.PHONY: help venv test guards repro gates e0 e0b e1 e2 e3 e3b e4 e5 e6 e7 e8 e9 e9t e10 e11 e12 dcn-l1 dcn-l2 race g2 bench demo serve figures clean
+.PHONY: help venv test guards repro gates e0 e0b e1 e2 e3 e3b e4 e5 e6 e7 e8 e9 e9t e10 e11 e12 dcn-l1 dcn-l2 race p0 g2 bench demo serve figures clean
 
 help:
 	@echo "make venv     create .venv and install numpy/matplotlib/pytest"
@@ -21,7 +21,8 @@ help:
 	@echo "make e12     decoder vs representation: which one is the limit?"
 	@echo "make dcn-l1  DCN level 1: neuron gates, and vs the legacy line"
 	@echo "make dcn-l2  DCN level 2: node gates, and vs the legacy line"
-	@echo "make race    v1 vs v2 vs DCN in one maze, then build the demo page"
+	@echo "make race    raw vs v1 vs v2 vs DCN in one maze, then build the demo page"
+	@echo "make p0      THE open challenge: beat a two-number memory while blind"
 	@echo "make bench   scorecard across all mesh versions (3 seeds)"
 	@echo "make serve   rebuild the maze demo and serve it at localhost:8080"
 	@echo "make figures  regenerate plots from logs/"
@@ -123,6 +124,12 @@ dcn-l2:
 race:
 	$(PY) experiments/maze_race.py --ticks 14000 --steps 900
 	$(PY) experiments/make_maze_demo.py
+
+# P0 -- the project's standing open challenge, and the only gate where raw pixels are at
+# chance by construction. The bar is `frozen at entry`: store the two coordinates you walked
+# into the tunnel at, once, and never update them. Nothing here beats it yet.
+p0:
+	$(PY) -m bench.run --gates tunnel --seeds 0 1 2 --out logs/scorecard_tunnel.json
 
 # Scorecard across every registered mesh version, with seed and scale stress
 bench:

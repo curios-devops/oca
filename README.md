@@ -77,11 +77,23 @@ Two complete architectures and six levels of gates in:
 | Coalitions as the substrate of thought | **refuted** — synchrony scored exactly 1.00× persistence as a representation |
 | "The predictive code is relational, not additive" | **retired** — mean pooling wins at matched width |
 | Phase coordination pays off | **no measurable payoff at any level yet** |
-| **No representation we have built beats raw pixels at predicting the world** | **open — and the problem worth attacking** |
+| No representation beats raw pixels at predicting an **observable** world | **established** |
+| **No architecture forms persistent state — a two-number memory beats all three** | **open, and now precisely stated** |
 
-That last row has been reached from three independent directions, by three architectures, on
-one code path. It is the central open problem of this project, and it is more interesting
-than any of the mechanisms that have failed on the way to it.
+That last row is the whole project in one line. In the tunnel maze — the one world where the
+image provably cannot contain the answer, with the pixel control at chance to two decimals —
+storing the two coordinates you walked in at beats **every** architecture here, and the
+newest one scores worse than storing nothing.
+
+So the standing question is not "what does the next level look like". It is:
+
+> **What is the smallest computational primitive that beats a two-number memory at knowing
+> where it is while blind?**
+
+It names no node, no cortex, no resonance, no hierarchy. It has a measured control, a world
+where that control is provably at chance, and a bar that is almost insultingly low. It is
+gate `P0` — run it with `make p0` — and it is open.
+[The full ledger of what three architectures taught us.](docs/WHAT_WE_HAVE_LEARNED.md)
 
 **If you are looking for a project where the hard problem is clearly stated and genuinely
 unsolved, this is that project.**
@@ -185,7 +197,8 @@ make test          # 126 tests
 make dcn-l1        # level 1 battery: precision vs efficiency, oscillation, ablations
 make dcn-l2        # level 2 battery, and v1 vs v2 vs DCN on one shared target
 make bench         # the scorecard: every architecture, every gate, 3 seeds
-make race          # all three race through one maze
+make p0            # THE open challenge: beat a two-number memory while blind
+make race          # raw pixels vs all three architectures, through one maze
 make serve         # then open http://127.0.0.1:8080 and watch it
 ```
 
@@ -209,7 +222,7 @@ live in [`bench/`](bench/); worlds live in [`core/world/`](core/world/).
 | occlusion | where is the object while it is hidden? | the raw retina, at chance by construction |
 | identity | *which* object is hidden? | pixels when visible; must leak nothing when hidden |
 | maze | decode walls the agent cannot see | raw pixels — currently beating most models |
-| tunnel maze | dead reckoning while blind | frozen-at-entry, and a perfect dead-reckoner |
+| **tunnel maze (P0)** | dead reckoning while blind — **the open challenge** | frozen-at-entry (2 numbers), and pixels at chance by construction |
 | binding | does the grouping carry object identity? | a paired shuffled-label null |
 | rate–distortion | does event-driven emission beat its own budget? | periodic and random at identical rate |
 | concept formation | do consolidated concepts track the world? | k-means on the raw input, matched *k* |
@@ -228,7 +241,7 @@ live in [`bench/`](bench/); worlds live in [`core/world/`](core/world/).
 |---|---|---|
 | 1 | Core architecture — primitive, node, contracts | **done for L1–L2** |
 | 2 | Shared benchmark and scorecard | **done, and open for extension** |
-| 3 | A memory system that beats raw input on some world | **the open problem** |
+| 3 | **P0** — beat a two-number memory in the tunnel maze | **the open problem** |
 | 4 | Resonance engine (L3) | blocked on phase 3 |
 | 5 | Sleep, consolidation and dreaming | designed, not built |
 | 6 | Synthetic cortex — fields, world model, executive | proposal |
@@ -243,7 +256,8 @@ Phase 3 is the honest bottleneck. Everything above it is specified in
 
 | document | what it is |
 |---|---|
-| [SPEC_ARCHITECTURE.md](docs/SPEC_ARCHITECTURE.md) | **start here** — both architectures, what is built, how to read a claim |
+| [WHAT_WE_HAVE_LEARNED.md](docs/WHAT_WE_HAVE_LEARNED.md) | **read this first** — the ledger, the invariant, and the open problem |
+| [SPEC_ARCHITECTURE.md](docs/SPEC_ARCHITECTURE.md) | both architectures, what is built, how to read a claim |
 | [SPEC_DCN_STACK.md](docs/DCN/SPEC_DCN_STACK.md) | the active stack, every level, L1 to the curriculum engine |
 | [SPEC_L1_NEURON.md](docs/DCN/SPEC_L1_NEURON.md) · [SPEC_L2_NODE.md](docs/DCN/SPEC_L2_NODE.md) · [SPEC_L3_CLUSTER.md](docs/DCN/SPEC_L3_CLUSTER.md) | per-level specifications, with the gates that can falsify each |
 | [RESULTS_L1_NEURON.md](docs/DCN/RESULTS_L1_NEURON.md) · [RESULTS_L2_NODE.md](docs/DCN/RESULTS_L2_NODE.md) | results, per level of abstraction |

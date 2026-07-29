@@ -1,4 +1,12 @@
 {
+  "raw": {
+    "label": "Raw pixels",
+    "exits": 30,
+    "hidden_acc": 0.7733860894557845,
+    "visible_acc": 1.0,
+    "retina_hidden": 0.7733860894557845,
+    "n_params": 0
+  },
   "v1": {
     "label": "RPDU v1",
     "exits": 53,
