@@ -1,0 +1,16 @@
+{
+  "members (raw)": {
+    "delta rule, 1 pass": 1.0579347239054253,
+    "delta rule, 40 passes": 1.464745012647251,
+    "ridge (linear)": 1.0729884403999452,
+    "mlp (2 hidden)": 1.5244084190286251,
+    "mlp + temporal context": 1.697976663293172
+  },
+  "pairwise": {
+    "delta rule, 1 pass": 0.824534414791243,
+    "delta rule, 40 passes": 0.8337832841774828,
+    "ridge (linear)": 0.7905016347958443,
+    "mlp (2 hidden)": 0.8814827772123623,
+    "mlp + temporal context": 1.0723563172322672
+  }
+}

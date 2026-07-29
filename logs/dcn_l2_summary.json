@@ -1,0 +1,271 @@
+{
+  "phase1": {
+    "config": "full",
+    "n_nodes": 17,
+    "n_neurons_total": 1088,
+    "n_params": 293485,
+    "declared_horizon": 16,
+    "concept_formation": {
+      "mi": 0.009783858735368613,
+      "shuffled_null": 0.0009090777032066573,
+      "excess_over_null": 0.008874781032161955,
+      "n_nodes_scored": 16,
+      "sem": 0.004178735332576613,
+      "valid": true,
+      "raw_patch_clusters_mi": 0.13851363629071267,
+      "excess_over_pixels": -0.12872977755534407
+    },
+    "relational": {
+      "relational_ratio": 0.6118719317773205,
+      "pooled_ratio": 0.5982045898513645,
+      "gain_over_pooling": -0.02284727024470312,
+      "beats_persistence": true,
+      "control": {
+        "persistence": 1.0,
+        "pooled": 0.5982045898513645
+      },
+      "valid": true
+    },
+    "relational_member_target": {
+      "relational_ratio": 0.8862229575191013,
+      "pooled_ratio": 0.7697158144112172,
+      "gain_over_pooling": -0.1513638422474204,
+      "beats_persistence": true,
+      "control": {
+        "persistence": 1.0,
+        "pooled": 0.7697158144112172
+      },
+      "valid": true
+    },
+    "pairwise": {
+      "relational_ratio": 0.6286058744868339,
+      "pooled_ratio": 0.5982045898513645,
+      "gain_over_pooling": -0.05082088160343812,
+      "beats_persistence": true,
+      "control": {
+        "persistence": 1.0,
+        "pooled": 0.5982045898513645
+      },
+      "valid": true
+    },
+    "pairwise_member_target": {
+      "relational_ratio": 0.8544475074322911,
+      "pooled_ratio": 0.7697158144112172,
+      "gain_over_pooling": -0.11008178789452083,
+      "beats_persistence": true,
+      "control": {
+        "persistence": 1.0,
+        "pooled": 0.7697158144112172
+      },
+      "valid": true
+    },
+    "horizon": {
+      "curve": {
+        "1": 4.849363206446557,
+        "4": 0.7847287181383168,
+        "16": 0.6118719317773205,
+        "64": 0.5614250476622937
+      },
+      "curve_vs_pixels": {
+        "1": 5.211821424765239,
+        "4": 1.300510034066936,
+        "16": 1.1202809344877693,
+        "64": 1.0896425513447243
+      },
+      "declared_horizon": 16,
+      "best_horizon": 64,
+      "ratio_at_declared": 0.6118719317773205,
+      "vs_pixels_at_declared": 1.1202809344877693,
+      "declaration_holds": false,
+      "valid": true
+    },
+    "publication": {
+      "published_only_ratio": 0.9774201129201211,
+      "full_state_ratio": 0.6534961776564125,
+      "cost_of_the_bottleneck": 1.4956783931397644,
+      "published_beats_persistence": true,
+      "valid": true
+    },
+    "contention": {
+      "curve": {
+        "0.02": {
+          "phase_gated": {
+            "offered_rate": 0.0859786256360765,
+            "delivered_rate": 0.009955145639585892,
+            "dropped_frac": 0.884213715142142,
+            "nrmse": 4.543106019075624
+          },
+          "ungated": {
+            "offered_rate": 0.09445324837690823,
+            "delivered_rate": 0.010073039129671873,
+            "dropped_frac": 0.8933542328848638,
+            "nrmse": 4.752238910904423
+          },
+          "collision_reduction": 0.010231683475887099,
+          "nrmse_gain": 0.04400723443194876
+        },
+        "0.04": {
+          "phase_gated": {
+            "offered_rate": 0.0859786256360765,
+            "delivered_rate": 0.014399456044920161,
+            "dropped_frac": 0.8325228399687495,
+            "nrmse": 4.22262487172282
+          },
+          "ungated": {
+            "offered_rate": 0.09445324837690823,
+            "delivered_rate": 0.014605084225302685,
+            "dropped_frac": 0.8453723458295235,
+            "nrmse": 4.220157946169071
+          },
+          "collision_reduction": 0.015199818073260207,
+          "nrmse_gain": -0.0005845576362819571
+        },
+        "0.08": {
+          "phase_gated": {
+            "offered_rate": 0.0859786256360765,
+            "delivered_rate": 0.023612969380593086,
+            "dropped_frac": 0.7253623303942984,
+            "nrmse": 3.94070613798409
+          },
+          "ungated": {
+            "offered_rate": 0.09445324837690823,
+            "delivered_rate": 0.024100993595367607,
+            "dropped_frac": 0.7448367948215555,
+            "nrmse": 3.818747932020529
+          },
+          "collision_reduction": 0.026145948431458343,
+          "nrmse_gain": -0.03193669970749613
+        },
+        "0.16": {
+          "phase_gated": {
+            "offered_rate": 0.0859786256360765,
+            "delivered_rate": 0.03796718722582909,
+            "dropped_frac": 0.558411326711204,
+            "nrmse": 3.5265852873886963
+          },
+          "ungated": {
+            "offered_rate": 0.09445324837690823,
+            "delivered_rate": 0.03925030707141604,
+            "dropped_frac": 0.5844472504027518,
+            "nrmse": 3.6146373051664242
+          },
+          "collision_reduction": 0.04454794452982036,
+          "nrmse_gain": 0.024359848677452223
+        }
+      },
+      "best_nrmse_gain": 0.04400723443194876,
+      "mean_nrmse_gain": 0.008961456441405724,
+      "earns_its_place": false
+    },
+    "ablations": {
+      "full": {
+        "ratio_vs_persistence": 0.6118719317773205,
+        "concept_mi_excess": 0.008874781032161955
+      },
+      "pairwise_exact": {
+        "ratio_vs_persistence": 0.6286058744868339,
+        "concept_mi_excess": 0.009632528997575784
+      },
+      "mean_pooling": {
+        "ratio_vs_persistence": 0.5982045898513645,
+        "concept_mi_excess": 0.009800271910865173
+      },
+      "relational_lowpass": {
+        "ratio_vs_persistence": 0.6479560495654197,
+        "concept_mi_excess": 0.006527769911046251
+      },
+      "pairwise_lowpass": {
+        "ratio_vs_persistence": 0.6210999111582377,
+        "concept_mi_excess": 0.021577471642587182
+      },
+      "mean_lowpass": {
+        "ratio_vs_persistence": 0.6080774061429797,
+        "concept_mi_excess": 0.020354520750742486
+      },
+      "no_knowledge": {
+        "ratio_vs_persistence": 0.6118719317773205,
+        "concept_mi_excess": 0.0
+      },
+      "no_neighbourhood": {
+        "ratio_vs_persistence": 0.6118719317773205,
+        "concept_mi_excess": 0.008874781032161955
+      },
+      "no_oscillation": {
+        "ratio_vs_persistence": 0.6086312907317903,
+        "concept_mi_excess": 0.009343242276666306
+      },
+      "no_state_adapter": {
+        "ratio_vs_persistence": 0.6118719317773205,
+        "concept_mi_excess": 0.008887974422302592
+      }
+    }
+  },
+  "phase2": {
+    "rpdu_v1": {
+      "dim": 2304,
+      "n_params": 614960,
+      "horizon_curve": {
+        "1": 3.411446135547051,
+        "4": 0.6863427859441711,
+        "16": 0.568423786432016,
+        "64": 0.5334333820241723
+      }
+    },
+    "rpdu_v2": {
+      "dim": 3456,
+      "n_params": 918832,
+      "horizon_curve": {
+        "1": 4.064056344973538,
+        "4": 0.6806822349843025,
+        "16": 0.554010554066029,
+        "64": 0.522322801697793
+      }
+    },
+    "dcn_v3": {
+      "dim": 1088,
+      "n_params": 293485,
+      "horizon_curve": {
+        "1": 4.849363206446557,
+        "4": 0.7847287181383168,
+        "16": 0.6118719317773205,
+        "64": 0.5614250476622937
+      }
+    },
+    "raw_pixels": {
+      "dim": 1024,
+      "n_params": 0,
+      "horizon_curve": {
+        "1": 0.9304545975814956,
+        "4": 0.6034007409264845,
+        "16": 0.5461772247843254,
+        "64": 0.515237815345446
+      }
+    },
+    "_grouping": {
+      "rpdu_v1": {
+        "mi": 0.0012117349756100848,
+        "shuffled_null": 0.00012927158068042904,
+        "excess_over_null": 0.0010824633949296557,
+        "n_nodes_scored": 16,
+        "sem": 0.0010824633949296557,
+        "valid": true
+      },
+      "rpdu_v2": {
+        "mi": 0.16073207028865333,
+        "shuffled_null": 0.03693516173291465,
+        "excess_over_null": 0.12379690855573869,
+        "n_nodes_scored": 16,
+        "sem": 0.016560924591965103,
+        "valid": true
+      },
+      "dcn_v3": {
+        "mi": 0.009783858735368613,
+        "shuffled_null": 0.0009090777032066573,
+        "excess_over_null": 0.008874781032161955,
+        "n_nodes_scored": 16,
+        "sem": 0.004178735332576613,
+        "valid": true
+      }
+    }
+  }
+}

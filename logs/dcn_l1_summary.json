@@ -1,0 +1,176 @@
+{
+  "phase1": {
+    "config": "full",
+    "n_neurons": 64,
+    "n_params": 1216,
+    "live": {
+      "event_rate": 0.12116145833333333,
+      "nrmse_as_run": 0.037694217184266104,
+      "energy_per_tick": 0.17316155196513383
+    },
+    "rate_distortion": {
+      "send_on_delta": {
+        "0.05": {
+          "nrmse": 0.04282571256686666,
+          "actual_rate": 0.04999739583333333
+        },
+        "0.1": {
+          "nrmse": 0.014250288534232873,
+          "actual_rate": 0.0999921875
+        },
+        "0.2": {
+          "nrmse": 0.0027882902387879552,
+          "actual_rate": 0.20000260416666665
+        },
+        "0.4": {
+          "nrmse": 0.00016176936331299642,
+          "actual_rate": 0.4
+        },
+        "0.8": {
+          "nrmse": 2.9450664802230275e-05,
+          "actual_rate": 0.5230286458333333
+        }
+      },
+      "periodic": {
+        "0.05": {
+          "nrmse": 0.26778616070213956,
+          "actual_rate": 0.05
+        },
+        "0.1": {
+          "nrmse": 0.14735869421399106,
+          "actual_rate": 0.1
+        },
+        "0.2": {
+          "nrmse": 0.0750782679559557,
+          "actual_rate": 0.2
+        },
+        "0.4": {
+          "nrmse": 0.02610774685577638,
+          "actual_rate": 0.5
+        },
+        "0.8": {
+          "nrmse": 0.0,
+          "actual_rate": 1.0
+        }
+      },
+      "random": {
+        "0.05": {
+          "nrmse": 0.4334312738516841,
+          "actual_rate": 0.0499921875
+        },
+        "0.1": {
+          "nrmse": 0.27037262151828395,
+          "actual_rate": 0.1003359375
+        },
+        "0.2": {
+          "nrmse": 0.1448899640516671,
+          "actual_rate": 0.19976302083333333
+        },
+        "0.4": {
+          "nrmse": 0.0797072104603727,
+          "actual_rate": 0.40059114583333333
+        },
+        "0.8": {
+          "nrmse": 0.020797539098082404,
+          "actual_rate": 0.8000078125
+        }
+      }
+    },
+    "oscillation": {
+      "phase_advance_per_tick": 0.28091162160779953,
+      "amplitude_mean": 0.8488448780098703,
+      "amplitude_drift": 1.2570976692050095e-05,
+      "still_moving": true,
+      "activity": 0.20488259881132112,
+      "activation_activity": 0.0,
+      "clock_is_not_content": true
+    },
+    "energy": {
+      "energy_per_neuron_per_tick": 0.17316155196513383,
+      "energy_per_event": 1.4291801563558308,
+      "event_rate": 0.12116145833333333
+    },
+    "rd_summary": {
+      "send_on_delta": 0.00261207893201167,
+      "periodic": 0.03684062033372909,
+      "random": 0.08091889402564176,
+      "delta_vs_best_control": 0.9290978569755459
+    },
+    "noise": {
+      "0": {
+        "nrmse": 0.01634811394724241,
+        "event_rate": 0.09574479166666666
+      },
+      "0.1": {
+        "nrmse": 0.045405744973167676,
+        "event_rate": 0.23460416666666667
+      },
+      "0.3": {
+        "nrmse": 0.13234831177602144,
+        "event_rate": 0.19519270833333333
+      }
+    },
+    "ablations": {
+      "no_oscillation": {
+        "event_rate": 0.1278203125,
+        "nrmse_as_run": 0.03371032736601671,
+        "energy_per_tick": 0.17982028514163365
+      },
+      "no_phase_gate": {
+        "event_rate": 0.1278203125,
+        "nrmse_as_run": 0.03371032736601671,
+        "energy_per_tick": 0.17982028514163365
+      },
+      "phase_as_content": {
+        "event_rate": 0.15372135416666666,
+        "nrmse_as_run": 0.737721319419353,
+        "energy_per_tick": 0.20653809271166687
+      },
+      "no_plasticity": {
+        "event_rate": 0.12378645833333334,
+        "nrmse_as_run": 0.033113173664277,
+        "energy_per_tick": 0.17622680330519294
+      },
+      "fixed_threshold": {
+        "event_rate": 0.004848958333333334,
+        "nrmse_as_run": 0.37874508611181795,
+        "energy_per_tick": 0.05693411867840413
+      }
+    }
+  },
+  "phase2": {
+    "legacy_v1_unit": {
+      "event_rate": 1.0,
+      "nrmse": 0.0,
+      "note": "publishes state every tick",
+      "signal_std": 0.38179733093033097,
+      "if_gated_at_0.15": {
+        "nrmse": 0.12938456210217109,
+        "event_rate": 0.15000520833333333
+      },
+      "if_gated_at_0.3": {
+        "nrmse": 0.07680924747436817,
+        "event_rate": 0.30000520833333333
+      }
+    },
+    "legacy_v2_unit": {
+      "event_rate": 1.0,
+      "nrmse": 0.0,
+      "note": "publishes state every tick",
+      "signal_std": 0.2957299001175617,
+      "if_gated_at_0.15": {
+        "nrmse": 0.3044374565182317,
+        "event_rate": 0.1500078125
+      },
+      "if_gated_at_0.3": {
+        "nrmse": 0.11549687652345794,
+        "event_rate": 0.2999895833333333
+      }
+    },
+    "dynamic_neuron": {
+      "event_rate": 0.12116145833333333,
+      "nrmse": 0.037694217184266104,
+      "energy_per_tick": 0.17316155196513383
+    }
+  }
+}

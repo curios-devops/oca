@@ -1,0 +1,27 @@
+{
+  "mesh": {
+    "label": "eta_head=0.08",
+    "n_params": 2250944,
+    "train_final": {
+      "mse_t1": 0.0014649346622689287,
+      "mse_t4": 0.01043826731438963,
+      "mse_t16": 0.019141989064232725
+    },
+    "test": {
+      "mse_t1": 0.002595600530524033,
+      "mse_t4": 0.018205972405474682,
+      "mse_t16": 0.03373119940438939
+    },
+    "n_clipped": 0,
+    "seconds": 86.8
+  },
+  "verdict": [
+    "",
+    "vs copy_last  t1=0.99x t4=0.87x t16=0.73x   (mesh better)",
+    "vs linear_ar  t1=1.95x t4=1.73x t16=1.15x   (mesh worse)",
+    "vs gru        t1=0.91x t4=0.87x t16=0.83x   (mesh better)",
+    "vs gru_matched t1=0.88x t4=0.82x t16=0.82x   (mesh better)",
+    "",
+    "GATE PASS: mesh vs copy-last at tau=1"
+  ]
+}

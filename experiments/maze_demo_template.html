@@ -1,0 +1,174 @@
+<title>RPDU in the maze</title>
+<style>
+  :root{
+    --ground:#f7f4ee; --panel:#ffffff; --ink:#191526; --ink-soft:#5b5470; --hair:#ded7cc;
+    --wall:#2a2539; --floor:#e6ded0; --unknown:#b9b1c6;
+    --agent:#e07a20; --exit:#c8365e; --belief:#1f7f74; --trail:rgba(224,122,32,.20);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:where(:not([data-theme=light])){
+      --ground:#131020; --panel:#1b1730; --ink:#f2eee6; --ink-soft:#a79fbe; --hair:#2e2748;
+      --wall:#080611; --floor:#3d3557; --unknown:#241f3c;
+      --agent:#ffb454; --exit:#ff6b8f; --belief:#4fd6c4; --trail:rgba(255,180,84,.20);
+    }
+  }
+  :root[data-theme=dark]{
+    --ground:#131020; --panel:#1b1730; --ink:#f2eee6; --ink-soft:#a79fbe; --hair:#2e2748;
+    --wall:#080611; --floor:#3d3557; --unknown:#241f3c;
+    --agent:#ffb454; --exit:#ff6b8f; --belief:#4fd6c4; --trail:rgba(255,180,84,.20);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Iowan Old Style","Charter","Palatino Linotype",Palatino,Georgia,serif;
+    line-height:1.55;padding:clamp(20px,4vw,52px)}
+  .wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+  .eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+  h1{font-size:clamp(28px,5vw,44px);line-height:1.08;margin:6px 0 0;text-wrap:balance;font-weight:600}
+  .lede{max-width:63ch;color:var(--ink-soft);font-size:clamp(15px,1.6vw,17px);margin:0}
+  .boards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  .board{background:var(--panel);border:1px solid var(--hair);border-radius:10px;
+    padding:16px;display:flex;flex-direction:column;gap:10px}
+  .board h2{font-size:15px;margin:0;font-weight:600}
+  .board p{margin:0;font-size:13px;color:var(--ink-soft);min-height:2.6em}
+  canvas{width:100%;height:auto;image-rendering:pixelated;border-radius:6px;display:block}
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  button{font:inherit;background:var(--ink);color:var(--ground);border:0;border-radius:6px;
+    padding:8px 16px;cursor:pointer}
+  button:focus-visible{outline:2px solid var(--agent);outline-offset:2px}
+  input[type=range]{accent-color:var(--agent)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;
+    background:var(--hair);border:1px solid var(--hair);border-radius:10px;overflow:hidden}
+  .stat{background:var(--panel);padding:13px 15px}
+  .stat .k{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft)}
+  .stat .v{font-size:23px;font-variant-numeric:tabular-nums;margin-top:3px}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:12px;color:var(--ink-soft)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .sw{width:11px;height:11px;border-radius:2px;display:inline-block}
+  .note{border-left:2px solid var(--belief);padding-left:14px;max-width:63ch;
+    font-size:14px;color:var(--ink-soft)}
+  .flash{color:var(--exit);font-weight:600}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Recursive Predictive Dynamical Units &middot; experiment 9</div>
+    <h1>A mesh that has never seen the maze, finding its way out of it</h1>
+  </header>
+
+  <p class="lede">The agent only ever sees five cells by five, so nearly all of the maze is
+  dark to it. Everything it knows about the walls beyond that window it has to remember.
+  The right-hand board is not the maze &mdash; it is the map read straight out of the mesh&rsquo;s
+  internal state, and it is the only map the agent is allowed to steer by.</p>
+
+  <div class="boards">
+    <div class="board">
+      <h2>The maze</h2>
+      <p>Ground truth, shown for comparison. The mesh never receives this.</p>
+      <canvas id="truth" width="420" height="420"></canvas>
+    </div>
+    <div class="board">
+      <h2>What the mesh believes</h2>
+      <p>Wall estimates decoded from the mesh state and accumulated as it moves. Pale
+      cells are places it has not worked out yet.</p>
+      <canvas id="belief" width="420" height="420"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="play">Pause</button>
+    <label>Speed <input id="speed" type="range" min="1" max="40" value="14"></label>
+    <span id="clock">step 0</span>
+    <span id="flash"></span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Steps taken</div><div class="v" id="s-step">0</div></div>
+    <div class="stat"><div class="k">Exits reached</div><div class="v" id="s-exit">0</div></div>
+    <div class="stat"><div class="k">Map known</div><div class="v" id="s-known">0%</div></div>
+    <div class="stat"><div class="k">Map correct</div><div class="v" id="s-acc">0%</div></div>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--wall)"></i>wall</span>
+    <span><i class="sw" style="background:var(--floor)"></i>open</span>
+    <span><i class="sw" style="background:var(--unknown)"></i>not yet known</span>
+    <span><i class="sw" style="background:var(--agent)"></i>agent</span>
+    <span><i class="sw" style="background:var(--exit)"></i>exit</span>
+  </div>
+
+  <p class="note">Honest about the division of labour: the mesh supplies the map, and a
+  breadth-first search picks the next step across cells the map calls open. The agent is
+  told which direction the exit lies in, the way an animal following a scent would be
+  &mdash; what it is not told is where the walls are. Steering by this remembered map
+  reaches the exit 38 times in 900 steps, against roughly 6 for the same agent wandering
+  at random.</p>
+</div>
+
+<script>
+const DATA = __DATA__;
+const N = DATA.n, G = DATA.grid, POS = DATA.pos, BEL = DATA.belief;
+const HITS = new Set(DATA.hits), EXIT = DATA.exit;
+const cv = {truth:document.getElementById('truth'), belief:document.getElementById('belief')};
+const ctx = {truth:cv.truth.getContext('2d'), belief:cv.belief.getContext('2d')};
+const CELL = cv.truth.width / N;
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+let i = 0, playing = true, acc = 0, trail = [];
+
+function cell(c, r, col){ c.fillStyle = col; c.fillRect(r[1]*CELL, r[0]*CELL, CELL, CELL); }
+
+function draw(){
+  const wall=css('--wall'), floor=css('--floor'), unk=css('--unknown'),
+        agent=css('--agent'), exit=css('--exit'), trailC=css('--trail');
+  const t = ctx.truth, b = ctx.belief;
+  const belief = BEL[i];
+  for(let r=0;r<N;r++) for(let c=0;c<N;c++){
+    const g = G[r*N+c];
+    cell(t,[r,c], g==='0' ? wall : floor);
+    const v = (belief.charCodeAt(r*N+c)-48)/9;
+    cell(b,[r,c], Math.abs(v-0.5)<0.12 ? unk : (v>0.5 ? wall : floor));
+  }
+  for(const p of trail) cell(t,p,trailC);
+  cell(t,EXIT,exit); cell(b,EXIT,exit);
+  const p = POS[i];
+  cell(t,p,agent); cell(b,p,agent);
+
+  let known=0, correct=0;
+  for(let k=0;k<N*N;k++){
+    const v=(belief.charCodeAt(k)-48)/9;
+    if(Math.abs(v-0.5)>=0.12){ known++; if((v>0.5)===(G[k]==='0')) correct++; }
+  }
+  document.getElementById('s-step').textContent = i;
+  document.getElementById('s-exit').textContent = DATA.hits.filter(h=>h<=i).length;
+  document.getElementById('s-known').textContent = Math.round(100*known/(N*N))+'%';
+  document.getElementById('s-acc').textContent = known? Math.round(100*correct/known)+'%' : '\u2014';
+  document.getElementById('clock').textContent = 'step '+i+' / '+POS.length;
+  const f = document.getElementById('flash');
+  f.textContent = HITS.has(i) ? 'reached the exit' : '';
+  f.className = HITS.has(i) ? 'flash' : '';
+}
+
+function loop(ts){
+  if(playing){
+    const fps = +document.getElementById('speed').value;
+    if(ts-acc > 1000/fps){
+      acc = ts;
+      trail.push(POS[i]); if(trail.length>26) trail.shift();
+      i = (i+1) % POS.length;
+      if(i===0) trail = [];
+      draw();
+    }
+  }
+  requestAnimationFrame(loop);
+}
+document.getElementById('play').addEventListener('click', e=>{
+  playing = !playing; e.target.textContent = playing ? 'Pause' : 'Play';
+});
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change', draw);
+draw(); requestAnimationFrame(loop);
+</script>

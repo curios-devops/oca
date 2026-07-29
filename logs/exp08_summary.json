@@ -1,0 +1,46 @@
+{
+  "v1_mesh": {
+    "visible": {
+      "model_state": {
+        "balanced_acc": 0.5146967382266674,
+        "n_test": 20493
+      },
+      "raw_retina": {
+        "balanced_acc": 0.7593619418989974,
+        "n_test": 20493
+      }
+    },
+    "occluded": {
+      "model_state": {
+        "balanced_acc": 0.5205100442908,
+        "n_test": 3163
+      },
+      "raw_retina": {
+        "balanced_acc": 0.5028552839954421,
+        "n_test": 3163
+      }
+    }
+  },
+  "v2_mesh": {
+    "visible": {
+      "model_state": {
+        "balanced_acc": 0.6118307343444314,
+        "n_test": 20493
+      },
+      "raw_retina": {
+        "balanced_acc": 0.7593619418989974,
+        "n_test": 20493
+      }
+    },
+    "occluded": {
+      "model_state": {
+        "balanced_acc": 0.5190149079098991,
+        "n_test": 3163
+      },
+      "raw_retina": {
+        "balanced_acc": 0.5028552839954421,
+        "n_test": 3163
+      }
+    }
+  }
+}

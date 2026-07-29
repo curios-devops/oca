@@ -1,0 +1,227 @@
+<title>Three architectures, one maze</title>
+<style>
+  :root{
+    --ground:#f7f4ee; --panel:#ffffff; --ink:#191526; --ink-soft:#5b5470; --hair:#ded7cc;
+    --wall:#2a2539; --floor:#e6ded0; --unknown:#b9b1c6;
+    --agent:#e07a20; --exit:#c8365e; --gold:#c9962b; --trail:rgba(224,122,32,.20);
+    --v1:#2f6f9f; --v2:#1f7f74; --dcn:#8b4fb8;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:where(:not([data-theme=light])){
+      --ground:#131020; --panel:#1b1730; --ink:#f2eee6; --ink-soft:#a79fbe; --hair:#2e2748;
+      --wall:#080611; --floor:#3d3557; --unknown:#241f3c;
+      --agent:#ffb454; --exit:#ff6b8f; --gold:#f0c65a; --trail:rgba(255,180,84,.20);
+      --v1:#6fb2e0; --v2:#4fd6c4; --dcn:#c58ae8;
+    }
+  }
+  :root[data-theme=dark]{
+    --ground:#131020; --panel:#1b1730; --ink:#f2eee6; --ink-soft:#a79fbe; --hair:#2e2748;
+    --wall:#080611; --floor:#3d3557; --unknown:#241f3c;
+    --agent:#ffb454; --exit:#ff6b8f; --gold:#f0c65a; --trail:rgba(255,180,84,.20);
+    --v1:#6fb2e0; --v2:#4fd6c4; --dcn:#c58ae8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Iowan Old Style","Charter","Palatino Linotype",Palatino,Georgia,serif;
+    line-height:1.55;padding:clamp(18px,4vw,52px)}
+  .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+  .eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+  h1{font-size:clamp(27px,5vw,44px);line-height:1.08;margin:6px 0 0;text-wrap:balance;font-weight:600}
+  .lede{max-width:66ch;color:var(--ink-soft);font-size:clamp(15px,1.6vw,17px);margin:0}
+  .boards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+  .board{background:var(--panel);border:1px solid var(--hair);border-radius:10px;
+    padding:15px;display:flex;flex-direction:column;gap:9px;position:relative}
+  .board.lead{border-color:var(--gold);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 28%,transparent)}
+  .board h2{font-size:15px;margin:0;font-weight:600;display:flex;align-items:center;gap:8px}
+  .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .crown{margin-left:auto;font-size:17px;opacity:0;transition:opacity .25s}
+  .board.lead .crown{opacity:1}
+  canvas{width:100%;height:auto;image-rendering:pixelated;border-radius:6px;display:block;
+    background:var(--unknown)}
+  .score{display:flex;justify-content:space-between;align-items:baseline;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--ink-soft)}
+  .score b{font-size:26px;color:var(--ink);font-variant-numeric:tabular-nums;font-family:inherit}
+  .bar{height:5px;background:var(--hair);border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;transition:width .2s}
+  .meta{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;
+    color:var(--ink-soft);display:flex;justify-content:space-between;gap:8px}
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  button{font:inherit;background:var(--ink);color:var(--ground);border:0;border-radius:6px;
+    padding:8px 16px;cursor:pointer}
+  button:focus-visible{outline:2px solid var(--agent);outline-offset:2px}
+  input[type=range]{accent-color:var(--agent)}
+  .truth{max-width:300px}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--ink-soft)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .sw{width:11px;height:11px;border-radius:2px;display:inline-block}
+  .note{border-left:2px solid var(--v2);padding-left:14px;max-width:66ch;
+    font-size:14px;color:var(--ink-soft)}
+  table{border-collapse:collapse;font-size:13.5px;width:100%;max-width:640px}
+  th,td{text-align:right;padding:7px 12px;border-bottom:1px solid var(--hair)}
+  th:first-child,td:first-child{text-align:left}
+  th{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;
+    letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);font-weight:400}
+  td{font-variant-numeric:tabular-nums}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Same maze &middot; same planner &middot; same number of steps</div>
+    <h1>Three architectures race for the trophy</h1>
+  </header>
+
+  <p class="lede">Each agent sees only five cells by five, so nearly all of the maze is dark
+  to it. Everything it knows about the walls beyond that window it has to remember. What
+  you are watching is not the maze &mdash; it is each architecture&rsquo;s own map, read
+  straight out of its internal state, and it is the only map it is allowed to steer by.</p>
+
+  <div class="controls">
+    <button id="play">Pause</button>
+    <label>Speed <input id="speed" type="range" min="1" max="60" value="18"></label>
+    <button id="restart">Restart</button>
+    <span id="clock">step 0</span>
+  </div>
+
+  <div class="boards" id="boards"></div>
+
+  <div class="boards">
+    <div class="board truth">
+      <h2>The real maze</h2>
+      <canvas id="truth" width="300" height="300"></canvas>
+      <div class="meta"><span>ground truth</span><span>never shown to any model</span></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--wall)"></i>believed wall</span>
+    <span><i class="sw" style="background:var(--floor)"></i>believed open</span>
+    <span><i class="sw" style="background:var(--unknown)"></i>not yet worked out</span>
+    <span><i class="sw" style="background:var(--agent)"></i>agent</span>
+    <span><i class="sw" style="background:var(--exit)"></i>exit</span>
+  </div>
+
+  <div>
+    <table id="table">
+      <thead><tr><th>Architecture</th><th>Parameters</th><th>Out-of-view walls</th>
+        <th>Exits</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="note" id="control-note"></p>
+  </div>
+
+  <p class="note">Honest about the division of labour: the architecture supplies the map,
+  and a breadth-first search picks the next step across cells that map calls open. Every
+  agent gets the identical planner, so a difference in exits is a difference in the
+  remembered map and nothing else. Exits reached is the noisier of the two numbers &mdash;
+  the wall-decode column is what the benchmark actually settles, and this is what makes the
+  settling watchable.</p>
+</div>
+
+<script>
+const DATA = __DATA__;
+const N = DATA.n, G = DATA.grid, EXIT = DATA.exit, E = DATA.entrants;
+const COL = {v1:'--v1', v2:'--v2', dcn:'--dcn'};
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const maxExits = Math.max(1, ...E.map(e => e.exits));
+let i = 0, playing = true, acc = 0, trails = E.map(() => []);
+
+const boards = document.getElementById('boards');
+E.forEach((e, k) => {
+  const d = document.createElement('div');
+  d.className = 'board';
+  d.innerHTML = `<h2><i class="dot" style="background:var(${COL[e.key]})"></i>${e.label}
+      <span class="crown">&#127942;</span></h2>
+    <canvas id="c${k}" width="300" height="300"></canvas>
+    <div class="score"><span>exits reached</span><b id="e${k}">0</b></div>
+    <div class="bar"><i id="b${k}" style="background:var(${COL[e.key]})"></i></div>
+    <div class="meta"><span>${e.n_params.toLocaleString()} params</span>
+      <span>${(e.hidden_acc*100).toFixed(1)}% out-of-view</span></div>`;
+  boards.appendChild(d);
+});
+const boardEls = [...boards.children];
+const ctxs = E.map((_, k) => document.getElementById('c'+k).getContext('2d'));
+const truth = document.getElementById('truth').getContext('2d');
+const CELL = 300 / N;
+
+function cell(c, r, col){ c.fillStyle = col; c.fillRect(r[1]*CELL, r[0]*CELL, CELL, CELL); }
+
+function draw(){
+  const wall=css('--wall'), floor=css('--floor'), unk=css('--unknown'),
+        agent=css('--agent'), exit=css('--exit'), trailC=css('--trail');
+
+  for(let r=0;r<N;r++) for(let c=0;c<N;c++)
+    cell(truth,[r,c], G[r*N+c]==='0' ? wall : floor);
+  cell(truth, EXIT, exit);
+
+  let best = -1, bestK = -1;
+  E.forEach((e, k) => {
+    const g = ctxs[k], j = Math.min(i, e.belief.length-1), bel = e.belief[j];
+    for(let r=0;r<N;r++) for(let c=0;c<N;c++){
+      const v = (bel.charCodeAt(r*N+c)-48)/9;
+      cell(g,[r,c], Math.abs(v-0.5)<0.12 ? unk : (v>0.5 ? wall : floor));
+    }
+    for(const p of trails[k]) cell(g, p, trailC);
+    cell(g, EXIT, exit);
+    cell(g, e.pos[j], agent);
+
+    const n = e.hits.filter(h => h <= j).length;
+    document.getElementById('e'+k).textContent = n;
+    document.getElementById('b'+k).style.width = (100*n/maxExits) + '%';
+    if(n > best){ best = n; bestK = k; }
+    else if(n === best){ bestK = -1; }          // a tie crowns nobody
+  });
+  boardEls.forEach((el, k) => el.classList.toggle('lead', k === bestK && best > 0));
+  document.getElementById('clock').textContent = 'step ' + i + ' / ' + DATA.steps;
+}
+
+function loop(ts){
+  if(playing){
+    const fps = +document.getElementById('speed').value;
+    if(ts - acc > 1000/fps){
+      acc = ts;
+      E.forEach((e, k) => {
+        trails[k].push(e.pos[Math.min(i, e.pos.length-1)]);
+        if(trails[k].length > 26) trails[k].shift();
+      });
+      i = (i + 1) % DATA.steps;
+      if(i === 0) trails = E.map(() => []);
+      draw();
+    }
+  }
+  requestAnimationFrame(loop);
+}
+
+const tbody = document.querySelector('#table tbody');
+[...E].sort((a,b) => b.exits - a.exits).forEach((e, rank) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${rank === 0 ? '&#127942; ' : ''}${e.label}</td>
+    <td>${e.n_params.toLocaleString()}</td>
+    <td>${(e.hidden_acc*100).toFixed(1)}%</td><td>${e.exits}</td>`;
+  tbody.appendChild(tr);
+});
+const ctrl = (E[0].retina_hidden*100).toFixed(1);
+const beaten = E.filter(e => e.hidden_acc > E[0].retina_hidden).map(e => e.label);
+document.getElementById('control-note').innerHTML =
+  `The control that decides whether any of this means anything: decoding the same
+   out-of-view walls straight from the raw pixels scores <b>${ctrl}%</b>. ` +
+  (beaten.length
+    ? `Above that line: ${beaten.join(', ')} &mdash; those are holding something the
+       current image does not show.`
+    : `No entrant is above that line, so on this maze none of them is remembering
+       anything the image did not already contain.`);
+
+document.getElementById('play').addEventListener('click', e => {
+  playing = !playing; e.target.textContent = playing ? 'Pause' : 'Play';
+});
+document.getElementById('restart').addEventListener('click', () => {
+  i = 0; trails = E.map(() => []); draw();
+});
+new MutationObserver(draw).observe(document.documentElement,
+  {attributes:true, attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change', draw);
+draw(); requestAnimationFrame(loop);
+</script>

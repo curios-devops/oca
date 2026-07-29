@@ -1,0 +1,201 @@
+{
+  "meta": {
+    "versions": null,
+    "gates": [
+      "maze"
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "sides": [
+      12,
+      24
+    ],
+    "ticks": null,
+    "out": "logs/scorecard_stress.json"
+  },
+  "cells": {
+    "v1|maze|12": {
+      "runs": [
+        {
+          "hidden_acc": 0.8169792819068691,
+          "visible_acc": 1.0,
+          "headline": 0.037821991602132066,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.779157290304737,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 32.1
+        },
+        {
+          "hidden_acc": 0.8076627040238984,
+          "visible_acc": 1.0,
+          "headline": 0.038306662920008394,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.76935604110389,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 31.0
+        },
+        {
+          "hidden_acc": 0.8085523556103354,
+          "visible_acc": 1.0,
+          "headline": 0.0547974418921362,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.7537549137181992,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 31.4
+        }
+      ],
+      "n": 3,
+      "valid": true,
+      "mean": 0.04364203213809222,
+      "sem": 0.005579459402040598,
+      "higher_is_better": true
+    },
+    "v1|maze|24": {
+      "runs": [
+        {
+          "hidden_acc": 0.6751169949964799,
+          "visible_acc": 0.9951470021825651,
+          "headline": -0.10404029530825709,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.779157290304737,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 113.6
+        },
+        {
+          "hidden_acc": 0.6326513467331183,
+          "visible_acc": 0.9654807511988641,
+          "headline": -0.1367046943707717,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.76935604110389,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 113.7
+        },
+        {
+          "hidden_acc": 0.6038813502852678,
+          "visible_acc": 0.9779549231408392,
+          "headline": -0.14987356343293146,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.7537549137181992,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 112.9
+        }
+      ],
+      "n": 3,
+      "valid": true,
+      "mean": -0.13020618437065343,
+      "sem": 0.013624060712740296,
+      "higher_is_better": true
+    },
+    "v2|maze|12": {
+      "runs": [
+        {
+          "hidden_acc": 0.757503551493513,
+          "visible_acc": 0.9777569679394924,
+          "headline": -0.02165373881122401,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.779157290304737,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 112.0
+        },
+        {
+          "hidden_acc": 0.7328461340739882,
+          "visible_acc": 0.898953705788981,
+          "headline": -0.036509907029901756,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.76935604110389,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 108.2
+        },
+        {
+          "hidden_acc": 0.7329395409410813,
+          "visible_acc": 0.9682050114419263,
+          "headline": -0.02081537277711798,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.7537549137181992,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 111.6
+        }
+      ],
+      "n": 3,
+      "valid": true,
+      "mean": -0.026326339539414583,
+      "sem": 0.00509753206714668,
+      "higher_is_better": true
+    },
+    "v2|maze|24": {
+      "runs": [
+        {
+          "hidden_acc": 0.7316793221361761,
+          "visible_acc": 0.9796997288636298,
+          "headline": -0.04747796816856087,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.779157290304737,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 422.7
+        },
+        {
+          "hidden_acc": 0.7389115904778607,
+          "visible_acc": 0.9787485906505371,
+          "headline": -0.030444450626029296,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.76935604110389,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 422.1
+        },
+        {
+          "hidden_acc": 0.7113393194637871,
+          "visible_acc": 0.9804997426721277,
+          "headline": -0.0424155942544121,
+          "higher_is_better": true,
+          "control": {
+            "retina_hidden": 0.7537549137181992,
+            "retina_visible": 1.0
+          },
+          "valid": true,
+          "seconds": 421.9
+        }
+      ],
+      "n": 3,
+      "valid": true,
+      "mean": -0.04011267101633409,
+      "sem": 0.005050173975494723,
+      "higher_is_better": true
+    }
+  }
+}

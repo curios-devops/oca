@@ -1,0 +1,33 @@
+{
+  "v1_mesh": {
+    "model_state": {
+      "visible": 1.0,
+      "hidden": 0.8161398879865231,
+      "n_test": 3800,
+      "n_hidden_cells": 24
+    },
+    "raw_retina": {
+      "visible": 1.0,
+      "hidden": 0.779157290304737,
+      "n_test": 3800,
+      "n_hidden_cells": 24
+    },
+    "exit_reached": 82,
+    "demo_exits_reached": 38
+  },
+  "v2_mesh": {
+    "model_state": {
+      "visible": 0.9590769920766908,
+      "hidden": 0.7494559614804386,
+      "n_test": 3800,
+      "n_hidden_cells": 24
+    },
+    "raw_retina": {
+      "visible": 1.0,
+      "hidden": 0.779157290304737,
+      "n_test": 3800,
+      "n_hidden_cells": 24
+    },
+    "exit_reached": 82
+  }
+}

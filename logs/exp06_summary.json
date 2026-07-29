@@ -1,0 +1,30 @@
+{
+  "position": {
+    "raw_retina (control)": {
+      "visible": 4.847647866419538,
+      "occluded": 7.556784843027805,
+      "chance": 23.961208161608855,
+      "n_occluded": 1196
+    },
+    "model_state": {
+      "visible": 7.74444453875039,
+      "occluded": 7.955790889167334,
+      "chance": 23.961208161608855,
+      "n_occluded": 1196
+    }
+  },
+  "velocity": {
+    "raw_retina (control)": {
+      "visible": 1.435790812909648,
+      "occluded": 1.453790481669552,
+      "chance": 1.45127902265866,
+      "n_occluded": 1196
+    },
+    "model_state": {
+      "visible": 1.4151562140502845,
+      "occluded": 1.3575442998419123,
+      "chance": 1.45127902265866,
+      "n_occluded": 1196
+    }
+  }
+}

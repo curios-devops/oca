@@ -1,0 +1,43 @@
+{
+  "entropy": {
+    "driven": 3.2590942245602736,
+    "silent": 3.2744837130400692
+  },
+  "h_norm": {
+    "driven": 1.2421078865098265,
+    "silent": 1.227293999415563
+  },
+  "h_std": {
+    "driven": 0.3122880652042103,
+    "silent": 0.3082492194816667
+  },
+  "surprise": {
+    "driven": 3.0457313694699777,
+    "silent": 3.7013906613511516
+  },
+  "n_coalitions": {
+    "driven": 4.88,
+    "silent": 4.94
+  },
+  "frac_in_coalition": {
+    "driven": 0.01720486111111111,
+    "silent": 0.017456597222222224
+  },
+  "churn": {
+    "driven": 0.021073242289685178,
+    "silent": 0.015218486727809894
+  },
+  "coh_p90": {
+    "driven": 0.20012268133392774,
+    "silent": 0.2011382589298477
+  },
+  "coh_p99": {
+    "driven": 0.37701068666593796,
+    "silent": 0.3766259128539242
+  },
+  "coh_max": {
+    "driven": 1.6638566203717604,
+    "silent": 1.6068257437752405
+  },
+  "verdict": "settled: state persists but the mesh stops reorganising"
+}
