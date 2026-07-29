@@ -1,6 +1,6 @@
 # dcn/
 
-Architecture v2. Empty by design — see [../docs/DCN/FIRST_PRINCIPLES_DCN.md](../docs/DCN/FIRST_PRINCIPLES_DCN.md).
+Architecture v2. Empty by design — see [../../docs/DCN/FIRST_PRINCIPLES_DCN.md](../../docs/DCN/FIRST_PRINCIPLES_DCN.md).
 
 Rules for anything added here:
 

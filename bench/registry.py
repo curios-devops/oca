@@ -49,6 +49,18 @@ class MeshVersion:
 
     predicted_frame: Callable[..., np.ndarray] | None = None
 
+    codename: str = ""
+    """A distinct name, so three frozen architectures stop being "v1, v2 and the other one".
+
+    Registry keys stay `v1`/`v2`/`dcn` forever -- they are written into every scorecard and
+    log this project has produced, and renaming them would silently orphan the record. The
+    codename is what appears in tables and figures. Corvids, because the newest architecture
+    is named for the birds that pass object-permanence tests, which is the problem all of
+    these failed."""
+
+    mechanism: str = ""
+    """One line: the defining computational commitment. What actually distinguishes them."""
+
     def new(self, seed: int = 0, side: int = 12, **kw):
         return self.build(seed=seed, side=side, **kw)
 
@@ -104,6 +116,8 @@ def _v1_frame(state, tau, sensors):
 
 register(MeshVersion(
     name="v1",
+    codename="Wren",
+    mechanism="gradient flow on a learned energy landscape",
     build=_v1_build,
     tick=_v1_tick,
     readout=lambda s: s.h,
@@ -140,6 +154,8 @@ def _v2_frame(state, tau, sensors):
 
 register(MeshVersion(
     name="v2",
+    codename="Swift",
+    mechanism="Stuart-Landau limit-cycle oscillators, phase-gated coupling",
     build=_v2_build,
     tick=_v2_tick,
     readout=lambda s: s.h,
@@ -159,24 +175,24 @@ register(MeshVersion(
 
 
 def _dcn_build(seed: int = 0, side: int = 12, **kw):
-    from dcn.cortex import build_cortex
+    from legacy.dcn.cortex import build_cortex
     kw.pop("eta_head", None)                 # a legacy knob; the DCN has no head
     return build_cortex(seed=seed, **kw)
 
 
 def _dcn_tick(state, s):
-    from dcn.cortex import tick
+    from legacy.dcn.cortex import tick
     return tick(state, s)
 
 
 def _dcn_frame(state, tau, sensors):
-    from dcn.cortex import predicted_retina
+    from legacy.dcn.cortex import predicted_retina
     return predicted_retina(state, tau, sensors)
 
 
 def _dcn_unit_labels(world) -> np.ndarray:
     """One label per node, from the node grid that tiles the image."""
-    from dcn.cortex import NODE_SIDE, N_NODES
+    from legacy.dcn.cortex import NODE_SIDE, N_NODES
     lab = np.full(N_NODES, -1)
     cell = world.cfg.size / NODE_SIDE
     for i in range(world.cfg.n_objects):
@@ -191,7 +207,7 @@ def _dcn_unit_labels(world) -> np.ndarray:
 
 def _dcn_object_units(state, world, i: int, side: int) -> np.ndarray:
     """The node containing the object, and its grid neighbours."""
-    from dcn.cortex import NODE_SIDE, N_NODES
+    from legacy.dcn.cortex import NODE_SIDE, N_NODES
     cell = world.cfg.size / NODE_SIDE
     x, y = world.pos[i]
     nc = int(np.clip(x // cell, 0, NODE_SIDE - 1))
@@ -214,6 +230,8 @@ def _dcn_describe(state) -> dict:
 
 register(MeshVersion(
     name="dcn",
+    codename="Heron",
+    mechanism="event-driven neurons into a reservoir with a resonance spectrum",
     build=_dcn_build,
     tick=_dcn_tick,
     readout=lambda s: s.h,
@@ -280,6 +298,8 @@ def _raw_frame(state, tau, sensors):
 
 register(MeshVersion(
     name="raw",
+    codename="Mirror",
+    mechanism="no state at all -- the current frame, and nothing else",
     build=_raw_build,
     tick=_raw_tick,
     readout=lambda s: s.frame,

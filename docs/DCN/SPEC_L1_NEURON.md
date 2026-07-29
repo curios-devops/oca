@@ -1,6 +1,6 @@
 # SPEC L1 — Dynamic Neuron (DN)
 
-**Status: implemented, passes its gates.** Code in [`dcn/neuron.py`](../../dcn/neuron.py),
+**Status: implemented, passes its gates.** Code in [`dcn/neuron.py`](../../legacy/dcn/neuron.py),
 gates in [`bench/components.py`](../../bench/components.py), results in
 [RESULTS_L1_NEURON.md](RESULTS_L1_NEURON.md).
 

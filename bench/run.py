@@ -88,13 +88,15 @@ def _fmt(cell):
 
 
 def _report(card, versions, gates, sides):
-    print(f"\n{'':6s}" + "".join(f"{g:>18s}" for g in gates))
+    from bench.registry import get
+    print(f"\n{'':10s}" + "".join(f"{g:>18s}" for g in gates))
     for vname in versions:
         for side in sides:
-            label = f"{vname}" + (f"/{side}" if len(sides) > 1 else "")
+            code = get(vname).codename or vname
+            label = code + (f"/{side}" if len(sides) > 1 else "")
             row = "".join(f"{_fmt(card['cells'].get(f'{vname}|{g}|{side}')):>18s}"
                           for g in gates)
-            print(f"{label:6s}{row}")
+            print(f"{label:10s}{row}")
 
     print("\nheadline per gate:")
     print("  prediction  16-step MSE as a fraction of copy-last (lower is better)")

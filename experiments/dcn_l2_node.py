@@ -33,8 +33,8 @@ from bench.nodes import (N_COMPONENTS, gate_channel_contention,
 from core.metrics import JsonlLogger
 from core.world import Sensors
 from core.world.physics import PhysicsConfig, PhysicsWorld
-from dcn.cortex import NODE_SIDE, build_cortex, sensory_to_nodes, tick
-from dcn.node import build_stack, step as node_step
+from legacy.dcn.cortex import NODE_SIDE, build_cortex, sensory_to_nodes, tick
+from legacy.dcn.node import build_stack, step as node_step
 
 TAUS = (1, 4, 16, 64)
 
@@ -190,7 +190,7 @@ def contention_gate(args) -> dict:
     the identical world. Their *offered* event rates are equalised by construction (both
     adapt to the same target), so anything left is scheduling.
     """
-    from dcn.neuron import NeuronConfig, build_population, step as nstep
+    from legacy.dcn.neuron import NeuronConfig, build_population, step as nstep
 
     world = PhysicsWorld(PhysicsConfig(seed=args.seed, n_objects=3))
     sensors = Sensors()

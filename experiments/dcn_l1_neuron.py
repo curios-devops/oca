@@ -31,7 +31,7 @@ from bench.components import (_delta_events, gate_energy, gate_noise_robustness,
 from core.data import rollout
 from core.metrics import JsonlLogger
 from core.world.physics import make_physics_world
-from dcn.neuron import NeuronConfig, build_population, step
+from legacy.dcn.neuron import NeuronConfig, build_population, step
 
 
 def input_stream(ticks: int, seed: int, n_inputs: int, noise: float = 0.0):

@@ -24,7 +24,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
 [![Python 3.14](https://img.shields.io/badge/python-3.14-black.svg)](https://www.python.org/)
 [![Dependencies](https://img.shields.io/badge/dependencies-numpy-black.svg)](https://numpy.org/)
-[![Tests](https://img.shields.io/badge/tests-126%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-129%20passing-brightgreen.svg)](tests/)
 [![Status](https://img.shields.io/badge/status-active%20research-blue.svg)](docs/SPEC_ARCHITECTURE.md)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-blueviolet.svg)](#contributing)
 
@@ -66,7 +66,7 @@ refuted it.
 Most research repositories open with what works. This one opens with the scoreboard, because
 the scoreboard is the contribution.
 
-Two complete architectures and six levels of gates in:
+Three complete architectures, now all frozen, and six levels of gates in:
 
 | finding | status |
 |---|---|
@@ -128,17 +128,29 @@ graph BT
     style CUR stroke-dasharray: 5 5
 ```
 
-**Level 3 is deliberately not built.** Level 2 fails four of its five gates, and building a
-coordination layer over units that hold nothing worth coordinating is building the aeroplane
-to find out whether the wing works. That is the methodology working, not failing — the cost
-of learning that level 2 does not work was one battery, and nothing sits on top of it.
+**Heron is frozen with level 3 never built.** Level 2 failed four of its five gates, and
+building a coordination layer over units that hold nothing worth coordinating is building the
+aeroplane to find out whether the wing works. That is the methodology working, not failing — the
+cost of learning it was one battery, and nothing sits on top of it.
 
-Two architectures are registered today, and alternatives are welcome:
+**OCA v4 (Corvus)** adds one rule to the layered-architecture invariants, and it is the rule
+whose absence let three architectures fail without any gate objecting: every layer must declare
+**what it has to beat**. Two questions block implementation and are deliberately
+[left open](docs/CORVUS/OPEN_QUESTIONS.md) rather than settled by whoever writes the code.
 
-| architecture | status | what it is |
-|---|---|---|
-| **RPDU v1 / v2** | frozen, never modified again | a mesh of locally-learning predictive units; v2 replaces the unit dynamics with limit-cycle oscillators |
-| **DCN v3** | active reference implementation | dynamic neurons → cortical nodes → resonance clusters; event-driven, oscillatory, backprop-free |
+Four entrants share the benchmark. **Three are frozen** — all three lost. Full
+[register](docs/ARCHITECTURES.md):
+
+| codename | key | status | mechanism |
+|---|---|---|---|
+| **Mirror** | `raw` | control | no state at all — the current frame, and nothing else |
+| **Wren** | `v1` | frozen | gradient flow on a learned energy landscape |
+| **Swift** | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling |
+| **Heron** | `dcn` | frozen | event-driven neurons into a reservoir with a resonance spectrum |
+| **Corvus** | — | **live, unbuilt** | undecided — [OCA v4 spec](docs/CORVUS/SPEC_OCA_ARCHITECTURE.md) |
+
+Corvus is named for the birds that pass object-permanence tests, because that is the problem all
+three frozen architectures failed.
 
 Anything that registers with four methods in [`bench/registry.py`](bench/registry.py) is
 scored against everything else on identical code paths, automatically. A resonance-first
@@ -159,7 +171,7 @@ design, a different memory system, a hybrid with a foundation model — all fair
 - **Replaceable components.** Every level declares its interface and its prediction horizon;
   any level can be swapped without touching the rest.
 - **Evidence-driven evolution.** Nothing enters by compatibility with what came before, only
-  by stated function — enforced by a [test](tests/test_dcn_contract.py), not by intent.
+  by stated function — enforced by a [test](tests/test_architecture_contract.py), not by intent.
 - **Publish the failures.** Three of this project's own claims were later retracted by its
   own measurements. All three retractions are in the results files.
 - **Inspired by neuroscience, not constrained by biology.**
@@ -257,6 +269,9 @@ Phase 3 is the honest bottleneck. Everything above it is specified in
 | document | what it is |
 |---|---|
 | [WHAT_WE_HAVE_LEARNED.md](docs/WHAT_WE_HAVE_LEARNED.md) | **read this first** — the ledger, the invariant, and the open problem |
+| [ARCHITECTURES.md](docs/ARCHITECTURES.md) | the four entrants: what each is, and how each failed |
+| [CORVUS/SPEC_OCA_ARCHITECTURE.md](docs/CORVUS/SPEC_OCA_ARCHITECTURE.md) | **OCA v4** — the current architecture specification |
+| [CORVUS/OPEN_QUESTIONS.md](docs/CORVUS/OPEN_QUESTIONS.md) | five places v4 is in tension with the evidence; two are blocking |
 | [SPEC_ARCHITECTURE.md](docs/SPEC_ARCHITECTURE.md) | both architectures, what is built, how to read a claim |
 | [SPEC_DCN_STACK.md](docs/DCN/SPEC_DCN_STACK.md) | the active stack, every level, L1 to the curriculum engine |
 | [SPEC_L1_NEURON.md](docs/DCN/SPEC_L1_NEURON.md) · [SPEC_L2_NODE.md](docs/DCN/SPEC_L2_NODE.md) · [SPEC_L3_CLUSTER.md](docs/DCN/SPEC_L3_CLUSTER.md) | per-level specifications, with the gates that can falsify each |

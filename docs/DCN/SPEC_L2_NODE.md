@@ -1,7 +1,7 @@
 # SPEC L2 — Dynamic Cortical Node (DCN)
 
-**Status: implemented, fails four of five gates.** Code in [`dcn/node.py`](../../dcn/node.py)
-and [`dcn/cortex.py`](../../dcn/cortex.py), gates in [`bench/nodes.py`](../../bench/nodes.py),
+**Status: implemented, fails four of five gates.** Code in [`dcn/node.py`](../../legacy/dcn/node.py)
+and [`dcn/cortex.py`](../../legacy/dcn/cortex.py), gates in [`bench/nodes.py`](../../bench/nodes.py),
 results in [RESULTS_L2_NODE.md](RESULTS_L2_NODE.md).
 
 The specification is kept as written rather than rewritten to match what happened, because

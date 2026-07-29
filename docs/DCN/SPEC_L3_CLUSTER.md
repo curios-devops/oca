@@ -44,7 +44,7 @@ bus and the claim has quietly been abandoned.
 they are regions, and this level has no content beyond level 2.
 
 **C2 — The horizon is declared and measured.** Enforced by
-[`dcn/contract.py`](../../dcn/contract.py). A cluster that lasts 500 ms and is scored one
+[`dcn/contract.py`](../../legacy/dcn/contract.py). A cluster that lasts 500 ms and is scored one
 tick ahead is being set an impossible test — that mistake cost the legacy line a full cycle.
 
 **C3 — Coalitions-by-synchrony must be measured as a grouping, not only as a

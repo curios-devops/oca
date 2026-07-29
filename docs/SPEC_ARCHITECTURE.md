@@ -4,7 +4,8 @@ The single entry point. If you are new to this repository, or returning after a 
 this first: where the work is, what is built, what is measured, what is proposal, and what
 to read next.
 
-Two architectures live here. **RPDU** is frozen; **DCN** is active. They share one
+**Four entrants, three of them frozen.** Wren, Swift and Heron are closed to change; Corvus is
+a blank page. Every one of them is named and summarised in [ARCHITECTURES.md](ARCHITECTURES.md). They share one
 benchmark, deliberately, so that any claim about either can be settled on identical code
 paths — and so that a future third architecture inherits the whole battery for free.
 
@@ -12,27 +13,34 @@ paths — and so that a future third architecture inherits the whole battery for
 
 ## Where things stand
 
-| | RPDU (legacy) | DCN (active) |
-|---|---|---|
-| status | **frozen**, never modified again | levels 1–2 built, level 3 specified |
-| code | [`legacy/`](../legacy/) | [`dcn/`](../dcn/) |
-| stack spec | [SPEC_SB1.md](RPDU/SPEC_SB1.md) | [SPEC_DCN_STACK.md](DCN/SPEC_DCN_STACK.md) |
-| first principles | [FIRST_PRINCIPLES_LEGACY.md](RPDU/FIRST_PRINCIPLES_LEGACY.md) | [FIRST_PRINCIPLES_DCN.md](DCN/FIRST_PRINCIPLES_DCN.md) |
-| results | [RESULTS.md](RPDU/RESULTS.md) | [L1](DCN/RESULTS_L1_NEURON.md), [L2](DCN/RESULTS_L2_NODE.md) |
+| | Wren + Swift (RPDU) | Heron (DCN) | **Corvus (OCA v4)** |
+|---|---|---|---|
+| status | **frozen** | **frozen** | live, unbuilt |
+| code | [`legacy/v1`](../legacy/v1/), [`legacy/v2`](../legacy/v2/) | [`legacy/dcn`](../legacy/dcn/) | [`corvus/`](../corvus/) |
+| stack spec | [SPEC_SB1.md](RPDU/SPEC_SB1.md) | [SPEC_DCN_STACK.md](DCN/SPEC_DCN_STACK.md) | [SPEC_OCA_ARCHITECTURE.md](CORVUS/SPEC_OCA_ARCHITECTURE.md) |
+| first principles | [FIRST_PRINCIPLES_LEGACY.md](RPDU/FIRST_PRINCIPLES_LEGACY.md) | [FIRST_PRINCIPLES_DCN.md](DCN/FIRST_PRINCIPLES_DCN.md) | [OPEN_QUESTIONS.md](CORVUS/OPEN_QUESTIONS.md) |
+| results | [RESULTS.md](RPDU/RESULTS.md) | [L1](DCN/RESULTS_L1_NEURON.md), [L2](DCN/RESULTS_L2_NODE.md) | — |
+
+The evidence all three produced, and that Corvus is written against:
+**[WHAT_WE_HAVE_LEARNED.md](WHAT_WE_HAVE_LEARNED.md)**.
 
 Shared and belonging to neither: [`core/`](../core/) (worlds, sensors, probes, metrics,
-baselines), [`bench/`](../bench/) (registry and gates), [`tests/`](../tests/) (126 tests).
+baselines), [`bench/`](../bench/) (registry and gates), [`tests/`](../tests/) (129 tests).
 
-**Nothing in `dcn/` may import from `legacy/`.** A test enforces it. The point is that no
-behaviour is ever an unattributable hybrid of two hypotheses.
+**Nothing in `corvus/` may import from `legacy/`.** A test enforces it, and it also asserts
+that `corvus/` exists — a guard whose target has moved passes vacuously, which is exactly what
+happened when `dcn/` was frozen into `legacy/`. The point is that no behaviour is ever an
+unattributable hybrid of two hypotheses.
 
 ## The one-paragraph state of play
 
-Two complete architectures and six levels of gates in, **no representation this project has
-built beats raw pixels at predicting the world**, at any horizon, on any world. That result
-has now been reached from three independent directions and by three architectures scored on
-one code path. It is the central open problem, and it is more interesting than any of the
-individual mechanisms that have failed along the way.
+Three complete architectures and six levels of gates in, **no representation this project has
+built beats raw pixels at predicting an observable world, and none forms persistent state.** In
+the tunnel maze — the one world where the image provably cannot contain the answer — storing the
+two coordinates you walked in at beats every architecture here, and the newest scores worse than
+storing nothing. All three are now frozen. The open problem, stated so it can be attacked:
+**what is the smallest primitive that beats a two-number memory while blind?** That is gate
+`P0`; run it with `make p0`.
 
 ## How to read a claim in this repository
 
@@ -129,19 +137,21 @@ of it.
 
 ```bash
 make venv           # numpy, matplotlib, pytest — no torch, no third-party world engine
-make test           # 126 tests
-make guards         # legacy stays frozen; dcn/ stays free of legacy imports
-make dcn-l1         # level 1 battery
-make dcn-l2         # level 2 battery, and v1 vs v2 vs DCN on one target
-make bench          # the shared scorecard, 3 seeds, every version through every gate
-make race           # all three in one maze, then build the demo page
+make test           # 129 tests
+make guards         # legacy stays frozen; corvus/ stays free of legacy imports
+make p0             # THE open challenge: beat a two-number memory while blind
+make dcn-l1         # Heron level 1 battery
+make dcn-l2         # Heron level 2 battery, and Wren vs Swift vs Heron on one target
+make bench          # the shared scorecard, 3 seeds, every entrant through every gate
+make race           # all four in one maze, then build the demo page
 make serve          # watch it at localhost:8080
 ```
 
 ## Reading order
 
-New here: this file → the stack spec for whichever architecture interests you
-([DCN](DCN/SPEC_DCN_STACK.md) or [SB-1](RPDU/SPEC_SB1.md)) → the level specs → the results.
+New here: this file → [ARCHITECTURES.md](ARCHITECTURES.md) for who the four entrants are →
+[WHAT_WE_HAVE_LEARNED.md](WHAT_WE_HAVE_LEARNED.md) for what they established.
 
-Coming back to continue the work: [RESULTS_L2_NODE.md](DCN/RESULTS_L2_NODE.md), last
-section — it names the next three things to try and why, in order.
+Continuing the work: [docs/CORVUS/OPEN_QUESTIONS.md](CORVUS/OPEN_QUESTIONS.md). Two of the five
+questions block implementation, and neither should be answered by whoever happens to be writing
+the code — which is exactly how both of this project's published corrections happened.

@@ -38,7 +38,7 @@ from core.world import Sensors
 from core.world.maze import MazeConfig, MazeWorld
 from exp09_maze import RADIUS, _plan, fit_probe, visible_mask, wall_probe
 
-ENTRANTS = (("raw", "Raw pixels"), ("v1", "RPDU v1"), ("v2", "RPDU v2"), ("dcn", "DCN v3"))
+ENTRANTS = ("raw", "v1", "v2", "dcn")
 """Raw pixels races too, rather than sitting in a caption as the control.
 
 It has no memory and no parameters: at every step it decodes the wall map from the frame in
@@ -131,8 +131,9 @@ def main() -> None:
     args = ap.parse_args()
 
     results, payload = {}, {"entrants": [], "steps": args.steps}
-    for key, label in ENTRANTS:
+    for key in ENTRANTS:
         version = get(key)
+        label = version.codename or key
         print(f"training {label} ...", flush=True)
         tr = train(version, args.seed, args.side, args.ticks, args.warmup)
         print(f"  wall decode out of view {tr['wall_decode']['hidden']*100:.1f}% "

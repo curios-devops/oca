@@ -5,7 +5,7 @@ import pytest
 
 from bench.components import (_delta_events, gate_rate_distortion, nrmse,
                               summarise_rate_distortion, zero_order_hold)
-from dcn.neuron import NeuronConfig, build_population, dense, received, step
+from legacy.dcn.neuron import NeuronConfig, build_population, dense, received, step
 
 
 def _run(cfg=None, ticks=1500, seed=0):

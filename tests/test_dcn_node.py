@@ -16,11 +16,11 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from dcn.contract import LEVELS
-from dcn.cortex import (INPUTS_PER_NODE, N_NODES, build_cortex, layout,
+from legacy.dcn.contract import LEVELS
+from legacy.dcn.cortex import (INPUTS_PER_NODE, N_NODES, build_cortex, layout,
                         nodes_to_patches, sensory_to_nodes, tick)
-from dcn.node import PUB_SCALARS, NodeConfig, build_stack
-from dcn.node import step as node_step
+from legacy.dcn.node import PUB_SCALARS, NodeConfig, build_stack
+from legacy.dcn.node import step as node_step
 
 
 def _drive(stack, n=200, seed=0, scale=1.0):
