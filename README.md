@@ -136,7 +136,7 @@ cost of learning it was one battery, and nothing sits on top of it.
 **OCA v4 (Corvus)** adds one rule to the layered-architecture invariants, and it is the rule
 whose absence let three architectures fail without any gate objecting: every layer must declare
 **what it has to beat**. Two questions block implementation and are deliberately
-[left open](docs/CORVUS/OPEN_QUESTIONS.md) rather than settled by whoever writes the code.
+[left open](docs/corvus/OPEN_QUESTIONS.md) rather than settled by whoever writes the code.
 
 Four entrants share the benchmark. **Three are frozen** — all three lost. Full
 [register](docs/ARCHITECTURES.md):
@@ -147,12 +147,12 @@ Four entrants share the benchmark. **Three are frozen** — all three lost. Full
 | **Wren** | `v1` | frozen | gradient flow on a learned energy landscape |
 | **Swift** | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling |
 | **Heron** | `dcn` | frozen | event-driven neurons into a reservoir with a resonance spectrum |
-| **Corvus** | — | **live, unbuilt** | undecided — [OCA v4 spec](docs/CORVUS/SPEC_OCA_ARCHITECTURE.md) |
+| **Corvus** | — | **live, unbuilt** | undecided — [OCA v4 spec](docs/corvus/SPEC_OCA_ARCHITECTURE.md) |
 
 Corvus is named for the birds that pass object-permanence tests, because that is the problem all
 three frozen architectures failed.
 
-Anything that registers with four methods in [`bench/registry.py`](bench/registry.py) is
+Anything that registers with four methods in [`cge/registry.py`](cge/registry.py) is
 scored against everything else on identical code paths, automatically. A resonance-first
 design, a different memory system, a hybrid with a foundation model — all fair game.
 
@@ -166,12 +166,12 @@ design, a different memory system, a hybrid with a foundation model — all fair
 - **Every comparison at matched capacity and matched budget.** An unmatched probe once
   returned a decode error of 993,925 against a chance of 7.8. It is written up in the
   results rather than quietly fixed.
-- **Gates live outside the architectures**, in `core/` and `bench/`, so adding a level or a
+- **Gates live outside the architectures**, in `core/` and `cge/`, so adding a level or a
   version never quietly changes what "the same test" means.
 - **Replaceable components.** Every level declares its interface and its prediction horizon;
   any level can be swapped without touching the rest.
 - **Evidence-driven evolution.** Nothing enters by compatibility with what came before, only
-  by stated function — enforced by a [test](tests/test_architecture_contract.py), not by intent.
+  by stated function — enforced by a [test](tests/test_corvus_contract.py), not by intent.
 - **Publish the failures.** Three of this project's own claims were later retracted by its
   own measurements. All three retractions are in the results files.
 - **Inspired by neuroscience, not constrained by biology.**
@@ -194,7 +194,7 @@ docs/          specifications, first principles, and results per level
 demo/          the maze race, as a self-contained web page
 ```
 
-The split that matters: **`core/` and `bench/` belong to no architecture.** That is what
+The split that matters: **`core/` and `cge/` belong to no architecture.** That is what
 makes a comparison between two of them mean anything, and what lets a third inherit the
 entire battery for free.
 
@@ -208,7 +208,7 @@ make test          # 126 tests
 
 make dcn-l1        # level 1 battery: precision vs efficiency, oscillation, ablations
 make dcn-l2        # level 2 battery, and v1 vs v2 vs DCN on one shared target
-make bench         # the scorecard: every architecture, every gate, 3 seeds
+make cge          # the scorecard: every architecture, every gate, 3 seeds
 make p0            # THE open challenge: beat a two-number memory while blind
 make race          # raw pixels vs all three architectures, through one maze
 make serve         # then open http://127.0.0.1:8080 and watch it
@@ -224,7 +224,7 @@ rather the point.
 ## Benchmarks
 
 The **OCA Benchmark Suite** is the part of this project most ready for contribution. Gates
-live in [`bench/`](bench/); worlds live in [`core/world/`](core/world/).
+live in [`cge/`](cge/); worlds live in [`core/world/`](core/world/).
 
 **Implemented today** — every architecture, one code path, controls always reported:
 
@@ -270,15 +270,16 @@ Phase 3 is the honest bottleneck. Everything above it is specified in
 |---|---|
 | [WHAT_WE_HAVE_LEARNED.md](docs/WHAT_WE_HAVE_LEARNED.md) | **read this first** — the ledger, the invariant, and the open problem |
 | [ARCHITECTURES.md](docs/ARCHITECTURES.md) | the four entrants: what each is, and how each failed |
-| [CORVUS/SPEC_OCA_ARCHITECTURE.md](docs/CORVUS/SPEC_OCA_ARCHITECTURE.md) | **OCA v4** — the current architecture specification |
-| [CORVUS/OPEN_QUESTIONS.md](docs/CORVUS/OPEN_QUESTIONS.md) | five places v4 is in tension with the evidence; two are blocking |
+| [corvus/SPEC_OCA_ARCHITECTURE.md](docs/corvus/SPEC_OCA_ARCHITECTURE.md) | **OCA v4** — the current architecture specification |
+| [corvus/OPEN_QUESTIONS.md](docs/corvus/OPEN_QUESTIONS.md) | five places v4 is in tension with the evidence; two are blocking |
+| [corvus/SPEC_CGE.md](docs/corvus/SPEC_CGE.md) | **the Cognitive Gates** — decisions, not scores; four verdicts, not three |
 | [SPEC_ARCHITECTURE.md](docs/SPEC_ARCHITECTURE.md) | both architectures, what is built, how to read a claim |
-| [SPEC_DCN_STACK.md](docs/DCN/SPEC_DCN_STACK.md) | the active stack, every level, L1 to the curriculum engine |
-| [SPEC_L1_NEURON.md](docs/DCN/SPEC_L1_NEURON.md) · [SPEC_L2_NODE.md](docs/DCN/SPEC_L2_NODE.md) · [SPEC_L3_CLUSTER.md](docs/DCN/SPEC_L3_CLUSTER.md) | per-level specifications, with the gates that can falsify each |
-| [RESULTS_L1_NEURON.md](docs/DCN/RESULTS_L1_NEURON.md) · [RESULTS_L2_NODE.md](docs/DCN/RESULTS_L2_NODE.md) | results, per level of abstraction |
-| [FIRST_PRINCIPLES_DCN.md](docs/DCN/FIRST_PRINCIPLES_DCN.md) | the axioms, and which have since been corrected |
-| [SPEC_SB1.md](docs/RPDU/SPEC_SB1.md) | the frozen line's full intended stack, kept legible |
-| [RESULTS.md](docs/RPDU/RESULTS.md) | the legacy ledger: what held, what was refuted, what is open |
+| [SPEC_DCN_STACK.md](docs/heron/SPEC_DCN_STACK.md) | the active stack, every level, L1 to the curriculum engine |
+| [SPEC_L1_NEURON.md](docs/heron/SPEC_L1_NEURON.md) · [SPEC_L2_NODE.md](docs/heron/SPEC_L2_NODE.md) · [SPEC_L3_CLUSTER.md](docs/heron/SPEC_L3_CLUSTER.md) | per-level specifications, with the gates that can falsify each |
+| [RESULTS_L1_NEURON.md](docs/heron/RESULTS_L1_NEURON.md) · [RESULTS_L2_NODE.md](docs/heron/RESULTS_L2_NODE.md) | results, per level of abstraction |
+| [FIRST_PRINCIPLES_DCN.md](docs/heron/FIRST_PRINCIPLES_DCN.md) | the axioms, and which have since been corrected |
+| [SPEC_SB1.md](docs/wren-swift/SPEC_SB1.md) | the frozen line's full intended stack, kept legible |
+| [RESULTS.md](docs/wren-swift/RESULTS.md) | the legacy ledger: what held, what was refuted, what is open |
 
 ---
 
@@ -313,8 +314,8 @@ Especially welcome:
 - **Students** — every experiment is one runnable file that prints its own controls, and
   every open question in the results files is a genuine one.
 
-Good first contributions: add a world to `core/world/`; add a gate to `bench/`; register an
-architecture in `bench/registry.py` and see how it scores; or reproduce a result and tell us
+Good first contributions: add a world to `core/world/`; add a gate to `cge/`; register an
+architecture in `cge/registry.py` and see how it scores; or reproduce a result and tell us
 if it does not hold.
 
 Start with [docs/SPEC_ARCHITECTURE.md](docs/SPEC_ARCHITECTURE.md), then open an issue with
@@ -335,7 +336,7 @@ project is organised so that being wrong is cheap, visible, and useful to everyo
 If you are excited about the future of cognitive AI — and willing to be wrong in public
 about how it works — **we would love to build it together.**
 
-⭐ Star the repo · 🔬 Run `make bench` and tell us what you get · 💬 Open an issue with the
+⭐ Star the repo · 🔬 Run `make cge` and tell us what you get · 💬 Open an issue with the
 claim you think is weakest.
 
 ---

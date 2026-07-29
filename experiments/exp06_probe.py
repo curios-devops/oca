@@ -37,9 +37,9 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from legacy.v1.mesh import build_mesh, tick
+from architectures.wren.mesh import build_mesh, tick
 from core.metrics import JsonlLogger
-from legacy.v1.state import Config
+from architectures.wren.state import Config
 from core.world import Sensors
 from core.world.physics import PhysicsConfig, PhysicsWorld
 

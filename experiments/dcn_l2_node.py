@@ -25,16 +25,16 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from bench.components import _delta_events
-from bench.nodes import (N_COMPONENTS, gate_channel_contention,
+from cge.components import _delta_events
+from cge.nodes import (N_COMPONENTS, gate_channel_contention,
                          gate_concept_formation, gate_horizon, gate_publication,
                          gate_relational, kmeans_labels, predictive_gain,
                          retina_target)
 from core.metrics import JsonlLogger
 from core.world import Sensors
 from core.world.physics import PhysicsConfig, PhysicsWorld
-from legacy.dcn.cortex import NODE_SIDE, build_cortex, sensory_to_nodes, tick
-from legacy.dcn.node import build_stack, step as node_step
+from architectures.heron.cortex import NODE_SIDE, build_cortex, sensory_to_nodes, tick
+from architectures.heron.node import build_stack, step as node_step
 
 TAUS = (1, 4, 16, 64)
 
@@ -190,7 +190,7 @@ def contention_gate(args) -> dict:
     the identical world. Their *offered* event rates are equalised by construction (both
     adapt to the same target), so anything left is scheduling.
     """
-    from legacy.dcn.neuron import NeuronConfig, build_population, step as nstep
+    from architectures.heron.neuron import NeuronConfig, build_population, step as nstep
 
     world = PhysicsWorld(PhysicsConfig(seed=args.seed, n_objects=3))
     sensors = Sensors()
@@ -222,9 +222,9 @@ def phase2(args) -> dict:
     lifting -- and the whole reason the benchmark lives outside both architectures is so
     that answer cannot be an artefact of the harness.
     """
-    from legacy.v1.mesh import build_mesh, tick as tick1
-    from legacy.v1.state import Config
-    from legacy.v2 import Config2, build_mesh2, tick2
+    from architectures.wren.mesh import build_mesh, tick as tick1
+    from architectures.wren.state import Config
+    from architectures.swift import Config2, build_mesh2, tick2
 
     world = PhysicsWorld(PhysicsConfig(seed=args.seed, n_objects=3))
     sensors = Sensors()

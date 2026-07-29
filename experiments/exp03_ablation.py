@@ -24,8 +24,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from core.data import train_test_streams
 from core.metrics import JsonlLogger
-from legacy.v1.run import train_and_eval
-from legacy.v1.state import Config
+from architectures.wren.run import train_and_eval
+from architectures.wren.state import Config
 from core.world.physics import make_physics_world
 
 HORIZONS = (1, 4, 16)

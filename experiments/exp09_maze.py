@@ -30,12 +30,12 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from legacy.v1.mesh import build_mesh, tick
+from architectures.wren.mesh import build_mesh, tick
 from core.metrics import JsonlLogger
-from legacy.v1.state import Config
+from architectures.wren.state import Config
 from core.world import Sensors
 from core.world.maze import ACTIONS, MazeConfig, MazeWorld
-from legacy.v2 import Config2, build_mesh2, tick2
+from architectures.swift import Config2, build_mesh2, tick2
 
 RADIUS = 3
 

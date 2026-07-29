@@ -32,8 +32,8 @@ from core.metrics import JsonlLogger
 from core.probes import decode_error
 from core.world import Sensors
 from core.world.maze import MazeConfig, MazeWorld
-from legacy.v2 import Config2, build_mesh2, tick2
-from legacy.pa import AssemblyConfig, build_assembly, export, pooled_members, step_assembly
+from architectures.swift import Config2, build_mesh2, tick2
+from architectures.swift.pa import AssemblyConfig, build_assembly, export, pooled_members, step_assembly
 
 
 def collect(cfg_a, ticks, seed, warmup, learn_ticks, side=12):

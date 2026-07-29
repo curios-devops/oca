@@ -24,10 +24,10 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from core.data import rollout
-from legacy.v1.mesh import build_mesh, tick
+from architectures.wren.mesh import build_mesh, tick
 from core.metrics import JsonlLogger, coalition_stats, state_entropy
-from legacy.v1.run import run_stream
-from legacy.v1.state import Config
+from architectures.wren.run import run_stream
+from architectures.wren.state import Config
 from core.world import Sensors
 from core.world.sensors import N_SENSORY, P
 

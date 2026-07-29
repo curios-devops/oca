@@ -70,10 +70,10 @@ Confidence is stated so that it can be argued with.
 
 | observation | confidence | where |
 |---|---|---|
-| No learned representation beats raw input on an **observable** world | **very high** | [L2 results](DCN/RESULTS_L2_NODE.md), [scorecard](../bench/run.py) |
+| No learned representation beats raw input on an **observable** world | **very high** | [L2 results](heron/RESULTS_L2_NODE.md), [scorecard](../cge/run.py) |
 | No architecture forms persistent state; a two-number memory beats all of them | **very high** | tunnel gate, 3 seeds, control exactly at chance |
-| Local backprop-free learning is competitive with capacity-matched BPTT | high | [legacy results](RPDU/RESULTS.md) |
-| Event-driven emission beats matched-rate controls, and the policy transfers across architectures | high | [L1 results](DCN/RESULTS_L1_NEURON.md) |
+| Local backprop-free learning is competitive with capacity-matched BPTT | high | [legacy results](wren-swift/RESULTS.md) |
+| Event-driven emission beats matched-rate controls, and the policy transfers across architectures | high | [L1 results](heron/RESULTS_L1_NEURON.md) |
 | Five-scalar publication survives its bottleneck | high | L2-4, 1.50x |
 | Synchrony behaves as timing, not as content | high | 1.00x persistence as a representation |
 | Synchrony **as a grouping** binds objects better than anything that replaced it | medium-high | +0.124 vs +0.009, one measurement |
@@ -114,7 +114,7 @@ It mentions no node, no cortex, no resonance, no hierarchy, no wave. It has a co
 is already measured, a world where the control is provably at chance, and a bar that is
 almost insultingly low. It is falsifiable in an afternoon.
 
-This is now gate **P0** in `bench/gates.py` (`--gates tunnel`), and it is the project's
+This is now gate **P0** in `cge/gates.py` (`--gates tunnel`), and it is the project's
 standing open challenge. Anything that clears it has done something none of the three
 architectures here can do, and has earned the right to be built on.
 
@@ -143,6 +143,6 @@ simpler cause. Fix persistence first, then re-ask.
 ---
 
 *Related: [SPEC_ARCHITECTURE.md](SPEC_ARCHITECTURE.md) for the whole picture,
-[RESULTS_L2_NODE.md](DCN/RESULTS_L2_NODE.md) for the measurements this rests on,
-[FIRST_PRINCIPLES_DCN.md](DCN/FIRST_PRINCIPLES_DCN.md) for which axioms have since been
+[RESULTS_L2_NODE.md](heron/RESULTS_L2_NODE.md) for the measurements this rests on,
+[FIRST_PRINCIPLES_DCN.md](heron/FIRST_PRINCIPLES_DCN.md) for which axioms have since been
 corrected.*

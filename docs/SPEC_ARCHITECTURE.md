@@ -16,19 +16,24 @@ paths — and so that a future third architecture inherits the whole battery for
 | | Wren + Swift (RPDU) | Heron (DCN) | **Corvus (OCA v4)** |
 |---|---|---|---|
 | status | **frozen** | **frozen** | live, unbuilt |
-| code | [`legacy/v1`](../legacy/v1/), [`legacy/v2`](../legacy/v2/) | [`legacy/dcn`](../legacy/dcn/) | [`corvus/`](../corvus/) |
-| stack spec | [SPEC_SB1.md](RPDU/SPEC_SB1.md) | [SPEC_DCN_STACK.md](DCN/SPEC_DCN_STACK.md) | [SPEC_OCA_ARCHITECTURE.md](CORVUS/SPEC_OCA_ARCHITECTURE.md) |
-| first principles | [FIRST_PRINCIPLES_LEGACY.md](RPDU/FIRST_PRINCIPLES_LEGACY.md) | [FIRST_PRINCIPLES_DCN.md](DCN/FIRST_PRINCIPLES_DCN.md) | [OPEN_QUESTIONS.md](CORVUS/OPEN_QUESTIONS.md) |
-| results | [RESULTS.md](RPDU/RESULTS.md) | [L1](DCN/RESULTS_L1_NEURON.md), [L2](DCN/RESULTS_L2_NODE.md) | — |
+| code | [`architectures/wren`](../architectures/wren/), [`architectures/swift`](../architectures/swift/) | [`architectures/heron`](../architectures/heron/) | [`architectures/corvus/`](../architectures/corvus/) |
+| stack spec | [SPEC_SB1.md](wren-swift/SPEC_SB1.md) | [SPEC_DCN_STACK.md](heron/SPEC_DCN_STACK.md) | [SPEC_OCA_ARCHITECTURE.md](corvus/SPEC_OCA_ARCHITECTURE.md) |
+| first principles | [FIRST_PRINCIPLES_LEGACY.md](wren-swift/FIRST_PRINCIPLES_LEGACY.md) | [FIRST_PRINCIPLES_DCN.md](heron/FIRST_PRINCIPLES_DCN.md) | [OPEN_QUESTIONS.md](corvus/OPEN_QUESTIONS.md) |
+| results | [RESULTS.md](wren-swift/RESULTS.md) | [L1](heron/RESULTS_L1_NEURON.md), [L2](heron/RESULTS_L2_NODE.md) | — |
 
 The evidence all three produced, and that Corvus is written against:
 **[WHAT_WE_HAVE_LEARNED.md](WHAT_WE_HAVE_LEARNED.md)**.
 
-Shared and belonging to neither: [`core/`](../core/) (worlds, sensors, probes, metrics,
-baselines), [`bench/`](../bench/) (registry and gates), [`tests/`](../tests/) (129 tests).
+How anything gets judged: **[SPEC_CGE.md](corvus/SPEC_CGE.md)** — the Cognitive Gates, which
+produce engineering decisions rather than scores, and which are versioned independently of the
+architecture. Implementation in [`cge/`](../cge/); run `python -m cge.catalogue` for a live audit
+of what the suite can and cannot currently decide.
 
-**Nothing in `corvus/` may import from `legacy/`.** A test enforces it, and it also asserts
-that `corvus/` exists — a guard whose target has moved passes vacuously, which is exactly what
+Shared and belonging to neither: [`core/`](../core/) (worlds, sensors, probes, metrics,
+baselines), [`cge/`](../cge/) (registry and gates), [`tests/`](../tests/) (129 tests).
+
+**Nothing in `architectures/corvus/` may import from `legacy/`.** A test enforces it, and it also asserts
+that `architectures/corvus/` exists — a guard whose target has moved passes vacuously, which is exactly what
 happened when `dcn/` was frozen into `legacy/`. The point is that no behaviour is ever an
 unattributable hybrid of two hypotheses.
 
@@ -50,7 +55,7 @@ Three rules, each learned by getting it wrong first.
    *unmeasured*, never as zero.
 2. **Every comparison is at matched capacity and matched budget.** An unmatched probe once
    returned a decode error of 993,925 against a chance of 7.8.
-3. **Gates live in `core/` and `bench/`, never inside an architecture.** That is what keeps
+3. **Gates live in `core/` and `cge/`, never inside an architecture.** That is what keeps
    "the same test" meaning the same thing when a level or a version is added.
 
 ## The ladder, in both architectures
@@ -142,7 +147,7 @@ make guards         # legacy stays frozen; corvus/ stays free of legacy imports
 make p0             # THE open challenge: beat a two-number memory while blind
 make dcn-l1         # Heron level 1 battery
 make dcn-l2         # Heron level 2 battery, and Wren vs Swift vs Heron on one target
-make bench          # the shared scorecard, 3 seeds, every entrant through every gate
+make cge           # the shared scorecard, 3 seeds, every entrant through every gate
 make race           # all four in one maze, then build the demo page
 make serve          # watch it at localhost:8080
 ```
@@ -152,6 +157,6 @@ make serve          # watch it at localhost:8080
 New here: this file → [ARCHITECTURES.md](ARCHITECTURES.md) for who the four entrants are →
 [WHAT_WE_HAVE_LEARNED.md](WHAT_WE_HAVE_LEARNED.md) for what they established.
 
-Continuing the work: [docs/CORVUS/OPEN_QUESTIONS.md](CORVUS/OPEN_QUESTIONS.md). Two of the five
+Continuing the work: [docs/corvus/OPEN_QUESTIONS.md](corvus/OPEN_QUESTIONS.md). Two of the five
 questions block implementation, and neither should be answered by whoever happens to be writing
 the code — which is exactly how both of this project's published corrections happened.

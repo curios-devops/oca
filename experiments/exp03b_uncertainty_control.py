@@ -27,8 +27,8 @@ import numpy as np
 
 from core.data import train_test_streams
 from core.metrics import JsonlLogger
-from legacy.v1.run import train_and_eval
-from legacy.v1.state import Config
+from architectures.wren.run import train_and_eval
+from architectures.wren.state import Config
 
 HORIZONS = (1, 4, 16)
 

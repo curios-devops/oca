@@ -1,4 +1,9 @@
-"""The race: RPDU v1, RPDU v2 and DCN v3 solving the same maze, side by side.
+"""The race: Mirror, Wren, Swift and Heron solving the same maze, side by side.
+
+A DEMONSTRATION, not a Cognitive Gate. See docs/corvus/SPEC_CGE.md section 9 for
+why it does not qualify: a continuous score, a shared planner that conflates
+planning with representation, and one seed. The gates that do qualify on these
+worlds are CGE-B-00 (out-of-view wall decode) and CGE-A-01 (the tunnel).
 
 Every architecture gets the identical maze from the identical seed, the identical number of
 training ticks, the identical probe and the identical planner. The only thing that differs
@@ -33,12 +38,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "experiments"))
 
-from bench.registry import get
+from cge.registry import get
 from core.world import Sensors
 from core.world.maze import MazeConfig, MazeWorld
 from exp09_maze import RADIUS, _plan, fit_probe, visible_mask, wall_probe
 
-ENTRANTS = ("raw", "v1", "v2", "dcn")
+ENTRANTS = ("mirror", "wren", "swift", "heron")
 """Raw pixels races too, rather than sitting in a caption as the control.
 
 It has no memory and no parameters: at every step it decodes the wall map from the frame in

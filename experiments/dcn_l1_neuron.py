@@ -25,13 +25,13 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from bench.components import (_delta_events, gate_energy, gate_noise_robustness,
+from cge.components import (_delta_events, gate_energy, gate_noise_robustness,
                               gate_oscillation, gate_rate_distortion, nrmse,
                               summarise_rate_distortion, zero_order_hold)
 from core.data import rollout
 from core.metrics import JsonlLogger
 from core.world.physics import make_physics_world
-from legacy.dcn.neuron import NeuronConfig, build_population, step
+from architectures.heron.neuron import NeuronConfig, build_population, step
 
 
 def input_stream(ticks: int, seed: int, n_inputs: int, noise: float = 0.0):
@@ -111,9 +111,9 @@ def phase2(args) -> dict:
     advance -- but what the Dynamic Neuron gives up in exchange for silence, and whether
     the exchange rate is favourable.
     """
-    from legacy.v1.mesh import build_mesh, tick
-    from legacy.v1.state import Config
-    from legacy.v2 import Config2, build_mesh2, tick2
+    from architectures.wren.mesh import build_mesh, tick
+    from architectures.wren.state import Config
+    from architectures.swift import Config2, build_mesh2, tick2
 
     _, sen, _ = rollout(args.ticks + 50, seed=args.seed,
                         world_factory=make_physics_world)

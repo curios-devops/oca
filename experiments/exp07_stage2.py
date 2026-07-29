@@ -29,13 +29,13 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from legacy.v1.mesh import build_mesh, predicted_retina, tick
+from architectures.wren.mesh import build_mesh, predicted_retina, tick
 from core.metrics import JsonlLogger, coalition_stats, frame_mse
-from legacy.v1.state import Config
+from architectures.wren.state import Config
 from core.world import Sensors
 from core.world.physics import PhysicsConfig, PhysicsWorld
 from core.world.sensors import N_VISUAL, PATCH, RETINA
-from legacy.v2 import Config2, build_mesh2, predicted_retina2, tick2
+from architectures.swift import Config2, build_mesh2, predicted_retina2, tick2
 
 from exp06_probe import ridge_probe
 

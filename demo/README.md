@@ -1,10 +1,21 @@
 # demo/
 
+> **Not a Cognitive Gate.** Everything here is a *demonstration*. Exits reached is a continuous
+> score with no behavioural pass criterion, it runs through a shared planner so it conflates the
+> planner with the representation, and it is single-seed and visibly noisy — Swift decodes 73.6%
+> of out-of-view walls and reaches the exit 3 times, while Mirror decodes 77.3% and reaches it
+> 30 times. The ordering is right; the magnitudes are not interpretable.
+>
+> It contributes nothing to a compliance decision. The gates that do are `CGE-B-00`
+> (out-of-view wall decode) and `CGE-A-01` (the tunnel) — see
+> [SPEC_CGE.md](../docs/corvus/SPEC_CGE.md) §9. This page exists because Mirror finishing second
+> with zero parameters is the project's central finding made watchable.
+
 The pages here are **generated, not committed** — each embeds a multi-megabyte trace, and a
 committed copy is a claim that ages while a Makefile target is one that does not.
 
 ```bash
-make race     # v1 vs v2 vs DCN through one maze -> demo/index.html
+make race     # Mirror vs Wren vs Swift vs Heron through one maze -> demo/index.html
 make demo     # one architecture, in more detail -> demo/single.html
 make serve    # then open http://127.0.0.1:8080
 ```

@@ -3,12 +3,12 @@ TRAIN ?= 8000
 TEST ?= 1500
 SIDE ?= 24
 
-.PHONY: help venv test guards repro gates e0 e0b e1 e2 e3 e3b e4 e5 e6 e7 e8 e9 e9t e10 e11 e12 dcn-l1 dcn-l2 race p0 g2 bench demo serve figures clean
+.PHONY: help venv test guards repro cge world-gates e0 e0b e1 e2 e3 e3b e4 e5 e6 e7 e8 e9 e9t e10 e11 e12 dcn-l1 dcn-l2 race p0 g2 bench demo serve figures clean
 
 help:
 	@echo "make venv     create .venv and install numpy/matplotlib/pytest"
 	@echo "make test     run the test suite"
-	@echo "make guards   legacy stays frozen, dcn/ stays free of legacy imports"
+	@echo "make guards   Wren/Swift/Heron stay frozen, Corvus stays free of their imports"
 	@echo "make repro    run E0-E4 end to end (~1 hour)"
 	@echo "make e0..e4   run one v1 experiment"
 	@echo "make e5 e6 g2 world-v2 gates: headroom, representation probe, ablations"
@@ -23,7 +23,7 @@ help:
 	@echo "make dcn-l2  DCN level 2: node gates, and vs the legacy line"
 	@echo "make race    raw vs v1 vs v2 vs DCN in one maze, then build the demo page"
 	@echo "make p0      THE open challenge: beat a two-number memory while blind"
-	@echo "make bench   scorecard across all mesh versions (3 seeds)"
+	@echo "make cge     run the Cognitive Gates across every architecture (3 seeds)"
 	@echo "make serve   rebuild the maze demo and serve it at localhost:8080"
 	@echo "make figures  regenerate plots from logs/"
 
@@ -35,15 +35,16 @@ venv:
 test:
 	$(PY) -m pytest tests/ -q
 
-# Legacy must keep reproducing, and the new architecture must stay a blank page
+# Wren, Swift and Heron must keep reproducing; Corvus must stay a blank page
 guards:
-	$(PY) -m pytest tests/test_legacy_frozen.py tests/test_dcn_contract.py -q
+	$(PY) -m pytest tests/test_frozen_architectures.py tests/test_corvus_contract.py -q
 
 # E0 must run first: without baseline numbers none of the later results mean anything.
 repro: e0 e0b e1 e2 e3 e3b e4 figures
 
-# World v2 validation gates (see the appendix in RESULTS.md)
-gates: e5 e6 g2
+# World-validation experiments -- do the worlds actually reward what we think they do?
+# Not Cognitive Gates; those are `make cge`. See the appendix in RESULTS.md.
+world-gates: e5 e6 g2
 
 e0:
 	$(PY) experiments/exp00_baselines.py --train $(TRAIN) --test $(TEST) --gru-epochs 300
@@ -129,11 +130,12 @@ race:
 # chance by construction. The bar is `frozen at entry`: store the two coordinates you walked
 # into the tunnel at, once, and never update them. Nothing here beats it yet.
 p0:
-	$(PY) -m bench.run --gates tunnel --seeds 0 1 2 --out logs/scorecard_tunnel.json
+	$(PY) -m cge.run --gates tunnel --seeds 0 1 2 --out logs/scorecard_tunnel.json
 
-# Scorecard across every registered mesh version, with seed and scale stress
-bench:
-	$(PY) -m bench.run --seeds 0 1 2
+# The Cognitive Gates across every registered architecture, with seed and scale stress
+bench: cge
+cge:
+	$(PY) -m cge.run --seeds 0 1 2
 
 figures:
 	$(PY) experiments/make_figures.py

@@ -52,9 +52,9 @@ from core.metrics import JsonlLogger
 from core.probes import whiten
 from core.world import Sensors
 from core.world.gridworld import GridWorld, WorldConfig
-from legacy.v2 import Config2, build_mesh2, tick2
-from legacy.v2 import dynamics as dyn
-from legacy.pa import AssemblyConfig, build_assembly
+from architectures.swift import Config2, build_mesh2, tick2
+from architectures.swift import dynamics as dyn
+from architectures.swift.pa import AssemblyConfig, build_assembly
 
 
 def _upper(mat: np.ndarray) -> np.ndarray:

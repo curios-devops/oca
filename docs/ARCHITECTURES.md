@@ -16,7 +16,7 @@ object-permanence tests, which is the problem all three frozen ones failed.
 | **Wren** | `v1` | frozen | gradient flow on a learned energy landscape | best of the three; still loses to a two-number memory |
 | **Swift** | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling | best object binding of any version; worse prediction |
 | **Heron** | `dcn` | frozen | event-driven neurons into a reservoir with a resonance spectrum | fails 4 of 5 gates; loses to Mirror |
-| **Corvus** | — | **live** | undecided — see [docs/CORVUS/](CORVUS/) | unbuilt |
+| **Corvus** | — | **live** | undecided — see [docs/corvus/](corvus/) | unbuilt |
 
 ---
 
@@ -31,7 +31,7 @@ It comes second in the maze race with 30 exits, ahead of Swift's 3 and Heron's 0
 
 Anything that does not beat Mirror is not adding a representation. It is adding latency.
 
-## Wren — `legacy/v1/`
+## Wren — `architectures/wren/`
 
 Every unit holds a 16-dimensional state descending its own energy
 `E(h) = -½h'UU'h - b·h + ¼‖h‖⁴`. Inputs *tilt* the landscape rather than overwriting the
@@ -47,7 +47,7 @@ Mirror's 77.3%) and the only entrant that finds the maze exit with any regularit
 orbits — it provably cannot oscillate, synchronise, or carry a moving quantity. Object
 permanence never emerged. Its coalitions carry essentially no object identity (+0.001).
 
-## Swift — `legacy/v2/`
+## Swift — `architectures/swift/`
 
 Wren's dynamics replaced by Stuart–Landau limit cycles, because the impossibility above was a
 theorem rather than a tuning problem. Amplitude settles while phase keeps advancing, so
@@ -56,13 +56,13 @@ synchronisation becomes expressible.
 **What it established.** The best object binding any version here has produced: its synchrony
 coalitions carry **+0.124** object MI above a shuffled null, fourteen times Heron's +0.009.
 That result reverses a decision made against it — see
-[FIRST_PRINCIPLES_DCN.md](DCN/FIRST_PRINCIPLES_DCN.md).
+[FIRST_PRINCIPLES_DCN.md](heron/FIRST_PRINCIPLES_DCN.md).
 
 **What refuted it.** Synchrony as a *representation to predict from* scored exactly 1.00×
 persistence, carrying no content. Worse prediction than Wren, worse maze decode than Mirror,
 and 3 exits against Wren's 53.
 
-## Heron — `legacy/dcn/`
+## Heron — `architectures/heron/`
 
 Frozen as of this commit. A blank-page architecture: event-driven neurons that emit only on
 significant change, feeding a reservoir with a four-band resonance spectrum, publishing five
@@ -79,12 +79,12 @@ the raw input patch by 14×. Mean pooling beats relational aggregation at matche
 retired the strongest result the whole project had produced. Nothing over Mirror at any
 horizon. And in the tunnel maze it scores *worse than chance*.
 
-Full detail: [SPEC_L2_NODE.md](DCN/SPEC_L2_NODE.md),
-[RESULTS_L2_NODE.md](DCN/RESULTS_L2_NODE.md).
+Full detail: [SPEC_L2_NODE.md](heron/SPEC_L2_NODE.md),
+[RESULTS_L2_NODE.md](heron/RESULTS_L2_NODE.md).
 
-## Corvus — `corvus/`
+## Corvus — `architectures/corvus/`
 
-OCA v4. Specifications in [docs/CORVUS/](CORVUS/), no mechanism chosen yet.
+OCA v4. Specifications in [docs/corvus/](corvus/), no mechanism chosen yet.
 
 It inherits exactly one thing in code: the layer contract, which is the third version of that
 file and the first written after knowing what the previous two failed to require. Wren, Swift
