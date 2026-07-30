@@ -140,7 +140,7 @@ whose absence let three architectures fail without any gate objecting: every lay
 **what it has to beat**. Two questions block implementation and are deliberately
 [left open](docs/corvus/OPEN_QUESTIONS.md) rather than settled by whoever writes the code.
 
-Four entrants share the benchmark. **Three are frozen** — all three lost. Full
+Five entrants share the benchmark. **Three are frozen** — all three lost. Full
 [register](docs/ARCHITECTURES.md):
 
 | codename | key | status | mechanism |
@@ -149,10 +149,14 @@ Four entrants share the benchmark. **Three are frozen** — all three lost. Full
 | **Wren** | `v1` | frozen | gradient flow on a learned energy landscape |
 | **Swift** | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling |
 | **Heron** | `dcn` | frozen | event-driven neurons into a reservoir with a resonance spectrum |
-| **Corvus** | — | **live, unbuilt** | undecided — [OCA v4 spec](docs/corvus/SPEC_OCA_ARCHITECTURE.md) |
+| **Corvus** | `corvus` | **live** | entity beliefs corrected when observable, propagated when not |
 
 Corvus is named for the birds that pass object-permanence tests, because that is the problem all
-three frozen architectures failed.
+three frozen architectures failed. It is the first entrant here to clear a floor it declared
+before it existed — and it has been measured on 1 of 13 gates, so that is a beginning and not a
+result. Frozen versions are still executable and still scored; retirement notes for each are in
+[`architecture-history/`](architecture-history/), and the rules for freezing a version and for
+changing a gate are in [EVOLUTION_RULES.md](docs/EVOLUTION_RULES.md).
 
 Anything that registers with four methods in [`cge/registry.py`](cge/registry.py) is
 scored against everything else on identical code paths, automatically. A resonance-first
@@ -187,12 +191,12 @@ directories.
 
 ```
 core/          worlds, sensors, probes, metrics, baselines   ← architecture-agnostic
-bench/         version registry, shared gates, scorecard     ← architecture-agnostic
-tests/         126 tests, incl. the frozen-legacy and no-cross-import guards
-dcn/           DCN v3 — contract, neuron (L1), node (L2), sensory boundary
-legacy/        RPDU v1, v2 and the Predictive Assembly — frozen, kept as an opponent
+cge/           gate catalogue, registry, verdicts, scorecard  ← architecture-agnostic
+architectures/ wren/ swift/ (v1, v2, frozen) · heron/ (v3, frozen) · corvus/ (v4, live)
+tests/         130 tests, incl. the frozen-architecture and no-cross-import guards
 experiments/   one runnable file per experiment, each printing its own controls
-docs/          specifications, first principles, and results per level
+docs/          specifications, evolution rules, and results per level
+architecture-history/  retirement notes: what each dead version proved, and what survives it
 demo/          the maze race, as a self-contained web page
 ```
 
@@ -271,10 +275,14 @@ Phase 3 is the honest bottleneck. Everything above it is specified in
 | document | what it is |
 |---|---|
 | [WHAT_WE_HAVE_LEARNED.md](docs/WHAT_WE_HAVE_LEARNED.md) | **read this first** — the ledger, the invariant, and the open problem |
-| [ARCHITECTURES.md](docs/ARCHITECTURES.md) | the four entrants: what each is, and how each failed |
+| [ARCHITECTURES.md](docs/ARCHITECTURES.md) | the five entrants: what each is, and how each failed |
+| [architecture-history/](architecture-history/) | **the graveyard** — per version: gates passed, gates failed, and which principle survives it |
+| [EVOLUTION_RULES.md](docs/EVOLUTION_RULES.md) | when a version freezes, what may be fixed, and what may be done to a gate |
 | [corvus/SPEC_OCA_ARCHITECTURE.md](docs/corvus/SPEC_OCA_ARCHITECTURE.md) | **OCA v4** — the current architecture specification |
+| [corvus/RESULTS_CORVUS.md](docs/corvus/RESULTS_CORVUS.md) | the first floor gate passed here, and the retraction it required |
 | [corvus/OPEN_QUESTIONS.md](docs/corvus/OPEN_QUESTIONS.md) | five places v4 is in tension with the evidence; two are blocking |
 | [corvus/SPEC_CGE.md](docs/corvus/SPEC_CGE.md) | **the Cognitive Gates** — decisions, not scores; four verdicts, not three |
+| [EIS.md](docs/EIS.md) | cognitive *emergence*, kept permanently separate from correctness — a charter, not yet a spec |
 | [SPEC_ARCHITECTURE.md](docs/SPEC_ARCHITECTURE.md) | both architectures, what is built, how to read a claim |
 | [SPEC_DCN_STACK.md](docs/heron/SPEC_DCN_STACK.md) | the active stack, every level, L1 to the curriculum engine |
 | [SPEC_L1_NEURON.md](docs/heron/SPEC_L1_NEURON.md) · [SPEC_L2_NODE.md](docs/heron/SPEC_L2_NODE.md) · [SPEC_L3_CLUSTER.md](docs/heron/SPEC_L3_CLUSTER.md) | per-level specifications, with the gates that can falsify each |

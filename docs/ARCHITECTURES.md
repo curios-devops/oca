@@ -1,6 +1,7 @@
 # The architectures
 
-Four entrants share one benchmark. Three are frozen and one is a blank page.
+Five entrants share one benchmark. Three are frozen, one is a zero-parameter control, and one
+is live.
 
 Registry keys (`v1`, `v2`, `dcn`, `raw`) never change — they are written into every scorecard
 and log this project has produced, and renaming them would orphan the record. **Codenames are
@@ -16,7 +17,12 @@ object-permanence tests, which is the problem all three frozen ones failed.
 | **Wren** | `v1` | frozen | gradient flow on a learned energy landscape | best of the three; still loses to a two-number memory |
 | **Swift** | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling | best object binding of any version; worse prediction |
 | **Heron** | `dcn` | frozen | event-driven neurons into a reservoir with a resonance spectrum | fails 4 of 5 gates; loses to Mirror |
-| **Corvus** | — | **live** | undecided — see [docs/corvus/](corvus/) | unbuilt |
+| **Corvus** | `corvus` | **live** | entity beliefs corrected when observable, propagated when not | first floor gate ever passed here (+0.572); 1 of 13 |
+
+Retirement notes for the three frozen versions — goals, gates passed and failed, lessons, and
+which principle survives them — are in [`architecture-history/`](../architecture-history/).
+The rules governing when a version freezes and what may be changed are in
+[EVOLUTION_RULES.md](EVOLUTION_RULES.md).
 
 ---
 
@@ -84,13 +90,27 @@ Full detail: [SPEC_L2_NODE.md](heron/SPEC_L2_NODE.md),
 
 ## Corvus — `architectures/corvus/`
 
-OCA v4. Specifications in [docs/corvus/](corvus/), no mechanism chosen yet.
+OCA v4, layers 0–2 built. The smallest architecture in the project: **166,912 parameters**, a
+quarter of Wren's. Specifications in [docs/corvus/](corvus/), results in
+[RESULTS_CORVUS.md](corvus/RESULTS_CORVUS.md).
 
 It inherits exactly one thing in code: the layer contract, which is the third version of that
 file and the first written after knowing what the previous two failed to require. Wren, Swift
 and Heron all satisfied their contracts completely. Corvus's contract additionally demands
 that every layer **name what it must beat** — because the reason three architectures failed
 without any gate objecting is that no contract ever asked.
+
+**What it established.** The first floor gate this project has passed: **+0.572 ± 0.059** on
+path integration across three seeds, double the best frozen architecture, with the mechanism's
+own ablation at the control. One mechanism does it — correct the belief toward what is seen
+when the referent is observable, advance it by a predicted displacement when it is not — and
+observability is *inferred*, never told. Getting there required retracting a published claim of
+this project's own; that retraction is the more important half of the result.
+
+**What is not yet known.** It has been run on **1 of 13** counting gates. Layer 0's sparse-event
+result is inherited from Heron and has never been re-measured without the rotor; Layer 2 is in
+`pass_through` and has never been asked to beat its members; every Gate B result is unrun. It is
+last in the maze at 0.548 against Mirror's 0.773, and zero maze exits against Wren's 53.
 
 ---
 
