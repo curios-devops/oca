@@ -1,0 +1,88 @@
+{
+ "gate": "CGE-A-02",
+ "layer": "neuron",
+ "ticks": 8000,
+ "floor": {
+  "beats": "periodic_and_random_sampling",
+  "margin": 0.05
+ },
+ "verdict": "PASS",
+ "corvus": {
+  "per_seed": [
+   {
+    "seed": 0,
+    "delta_vs_best_control": 0.9107290176003076,
+    "auc_send_on_delta": 0.003405232957609222,
+    "auc_periodic": 0.03814490292447989,
+    "auc_random": 0.08191024664417731,
+    "event_rate": 0.138064453125,
+    "nrmse_as_run": 0.03552846092922564,
+    "energy_per_tick": 0.18806445312497327,
+    "n_params": 1152
+   },
+   {
+    "seed": 1,
+    "delta_vs_best_control": 0.9184252204212647,
+    "auc_send_on_delta": 0.003036663404230136,
+    "auc_periodic": 0.03722551773859438,
+    "auc_random": 0.08077478511174428,
+    "event_rate": 0.1337578125,
+    "nrmse_as_run": 0.03468322007070456,
+    "energy_per_tick": 0.18375781249997458,
+    "n_params": 1152
+   },
+   {
+    "seed": 2,
+    "delta_vs_best_control": 0.9222794767491415,
+    "auc_send_on_delta": 0.002892106530319842,
+    "auc_periodic": 0.037211619394081935,
+    "auc_random": 0.0801593843635888,
+    "event_rate": 0.131083984375,
+    "nrmse_as_run": 0.03296090498333697,
+    "energy_per_tick": 0.18108398437497578,
+    "n_params": 1152
+   }
+  ],
+  "mean": 0.9171445715902379,
+  "std": 0.005880758684772567,
+  "min": 0.9107290176003076
+ },
+ "heron": {
+  "per_seed": [
+   {
+    "seed": 0,
+    "delta_vs_best_control": 0.9180978419966193,
+    "auc_send_on_delta": 0.003139334797944904,
+    "auc_periodic": 0.03833030623949274,
+    "auc_random": 0.08193041423029623,
+    "event_rate": 0.13037890625,
+    "nrmse_as_run": 0.03607341161226568,
+    "energy_per_tick": 0.18224341660584165
+   },
+   {
+    "seed": 1,
+    "delta_vs_best_control": 0.9246337807024066,
+    "auc_send_on_delta": 0.0028296281330761797,
+    "auc_periodic": 0.037545045505109155,
+    "auc_random": 0.07976037664058308,
+    "event_rate": 0.125064453125,
+    "nrmse_as_run": 0.03537946069330142,
+    "energy_per_tick": 0.17692810069962076
+   },
+   {
+    "seed": 2,
+    "delta_vs_best_control": 0.9274430527873081,
+    "auc_send_on_delta": 0.002698335644317878,
+    "auc_periodic": 0.037189211343305745,
+    "auc_random": 0.08053416972408088,
+    "event_rate": 0.1231484375,
+    "nrmse_as_run": 0.03464128200638839,
+    "energy_per_tick": 0.1750124339851693
+   }
+  ],
+  "mean": 0.9233915584954446,
+  "std": 0.004794849131015897,
+  "min": 0.9180978419966193
+ },
+ "rotor_removal_cost": -0.006246986905206753
+}

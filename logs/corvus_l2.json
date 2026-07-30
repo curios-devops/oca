@@ -1,0 +1,54 @@
+{
+ "gate": "CGE-B-03",
+ "layer": "cluster",
+ "ticks": 12000,
+ "floor": {
+  "beats": "pass_through",
+  "margin": 0.05
+ },
+ "verdict": "FAIL",
+ "reason": "compression does not beat passing members through; pass_through remains the compliant mode",
+ "mean": -0.004065609575314211,
+ "std": 0.0061244758108993875,
+ "per_seed": [
+  {
+   "seed": 0,
+   "n_components": 64,
+   "n_frames": 9499,
+   "summary_hidden": 0.6840423224881826,
+   "passthrough_hidden": 0.6930297225434979,
+   "towers_hidden": 0.6942879098360656,
+   "retina_hidden": 0.7067597807502766,
+   "retina_visible_full": 1.0,
+   "retina_hidden_full": 0.7795584833551242,
+   "headline": -0.008987400055315287,
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "n_components": 64,
+   "n_frames": 9499,
+   "summary_hidden": 0.6759907913036847,
+   "passthrough_hidden": 0.6731976439072564,
+   "towers_hidden": 0.6721980251863147,
+   "retina_hidden": 0.6835732298587417,
+   "retina_visible_full": 1.0,
+   "retina_hidden_full": 0.7697042345356362,
+   "headline": 0.0027931473964282194,
+   "valid": true
+  },
+  {
+   "seed": 2,
+   "n_components": 64,
+   "n_frames": 9499,
+   "summary_hidden": 0.6619919974627184,
+   "passthrough_hidden": 0.667994573529774,
+   "towers_hidden": 0.6693930146093441,
+   "retina_hidden": 0.6714604210302573,
+   "retina_visible_full": 1.0,
+   "retina_hidden_full": 0.7534008345712113,
+   "headline": -0.006002576067055565,
+   "valid": true
+  }
+ ]
+}

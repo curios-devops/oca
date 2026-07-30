@@ -4,6 +4,11 @@
 > decisions are recorded in [DECISIONS.md](DECISIONS.md); the analysis below is kept unchanged
 > because the reasoning is the part worth preserving, and because a decision whose evidence has
 > been edited out cannot be revisited honestly.
+>
+> **Q7 opened 2026-07-30, and it blocks the freeze.** See [Q7](#q7) at the foot of this file:
+> Layer 2's declared floor cannot be reached in either of the layer's two modes, so rule R1 can
+> never be satisfied. Q3's decision produced it, which is why it belongs here rather than in a
+> bug tracker.
 
 Five places where the v4 architecture, as specified, is in tension with what Wren, Swift and
 Heron actually measured. Each names the decision, the evidence on both sides, and the options.
@@ -173,3 +178,61 @@ members* became a constraint on a whole architecture, where it is false.
 Q1 and Q5 are the same risk running the other way — a mechanism kept because it is attractive,
 in the absence of any measurement supporting it. The guard is the floor invariant: state what
 each thing has to beat, before building it.
+
+---
+
+<a id="q7"></a>
+
+## Q7 — Layer 2 declared a floor it cannot reach. **BLOCKING THE FREEZE**
+
+*Opened 2026-07-30, by the run in [RESULTS_R1_FREEZE.md](RESULTS_R1_FREEZE.md). Q3's decision
+produced it, which is why it belongs here and not in a bug tracker.*
+
+**The situation.** Layer 2 declares `Floor(beats="pass_through", margin=0.05)`. Its default mode
+**is** pass-through. A tie is not a win, so in its compliance mode the floor is unreachable by
+construction. Switching to `summarise` does not rescue it: measured at **−0.004 ± 0.006** over
+three seeds, a clean null and the project's fifth aggregation failure with a fifth operator.
+
+Both of the layer's states fail. Under R1 — *freeze when every layer clears its own floor* —
+**OCA v4 can never be frozen**, however good Layers 0 and 1 become. L0 is at +0.917 and L1 at
++0.572, and it makes no difference.
+
+**Why this is not simply a bug.** The layer does two jobs, and only one of them was ever given a
+floor:
+
+| job | when it runs | floor | measured |
+|---|---|---|---|
+| compression (summarise) | optional, **off** by default | `CGE-B-03`, beat pass-through | −0.004 ± 0.006 |
+| **coordination** — member agreement, cross-tower entity relations | **every tick, both modes** | **none declared** | never measured |
+
+The always-on job has no floor. That is precisely the failure the Corvus contract exists to
+prevent — Heron's Layer 2 satisfied its contract completely while being worse than the layer
+below it, because no contract ever asked. We have reproduced the failure at the level of the
+*contract* rather than the implementation.
+
+### The options
+
+**A — a layer in its compliance mode is exempt from its floor.** Freeze is permitted; Layer 2 is
+tagged "no abstraction claimed". *Cost:* a layer can coast indefinitely, which is the Heron
+failure with a new name. It also makes R1 weaker than it reads.
+
+**B — declare a floor for coordination, because it is the part that always runs.** The natural
+control is `independent_towers`: the same entities, with each tower's entities treated as
+unrelated. If relating entities across tower boundaries buys nothing over towers that never
+relate, coordination is decoration. Layer 2 then earns its place through the job it actually
+does, and can clear R1 in pass-through mode. *Cost:* the contract must carry more than one floor
+per layer, and a new gate must be written and, under R3, declared before the mechanism it judges
+— which is satisfiable here only because the mechanism already exists and the control does not
+yet. That ordering needs stating explicitly if B is chosen.
+
+**C — delete Layer 2 for now.** Two layers, both passing, frozen honestly. Re-introduce a cluster
+when there is a measured job for it. *Cost:* the stack loses the only place cross-tower identity
+can live, and Q2's decision put `Entity` at cross-cutting scope partly to make that possible.
+
+**Recommendation: B.** It is the option that keeps the rule that has already caught two
+architectures — every component names what it must beat — and it is a defect fix under R2 by the
+operational test: *would you declare a floor for an always-on component if the gate did not
+exist?* Yes. That is the contract's whole premise.
+
+A is a rule change to accommodate a component. C throws away a structure whose measured
+contribution is unknown, which is the one thing this project should never do on a guess.
