@@ -286,7 +286,7 @@ Phase 3 is the honest bottleneck. Everything above it is specified in
 | [corvus/SPEC_OCA_ARCHITECTURE.md](docs/corvus/SPEC_OCA_ARCHITECTURE.md) | **OCA v4** — the current architecture specification |
 | [corvus/RESULTS_CORVUS.md](docs/corvus/RESULTS_CORVUS.md) | the first floor gate passed here, and the retraction it required |
 | [corvus/OPEN_QUESTIONS.md](docs/corvus/OPEN_QUESTIONS.md) | five places v4 is in tension with the evidence; two are blocking |
-| [corvus/SPEC_CGE.md](docs/corvus/SPEC_CGE.md) | **the Cognitive Gates** — decisions, not scores; four verdicts, not three |
+| [SPEC_CGE.md](docs/SPEC_CGE.md) | **the Cognitive Gates** — decisions, not scores; four verdicts, not three |
 | [EIS.md](docs/EIS.md) | cognitive *emergence*, kept permanently separate from correctness — a charter, not yet a spec |
 | [SPEC_ARCHITECTURE.md](docs/SPEC_ARCHITECTURE.md) | both architectures, what is built, how to read a claim |
 | [SPEC_DCN_STACK.md](docs/heron/SPEC_DCN_STACK.md) | the active stack, every level, L1 to the curriculum engine |

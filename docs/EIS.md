@@ -11,7 +11,7 @@ Two questions that are usually mixed, and OCA keeps apart permanently:
 
 | | question | answered by |
 |---|---|---|
-| **Cognitive correctness** | Does each component correctly fulfil its functional contract? | [CGE](corvus/SPEC_CGE.md) — the Cognitive Gates |
+| **Cognitive correctness** | Does each component correctly fulfil its functional contract? | [CGE](SPEC_CGE.md) — the Cognitive Gates |
 | **Cognitive emergence** | Does the *interaction* between components produce capabilities no component has? | **EIS** — this document |
 
 The CGE does not prove intelligence, and it was never meant to. It proves that an architecture
@@ -134,7 +134,7 @@ document.
 
 ## Relationship to the rest of the specification
 
-- [`SPEC_CGE.md`](corvus/SPEC_CGE.md) — the gates, their classes, verdicts and controls.
+- [`SPEC_CGE.md`](SPEC_CGE.md) — the gates, their classes, verdicts and controls.
 - [`EVOLUTION_RULES.md`](EVOLUTION_RULES.md) — R3 applies here in full: an EIS level's control
   must be declared before the mechanism it will judge is built.
 - [`architecture-history/`](../architecture-history/) — where levels that fail are recorded.

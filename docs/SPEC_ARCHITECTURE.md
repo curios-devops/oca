@@ -24,7 +24,7 @@ paths — and so that a future third architecture inherits the whole battery for
 The evidence all three produced, and that Corvus is written against:
 **[WHAT_WE_HAVE_LEARNED.md](WHAT_WE_HAVE_LEARNED.md)**.
 
-How anything gets judged: **[SPEC_CGE.md](corvus/SPEC_CGE.md)** — the Cognitive Gates, which
+How anything gets judged: **[SPEC_CGE.md](SPEC_CGE.md)** — the Cognitive Gates, which
 produce engineering decisions rather than scores, and which are versioned independently of the
 architecture. Implementation in [`cge/`](../cge/); run `python -m cge.catalogue` for a live audit
 of what the suite can and cannot currently decide.

@@ -8,7 +8,7 @@
 >
 > It contributes nothing to a compliance decision. The gates that do are `CGE-B-00`
 > (out-of-view wall decode) and `CGE-A-01` (the tunnel) — see
-> [SPEC_CGE.md](../docs/corvus/SPEC_CGE.md) §9. This page exists because Mirror finishing second
+> [SPEC_CGE.md](../docs/SPEC_CGE.md) §9. This page exists because Mirror finishing second
 > with zero parameters is the project's central finding made watchable.
 
 The pages here are **generated, not committed** — each embeds a multi-megabyte trace, and a

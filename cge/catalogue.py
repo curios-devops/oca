@@ -21,7 +21,9 @@ what the suite is for.
 by incrementing `version`, and a gate that is superseded is marked `DEPRECATED` rather than
 deleted, so a historical verdict stays interpretable.
 
-See `docs/CORVUS/SPEC_CGE.md` for the specification this implements.
+See `docs/SPEC_CGE.md` for the specification this implements. It sits at the top of
+`docs/` rather than under any architecture's directory, deliberately: a benchmark filed
+inside the thing it judges is a benchmark that will drift toward it.
 """
 
 from __future__ import annotations
