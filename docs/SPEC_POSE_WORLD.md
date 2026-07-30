@@ -35,13 +35,14 @@ The measurement this world exists to make possible:
 The temptation is 3D meshes and a rendering pipeline. Resist it: the smallest world that makes
 the distinction is enough, and every extra degree of freedom is a confound to control.
 
-**Objects.** A small set of *rigid 2D shapes*, each defined as a set of features at fixed
-positions in its own **object-centred frame**. Four to six kinds. Two of them deliberately
-**share every local feature and differ only in arrangement** — that pair is what forbids a
-bag-of-features solution, and without it the world is not doing its job.
+**Objects.** Four *rigid 2D shapes*, each three identical blobs at fixed (angle, radius) in its
+own **object-centred frame**. Blob size and brightness are the same for every kind, so
+**arrangement is the only signal**. Kinds 0 and 1 share their angle multiset *and* their radius
+multiset, paired differently — a feature bag and a radial histogram are both at chance between
+them, and that pair is the world's hardest control.
 
-**Pose.** Each object has an orientation, drawn from `N` discrete rotations (start with `N = 8`,
-45° apart). The rendered appearance is the shape's features rotated into the sensor frame.
+**Pose.** Six orientations, 60° apart. **This number was chosen by the checks below, not by
+taste** — see "what the first configuration got wrong".
 
 **Movement is sensor-relative, not object-relative.** The agent's action moves *its sensor over
 the object*, changing which part it sees and by how much. This is the whole point: a column
@@ -76,17 +77,68 @@ does not.
 No 3D, no lighting, no textures, no new modality, no second agent. Those unlock EIS 9–11 and
 each is a separate project. This world does **one** thing: make pose exist.
 
-## Validity checks, before any architecture is run against it
+## Validity — measured
 
-Written as the world's own tests, in the pattern that has already caught three false positives:
+`python experiments/validate_pose_world.py --ticks 40000 --seeds 0 1 2`
 
-1. Raw pixels **above 0.85** on trained poses — the cue is there and the probe works.
-2. Raw pixels **at chance** on held-out poses — the task genuinely requires invariance.
-3. Bag-of-features **at chance** on the confusable pair — arrangement is load-bearing.
-4. Nearest-template **above chance on trained, at chance on held-out** — memorisation is
-   possible and insufficient, which is what makes the held-out condition a test.
-5. The efference copy is delivered every tick, and is the **only** signal that says how far the
-   sensor moved.
+**The world is VALID.** Four kinds, chance 0.250, ~33,000 trained and ~6,700 held-out frames per
+seed.
 
-**If check 2 fails, the world is void and no result from it counts.** That check is the whole
-specification.
+| | seed 0 | seed 1 | seed 2 | mean |
+|---|---|---|---|---|
+| nearest-template, **trained** poses | 0.990 | 0.983 | 0.988 | **0.987** |
+| nearest-template, **held-out** poses | 0.171 | 0.171 | 0.132 | **0.158** |
+| linear probe, trained | 0.359 | 0.327 | 0.326 | 0.337 |
+| linear probe, held-out | 0.102 | 0.128 | 0.118 | 0.116 |
+| feature bag, all kinds | 0.287 | 0.293 | 0.260 | 0.280 |
+| feature bag, confusable pair *(chance 0.50)* | 0.541 | 0.602 | 0.495 | 0.546 |
+| **gap** | 0.819 | 0.811 | 0.857 | **0.829** |
+
+**Memorisation is near-perfect on poses it has seen and below chance on poses it has not.** Not
+merely useless on held-out poses — *anti-correlated*, at 0.158 against a chance of 0.250. A
+memorised appearance at 60° actively misleads about the same object at 240°.
+
+That is the first setting in this project where the raw-input control is at chance on a question
+we care about, and it is what makes `CGE-A-00` askable here.
+
+### The checks
+
+1. **Raw control well above chance on trained poses** — the cue exists and the probe works.
+2. **Raw control at chance on held-out poses.** ✅ 0.158 vs 0.250.
+3. **Feature bag at chance across kinds.** ✅ 0.280.
+4. Feature bag at chance on the confusable pair — 0.546 mean against 0.500, one of three seeds
+   marginal at 0.602. Reported, and **not** part of the validity criterion: the histogram is
+   centred on the *fovea* rather than on the object, so it is slightly more than a pure feature
+   bag. Essentially at chance, honestly stated.
+5. **Efference copy delivered every tick**, and the only signal saying how far the sensor moved.
+6. **Memorisation does not transfer** — the gap, 0.829.
+
+**Validity requires 1, 2 and 6 together.** Not 2 alone: a world where *nothing* works also has
+its control at chance, and would pass check 2 vacuously. That is the shape of two of this
+project's three retracted claims, and the criterion was corrected before the world was accepted.
+
+### The raw control is the best cheap use of the input, not a linear probe
+
+The first pass scored only a linear probe: 0.337 on trained poses. On that number the world
+would have been declared unmeasurable. Nearest-template, on the same frames, scores **0.987**.
+Choosing the weaker control and calling the world void is the same error as choosing it and
+calling an architecture good — so the control is picked on trained poses, and *that* estimator
+is then asked to generalise.
+
+### What the first configuration got wrong
+
+Eight poses at 45°, two held out. **VOID:** nearest-template scored 0.366 on held-out poses
+against a chance of 0.250 — a foveal fragment at 45° still matches a memorised fragment at the
+pose next door. Six at 60° drops it to 0.158. Four at 90° is *worse* again (0.656), so this is
+not monotone in coarseness and could only be settled by measuring:
+
+| poses | held out | trained | held-out |
+|---|---|---|---|
+| 8 @ 45° | 2 | 0.868 | 0.366 ❌ |
+| **6 @ 60°** | **1** | **0.916** | **0.199** ✅ |
+| 4 @ 90° | 1 | 1.000 | 0.656 ❌ |
+| 4 @ 90° | 2 | 0.999 | 0.320 |
+
+The world was tuned against its **own declared checks, with no architecture in the loop.** That
+is what the checks are for, and it is the opposite of shaping a gate around a result — R3
+forbids the second and requires the first.

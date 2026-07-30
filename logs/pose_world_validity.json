@@ -1,0 +1,89 @@
+{
+ "valid": true,
+ "rows": [
+  {
+   "seed": 0,
+   "n_frames": 40000,
+   "n_trained_frames": 33680,
+   "n_heldout_frames": 6320,
+   "chance": 0.25,
+   "ridge_trained": 0.35946792858557564,
+   "ridge_heldout": 0.10198669466923616,
+   "template_trained": 0.9899858780566986,
+   "template_heldout": 0.17123858964286595,
+   "raw_control": "template",
+   "raw_trained": 0.9899858780566986,
+   "raw_heldout": 0.17123858964286595,
+   "bag_trained": 0.28670770341629476,
+   "bag_confusable_pair": 0.5412151702786377,
+   "efference_delivered": true,
+   "efference_entropy": 0.9999825384245429,
+   "gap": 0.8187472884138326,
+   "checks": {
+    "1_raw_well_above_chance_on_trained": true,
+    "2_raw_at_chance_on_heldout": true,
+    "3_bag_of_features_at_chance": true,
+    "4_confusable_pair_at_chance_for_a_feature_bag": true,
+    "5_efference_delivered_every_tick": true,
+    "6_memorisation_does_not_transfer": true
+   },
+   "valid": true
+  },
+  {
+   "seed": 1,
+   "n_frames": 40000,
+   "n_trained_frames": 33920,
+   "n_heldout_frames": 6080,
+   "chance": 0.25,
+   "ridge_trained": 0.3265394023440334,
+   "ridge_heldout": 0.12793530137280137,
+   "template_trained": 0.9826731761238026,
+   "template_heldout": 0.1711926211926212,
+   "raw_control": "template",
+   "raw_trained": 0.9826731761238026,
+   "raw_heldout": 0.1711926211926212,
+   "bag_trained": 0.2929866128388302,
+   "bag_confusable_pair": 0.6020965089805211,
+   "efference_delivered": true,
+   "efference_entropy": 0.9999650581650581,
+   "gap": 0.8114805549311813,
+   "checks": {
+    "1_raw_well_above_chance_on_trained": true,
+    "2_raw_at_chance_on_heldout": true,
+    "3_bag_of_features_at_chance": true,
+    "4_confusable_pair_at_chance_for_a_feature_bag": false,
+    "5_efference_delivered_every_tick": true,
+    "6_memorisation_does_not_transfer": true
+   },
+   "valid": true
+  },
+  {
+   "seed": 2,
+   "n_frames": 40000,
+   "n_trained_frames": 33320,
+   "n_heldout_frames": 6680,
+   "chance": 0.25,
+   "ridge_trained": 0.326226648151705,
+   "ridge_heldout": 0.11765082401874855,
+   "template_trained": 0.98849815101594,
+   "template_heldout": 0.13180265096538682,
+   "raw_control": "template",
+   "raw_trained": 0.98849815101594,
+   "raw_heldout": 0.13180265096538682,
+   "bag_trained": 0.2599316535864735,
+   "bag_confusable_pair": 0.49461985688729876,
+   "efference_delivered": true,
+   "efference_entropy": 0.9999632805115513,
+   "gap": 0.8566955000505532,
+   "checks": {
+    "1_raw_well_above_chance_on_trained": true,
+    "2_raw_at_chance_on_heldout": true,
+    "3_bag_of_features_at_chance": true,
+    "4_confusable_pair_at_chance_for_a_feature_bag": true,
+    "5_efference_delivered_every_tick": true,
+    "6_memorisation_does_not_transfer": true
+   },
+   "valid": true
+  }
+ ]
+}
