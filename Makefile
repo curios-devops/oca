@@ -3,7 +3,7 @@ TRAIN ?= 8000
 TEST ?= 1500
 SIDE ?= 24
 
-.PHONY: help venv test guards repro cge world-gates e0 e0b e1 e2 e3 e3b e4 e5 e6 e7 e8 e9 e9t e10 e11 e12 dcn-l1 dcn-l2 race p0 g2 bench demo serve figures clean
+.PHONY: help venv test guards repro cge world-gates e0 e0b e1 e2 e3 e3b e4 e5 e6 e7 e8 e9 e9t e10 e11 e12 dcn-l1 dcn-l2 race p0 check-demo g2 bench demo serve figures clean
 
 help:
 	@echo "make venv     create .venv and install numpy/matplotlib/pytest"
@@ -25,6 +25,7 @@ help:
 	@echo "make p0      the floor gates: path integration while blind (CGE-A-09)"
 	@echo "make cge     run the Cognitive Gates across every architecture (3 seeds)"
 	@echo "make serve   rebuild the maze demo and serve it at localhost:8080"
+	@echo "make check-demo  execute the demo page script and count its tiles"
 	@echo "make figures  regenerate plots from logs/"
 
 venv:
@@ -94,6 +95,11 @@ e9:
 # Rebuild the maze demo page from the last exp09 trace, then serve it locally
 demo:
 	$(PY) experiments/make_maze_demo.py
+
+# Runtime check for the demo page: a markup-valid page whose script throws shows one tile
+# instead of six, and no Python test can see that.
+check-demo:
+	@node experiments/check_demo.js
 
 serve: demo
 	@echo "open http://127.0.0.1:8080"

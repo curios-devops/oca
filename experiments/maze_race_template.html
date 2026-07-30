@@ -156,6 +156,10 @@ const maxExits = Math.max(1, ...E.map(e => e.exits));
 let i = 0, playing = true, acc = 0, trails = E.map(() => []);
 
 const boards = document.getElementById('boards');
+// declared BEFORE the loop that uses it: `const` is hoisted but sits in the temporal dead
+// zone until evaluated, so referencing it inside the loop above threw a ReferenceError, killed
+// the whole script, and left only the one static tile on the page.
+const truthEl = boards.querySelector('.truth');
 E.forEach((e, k) => {
   const d = document.createElement('div');
   d.className = 'board';
@@ -168,7 +172,6 @@ E.forEach((e, k) => {
       <span>${(e.hidden_acc*100).toFixed(1)}% out-of-view</span></div>`;
   boards.insertBefore(d, truthEl);
 });
-const truthEl = boards.querySelector('.truth');
 const boardEls = [...boards.children].filter(el => el !== truthEl);
 const ctxs = E.map((_, k) => document.getElementById('c'+k).getContext('2d'));
 const truth = document.getElementById('truth').getContext('2d');
