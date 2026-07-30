@@ -1,0 +1,67 @@
+{
+ "gate": "CGE-B-05",
+ "layer": "cluster",
+ "job": "coordination",
+ "horizon": 64,
+ "ticks": 14000,
+ "verdict": "FAIL",
+ "floors": {
+  "independent_towers": 0.05,
+  "fixed_proximity_membership": 0.05
+ },
+ "per_control": {
+  "independent_towers": {
+   "mean": -3.569163559602462e-05,
+   "std": 0.001444274730849267,
+   "min": -0.0016977636449684308,
+   "passed": false
+  },
+  "fixed_proximity_membership": {
+   "mean": 0.009922323484717702,
+   "std": 0.0011705074395386183,
+   "min": 0.008666244487447572,
+   "passed": false
+  }
+ },
+ "per_seed": [
+  {
+   "seed": 0,
+   "n_frames": 10999,
+   "n_components": 5,
+   "independent_towers": 0.6136486742654348,
+   "random": 0.6201230762448567,
+   "fixed_proximity_membership": 0.6200430482559482,
+   "connectivity": 0.6132333936061171,
+   "overlap_connectivity_proximity": 0.5,
+   "overlap_random_proximity": 0.44999999999999996,
+   "vs_independent_towers": 0.0006767400904350573,
+   "vs_fixed_proximity_membership": 0.010982551403463603
+  },
+  {
+   "seed": 1,
+   "n_frames": 10999,
+   "n_components": 5,
+   "independent_towers": 0.6289345431739922,
+   "random": 0.6294217400271661,
+   "fixed_proximity_membership": 0.6355098087532849,
+   "connectivity": 0.6300023253764578,
+   "overlap_connectivity_proximity": 0.49999999999999994,
+   "overlap_random_proximity": 0.4,
+   "vs_independent_towers": -0.0016977636449684308,
+   "vs_fixed_proximity_membership": 0.008666244487447572
+  },
+  {
+   "seed": 2,
+   "n_frames": 10999,
+   "n_components": 5,
+   "independent_towers": 0.5991261413981606,
+   "random": 0.6048019875702471,
+   "fixed_proximity_membership": 0.6046970006821719,
+   "connectivity": 0.5985785708714009,
+   "overlap_connectivity_proximity": 0.6000000000000001,
+   "overlap_random_proximity": 0.3,
+   "vs_independent_towers": 0.0009139486477452996,
+   "vs_fixed_proximity_membership": 0.010118174563241933
+  }
+ ]
+}

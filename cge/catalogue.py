@@ -479,6 +479,43 @@ register(Gate(
           "version of this gate concluded that everything on the bench was a 64-tick model.",
 ))
 
+register(Gate(
+    id="CGE-B-10", version=1,
+    title="Coordination earns its place",
+    gate_class=GateClass.B, status=Status.STABLE,
+    objective="Does knowing which components belong together tell you anything that the "
+              "components do not already tell you about themselves?",
+    required_property="A component's group-mates improve prediction of that component's own "
+                      "future beyond what the component alone supports -- and the grouping "
+                      "rule beats whatever grouping was hard-coded.",
+    anti_property="A layer that groups on every tick with nothing to beat. Compliance without "
+                  "contribution: it satisfies its contract while doing no measurable work.",
+    control="Two, and both are required. `independent_towers` -- the component alone, no "
+            "grouping at all. `fixed_proximity_membership` -- the positional rule already in "
+            "the code, so a win cannot be 'more inputs help'.",
+    pass_criterion="The grouping rule beats BOTH controls at the layer's declared horizon by "
+                   "the declared margin, at matched capacity.",
+    levels=(2, 3), modalities=(Modality.VISION,), cost="minutes",
+    has_ever_failed="Corvus L2, first run. Connectivity-derived membership scored -0.000 "
+                    "+/- 0.001 against no grouping at all: coordination contributes nothing. "
+                    "It did beat the hard-coded positional rule, consistently across three "
+                    "seeds, by +0.010 -- a real effect five times below the margin.",
+    anti_tests=("match capacity across conditions, or the gate rewards width: a group offers "
+                "m*width numbers where a component alone offers width",
+                "report membership overlap between the rules, which separates 'grouping does "
+                "not matter' from 'the two rules picked the same components'",
+                "derive every grouping from ONE trajectory, since the layer does not feed back "
+                "into the components it groups",
+                "grow every rule from identical seeds, so the rules differ only in which "
+                "components they pull in"),
+    implemented_by="experiments.corvus_l2_coordination",
+    notes="Written for Q7 option B after Layer 2 was found to have declared a floor only over "
+          "an optional job while its unconditional job -- coordination -- had none. The gate "
+          "failed the layer on its first run, which is what a floor is for. The second control "
+          "came from a cortical-column critique proposing connectivity over proximity; making "
+          "that claim falsifiable cost one gate instead of an architecture.",
+))
+
 # ===========================================================================================
 # Gate C — external comparison. Only after Gate B. Nothing here is implemented.
 # ===========================================================================================

@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from architectures.corvus import cluster as L2
 from architectures.corvus import neuron as L0
-from architectures.corvus.contract import LAYERS
+from architectures.corvus.contract import LAYERS, Floor, Layer
 from cge.components import gate_rate_distortion, summarise_rate_distortion
 from core.probes import whiten
 
@@ -99,24 +99,97 @@ def test_the_summary_is_a_deterministic_linear_map_of_the_pass_through():
     assert np.allclose(stack.summary, expected)
 
 
-def test_layer_2_cannot_clear_its_own_floor_in_its_default_mode():
-    """**A recorded structural defect, not a passing test of a working thing.**
+def test_the_always_on_job_has_a_floor():
+    """Q7 option B, as an executable rule. Replaces the test that recorded the defect.
 
-    Layer 2's floor is `beats="pass_through"` with a positive margin, and its default mode
-    *is* pass-through. A tie is not a win, so in the default mode the floor is unreachable by
-    construction -- which means rule R1 ("freeze when every layer clears its own floor") can
-    never be satisfied by this stack however good the other layers are.
-
-    Measured separately: in `summarise` mode the compression scores -0.004 +/- 0.006 against
-    pass-through over three seeds, so switching modes does not rescue it either.
-
-    This test exists so the defect cannot be forgotten. It must be deleted, not "fixed", when
-    the layer's obligations are redeclared.
+    Layer 2 does two jobs. Compression is optional and off by default; coordination runs on
+    every tick in both modes and used to have nothing to beat. A layer whose unconditional work
+    is unmeasured is compliant and useless, which is exactly what Heron's node layer was.
     """
-    floor = LAYERS["cluster"].floor
-    assert floor.beats == "pass_through"
-    assert floor.margin > 0
-    assert L2.ClusterConfig().mode == "pass_through"
+    jobs = {f.job: f for f in LAYERS["cluster"].floors}
+    assert set(jobs) == {"coordination", "compression"}
+    assert jobs["coordination"].always_on
+    assert not jobs["compression"].always_on
+    assert LAYERS["cluster"].floor.always_on, "the primary floor must govern the always-on job"
+
+
+def test_a_layer_with_floors_only_over_optional_jobs_is_rejected():
+    """The construction-time guard. This is the defect that blocked the OCA v4 freeze, and it is
+    now impossible to declare rather than merely documented."""
+    with pytest.raises(ValueError, match="optional jobs"):
+        Layer(name="decorative", horizon=8, inputs_from=None,
+              floor=Floor(job="compression", always_on=False, beats="pass_through"),
+              build=lambda **kw: None, step=lambda s, u: {}, readout=lambda s: None)
+
+
+def test_an_always_on_floor_may_not_name_its_own_job_as_the_baseline():
+    """`beats="pass_through"` on a layer whose mode *is* pass-through is a tie, and a tie is
+    never a win. That unreachable floor is what Q7 was opened about."""
+    with pytest.raises(ValueError, match="tie and never a win"):
+        Floor(job="pass_through", beats="pass_through", always_on=True)
+
+
+# ------------------------------------------------------ membership: earned, not positional
+
+def test_the_three_membership_rules_are_selectable_and_differ():
+    """Connectivity, proximity and random must actually pick different towers, or `CGE-B-05`
+    is comparing a rule with itself."""
+    rng = np.random.default_rng(0)
+    n_towers, width = 17, 12
+    affinities = rng.normal(0, 1, (n_towers, n_towers))
+    affinities = (affinities + affinities.T) / 2
+
+    picks = {}
+    for rule in ("proximity", "connectivity", "random"):
+        stack = L2.build_stack(L2.ClusterConfig(seed=0, membership=rule), n_towers=n_towers)
+        stack.affinity = affinities
+        L2.reform(stack)
+        picks[rule] = stack.membership
+        assert stack.membership.shape == (stack.cfg.n_clusters, stack.cfg.towers_per_cluster)
+
+    assert not np.array_equal(picks["connectivity"], picks["proximity"])
+    assert not np.array_equal(picks["random"], picks["proximity"])
+
+
+def test_every_rule_grows_its_clusters_from_the_same_seeds():
+    """The rules must differ in *which towers they pull in* and in nothing else. Different
+    seeds would confound the one comparison the gate exists for."""
+    seeds = {}
+    for rule in ("proximity", "connectivity", "random"):
+        stack = L2.build_stack(L2.ClusterConfig(seed=0, membership=rule), n_towers=17)
+        stack.affinity = np.random.default_rng(1).normal(0, 1, (17, 17))
+        L2.reform(stack)
+        seeds[rule] = stack.membership[:, 0]
+    assert np.array_equal(seeds["proximity"], seeds["connectivity"])
+    assert np.array_equal(seeds["proximity"], seeds["random"])
+
+
+def test_a_tower_is_never_its_own_cluster_mate():
+    """A seed pulled in as its own neighbour would inflate every connectivity score by handing
+    the probe the target's own state twice."""
+    stack = L2.build_stack(L2.ClusterConfig(seed=0, membership="connectivity"), n_towers=17)
+    stack.affinity = np.eye(17) * 10.0        # every tower most similar to itself
+    L2.reform(stack)
+    for row in stack.membership:
+        assert len(set(row)) == len(row)
+
+
+def test_membership_is_re_derived_on_a_schedule_not_every_tick():
+    """An assembly that re-forms every tick is noise, not a module."""
+    stack, pub = _stack_and_pub("pass_through")
+    for _ in range(L2.ClusterConfig().reform_every + 5):
+        L2.step(stack, pub)
+    assert stack.n_reforms == 1
+
+
+def test_affinity_reads_published_state_only():
+    """Coordination may read what its members publish and never their internals -- the property
+    that lets a layer be replaced without rewriting the one above it."""
+    stack, pub = _stack_and_pub("pass_through")
+    L2.step(stack, pub)
+    assert stack.affinity.shape == (stack.n_towers, stack.n_towers)
+    assert np.all(np.isfinite(stack.affinity))
+    assert np.any(stack.affinity != 0)
 
 
 def test_matched_capacity_actually_reduces_the_wider_representation():
