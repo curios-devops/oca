@@ -78,21 +78,23 @@ Three complete architectures, now all frozen, and six levels of gates in:
 | "The predictive code is relational, not additive" | **retired** — mean pooling wins at matched width |
 | Phase coordination pays off | **no measurable payoff at any level yet** |
 | No representation beats raw pixels at predicting an **observable** world | **established** |
-| **No architecture forms persistent state — a two-number memory beats all three** | **open, and now precisely stated** |
+| ~~No architecture forms persistent state~~ | **retracted** — the gate was not measurable; see the correction |
+| **Corvus integrates its own moves while blind: +57% over its control** | **first floor gate ever passed here** |
 
-That last row is the whole project in one line. In the tunnel maze — the one world where the
-image provably cannot contain the answer, with the pixel control at chance to two decimals —
-storing the two coordinates you walked in at beats **every** architecture here, and the
-newest one scores worse than storing nothing.
+The last two rows are the project in miniature, including a retraction. We published that no
+architecture forms persistent state, on the strength of a gate that compared models against a
+baseline *handed information they must infer* — position is not recoverable from a 5x5 view at all
+(4.92 cells while fully sighted, against the baseline's 2.06). Asked fairly, about displacement
+rather than position, **Corvus passes at +57.2% over its control across three seeds**, Wren turns
+out to have been partially integrating all along at +28.2%, and Heron is worse than doing nothing.
 
-So the standing question is not "what does the next level look like". It is:
+So one floor is cleared and the harder one is not:
 
-> **What is the smallest computational primitive that beats a two-number memory at knowing
-> where it is while blind?**
+> **`CGE-A-00`: no representation this project has built beats its own sensory input at
+> predicting an observable world.** Three architectures, every horizon. Corvus passing a
+> persistence gate does not change it.
 
-It names no node, no cortex, no resonance, no hierarchy. It has a measured control, a world
-where that control is provably at chance, and a bar that is almost insultingly low. It is
-gate `P0` — run it with `make p0` — and it is open.
+That is the standing open challenge. Run the floor gates with `make p0`.
 [The full ledger of what three architectures taught us.](docs/WHAT_WE_HAVE_LEARNED.md)
 
 **If you are looking for a project where the hard problem is clearly stated and genuinely

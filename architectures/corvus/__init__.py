@@ -25,5 +25,7 @@ evidence every one of them is checked against.
 """
 
 from .contract import LAYERS, Floor, Layer, check_stack, register
+from .primitives import Entity, Event, OwnershipError, Registry
 
-__all__ = ["Floor", "Layer", "LAYERS", "check_stack", "register"]
+__all__ = ["Entity", "Event", "Floor", "Layer", "LAYERS", "OwnershipError", "Registry",
+           "check_stack", "register"]

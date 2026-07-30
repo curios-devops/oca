@@ -1,5 +1,20 @@
 # What three architectures have taught us
 
+> **CORRECTION 2026-07-30 — the central claim below was reasoned from a gate that was not
+> measurable, and the defect was mine.** `CGE-A-01` scored absolute position while blind against
+> `frozen-at-entry`, a baseline *handed the true entry coordinates*, while an architecture must
+> encode where it is from a 5x5 view. Measured, that is impossible in a braided maze: position
+> decodes from the raw view at **4.92 cells while fully sighted**, against a chance of 8.58 and the
+> baseline's 2.06. No architecture could pass it however well it persisted.
+>
+> Asked fairly — displacement since entering, which is the part that *can* be inferred — the
+> picture is different: Corvus **+0.572**, Wren **+0.282**, Swift +0.007, Mirror -0.027, Heron
+> -0.232. Some architectures do integrate their own moves, and one passes.
+>
+> The narrow statement that survives: *three architectures failed to form persistence good enough
+> to matter, and one of them (Wren) was partially doing it without anyone asking.* Full account in
+> [corvus/RESULTS_CORVUS.md](corvus/RESULTS_CORVUS.md). The sections below are left unedited.
+
 Written after DCN level 2 failed four of five gates, and after the same result arrived for
 the third time from a third direction. This is not a post-mortem for one level. It is the
 empirical foundation the project now rests on, and it is more valuable than any of the

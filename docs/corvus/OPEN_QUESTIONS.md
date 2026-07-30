@@ -1,5 +1,10 @@
 # Open questions — blocking decisions for OCA v4
 
+> **RESOLVED 2026-07-30.** All five are decided and Q6 has been added and decided. The
+> decisions are recorded in [DECISIONS.md](DECISIONS.md); the analysis below is kept unchanged
+> because the reasoning is the part worth preserving, and because a decision whose evidence has
+> been edited out cannot be revisited honestly.
+
 Five places where the v4 architecture, as specified, is in tension with what Wren, Swift and
 Heron actually measured. Each names the decision, the evidence on both sides, and the options.
 **None should be resolved by whoever is writing the code at the time**, which is exactly how

@@ -22,7 +22,7 @@ help:
 	@echo "make dcn-l1  DCN level 1: neuron gates, and vs the legacy line"
 	@echo "make dcn-l2  DCN level 2: node gates, and vs the legacy line"
 	@echo "make race    raw vs v1 vs v2 vs DCN in one maze, then build the demo page"
-	@echo "make p0      THE open challenge: beat a two-number memory while blind"
+	@echo "make p0      the floor gates: path integration while blind (CGE-A-09)"
 	@echo "make cge     run the Cognitive Gates across every architecture (3 seeds)"
 	@echo "make serve   rebuild the maze demo and serve it at localhost:8080"
 	@echo "make figures  regenerate plots from logs/"
@@ -130,7 +130,8 @@ race:
 # chance by construction. The bar is `frozen at entry`: store the two coordinates you walked
 # into the tunnel at, once, and never update them. Nothing here beats it yet.
 p0:
-	$(PY) -m cge.run --gates tunnel --seeds 0 1 2 --out logs/scorecard_tunnel.json
+	$(PY) -m cge.run --gates path_integration --seeds 0 1 2 \
+		--out logs/scorecard_pathint.json
 
 # The Cognitive Gates across every registered architecture, with seed and scale stress
 bench: cge

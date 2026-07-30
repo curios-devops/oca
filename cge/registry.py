@@ -254,6 +254,70 @@ register(MeshVersion(
 ))
 
 
+# ----------------------------------------------------------------------- corvus
+#
+# OCA v4, and the first entrant designed against the record rather than before it. Its Layer 1
+# declares `trivial_memory` as its floor, which is gate CGE-A-01 -- the one nothing has ever
+# passed.
+
+
+def _corvus_build(seed: int = 0, side: int = 12, **kw):
+    from architectures.corvus.cortex import build_cortex
+    kw.pop("eta_head", None)                 # a Wren/Swift knob; Corvus has no head
+    return build_cortex(seed=seed, **kw)
+
+
+def _corvus_tick(state, s):
+    from architectures.corvus.cortex import tick
+    return tick(state, s)
+
+
+def _corvus_frame(state, tau, sensors):
+    from architectures.corvus.cortex import predicted_retina
+    return predicted_retina(state, tau, sensors)
+
+
+def _corvus_unit_labels(world) -> np.ndarray:
+    from architectures.corvus.cortex import N_TOWERS, TOWER_SIDE
+    lab = np.full(N_TOWERS, -1)
+    cell = world.cfg.size / TOWER_SIDE
+    for i in range(world.cfg.n_objects):
+        if world.is_fully_occluded(i):
+            continue
+        x, y = world.pos[i]
+        nc = int(np.clip(x // cell, 0, TOWER_SIDE - 1))
+        nr = int(np.clip(y // cell, 0, TOWER_SIDE - 1))
+        lab[nr * TOWER_SIDE + nc] = i
+    return lab
+
+
+def _corvus_object_units(state, world, i: int, side: int) -> np.ndarray:
+    from architectures.corvus.cortex import N_TOWERS, TOWER_SIDE
+    cell = world.cfg.size / TOWER_SIDE
+    x, y = world.pos[i]
+    nc = int(np.clip(x // cell, 0, TOWER_SIDE - 1))
+    nr = int(np.clip(y // cell, 0, TOWER_SIDE - 1))
+    idx = {(((nr + dr) % TOWER_SIDE) * TOWER_SIDE + ((nc + dc) % TOWER_SIDE))
+           for dr in (-1, 0, 1) for dc in (-1, 0, 1)}
+    return np.array(sorted(j for j in idx if j < N_TOWERS))
+
+
+register(MeshVersion(
+    name="corvus",
+    codename="Corvus",
+    mechanism="entities: a reference frame corrected when observable, propagated by a learned "
+              "action model when not",
+    build=_corvus_build,
+    tick=_corvus_tick,
+    readout=lambda s: s.h,
+    coalitions=lambda s: s.coalition,
+    describe=lambda s: s.describe(),
+    unit_labels=_corvus_unit_labels,
+    object_units=_corvus_object_units,
+    predicted_frame=_corvus_frame,
+))
+
+
 # ----------------------------------------------------------------------- mirror
 #
 # The floor, registered as an entrant rather than kept as a footnote.

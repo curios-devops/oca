@@ -175,8 +175,8 @@ register(Gate(
 
 register(Gate(
     id="CGE-A-01", version=1,
-    title="Beats a trivial memory while blind",
-    gate_class=GateClass.A, status=Status.STABLE,
+    title="Beats a trivial memory while blind (SUPERSEDED -- not measurable)",
+    gate_class=GateClass.A, status=Status.DEPRECATED,
     objective="Does the component hold anything about a referent it currently cannot observe?",
     required_property="State that survives its referent becoming unobservable and can be read "
                       "back as being about the same referent.",
@@ -192,8 +192,39 @@ register(Gate(
     anti_tests=("length of blindness swept 1-2, 3-4, 5-8, 9+ steps",
                 "the pixel control must land at chance or the corridors are leaking"),
     implemented_by="cge.gates.gate_tunnel",
-    notes="The only gate in the suite where the raw-input control is at chance by "
-          "construction, which makes it the only place the A-00 question is properly posed.",
+    notes="DEPRECATED, superseded by CGE-A-09. This gate was not measurable and the defect was "
+          "mine. It scored absolute position against `frozen-at-entry`, a baseline HANDED the "
+          "true entry coordinates -- while an architecture must encode where it is from a 5x5 "
+          "view. Measured, that is impossible here: position decodes from the raw view at 4.92 "
+          "cells WHILE FULLY SIGHTED, against a chance of 8.58 and the baseline's 2.06. So no "
+          "architecture could pass it however well it persisted, and all four failed by similar "
+          "margins for a reason unrelated to persistence. Kept, not deleted, so the verdicts it "
+          "produced stay interpretable and the mistake stays visible.",
+))
+
+register(Gate(
+    id="CGE-A-09", version=1,
+    title="Path integration while blind",
+    gate_class=GateClass.A, status=Status.STABLE,
+    objective="Does the component integrate its own moves while it cannot see?",
+    required_property="State that accumulates self-motion and can be read back as displacement.",
+    anti_property="State that is a fading function of the recent past; or a gate that rewards "
+                  "information the component was given rather than inferred.",
+    control="`no_integration` -- predict zero displacement, which is what holding still achieves "
+            "-- plus the raw frame, at chance by construction inside a corridor.",
+    pass_criterion="Lower displacement error than no-integration, by the declared margin. The "
+                   "target is displacement SINCE ENTERING, not absolute position, so both sides "
+                   "are asked only about the part that can be inferred.",
+    levels=(1, 2, 3), modalities=(Modality.VISION, Modality.PROPRIOCEPTION), cost="minutes",
+    has_ever_failed="Heron (-0.232, worse than not integrating), Swift (+0.007, nothing) and "
+                    "Mirror (-0.027, as it must be). Wren integrates partially (+0.282). Corvus "
+                    "is the first architecture in this project to clear a floor gate: +0.572.",
+    anti_tests=("the raw frame must carry no displacement information, or the corridors leak",
+                "displacement rather than position, which removes the unattainable anchor"),
+    depends_on=("CGE-A-01",),
+    implemented_by="cge.gates.gate_path_integration",
+    notes="Replaces CGE-A-01. The lesson generalises past this gate: a baseline given information "
+          "the component must infer does not measure the component.",
 ))
 
 register(Gate(

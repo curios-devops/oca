@@ -20,9 +20,16 @@ where they were while unable to see.
 
 That is the central fact this version has to answer to. Sections marked **⚑ Evidence** record
 where the architecture below is directly constrained by that record, and where it is in tension
-with it. Sections marked **⚑ Open** are unresolved and are listed in
-[OPEN_QUESTIONS.md](OPEN_QUESTIONS.md); they must be settled before the corresponding layer is
-implemented.
+with it. Sections marked **⚑ Decided** record an architectural decision taken against that record; the
+reasoning is in [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) and the decisions in
+[DECISIONS.md](DECISIONS.md).
+
+**The design rule adopted before any of those decisions**, and the reason five of the six
+*reduced* what this document commits to:
+
+> Standardise invariants, not hypotheses. A concept may be standardised if its necessity is
+> supported by evidence, or if its absence prevents interoperability. Mechanisms stay
+> replaceable until evidence favours one.
 
 ## Purpose
 
@@ -51,6 +58,86 @@ compatible if they satisfy the architectural contracts.
 > capacity-matched BPTT recurrent network on this project's worlds. That is evidence that the
 > contract-first posture is not merely diplomatic: a non-gradient implementation was not
 > handicapped. It is not evidence that gradients are unnecessary.
+
+---
+
+## Architectural primitives
+
+Two concepts belong to no layer and are manipulated by all of them, in the way `process`,
+`address` and `message` belong to no layer of an operating system. They are specified before the
+layers because every interface contract below depends on them.
+
+### Entity — the unit of persistence
+
+An addressable record of *a thing that continues to exist*.
+
+```
+id            immutable, unique, never reused
+created_at    immutable
+attributes    what is currently believed about it
+uncertainty   how much that belief is trusted
+last_seen     when its referent was last observable
+observable    whether it is observable now
+relations     references to other entities
+```
+
+**Its defining property is that it survives its referent becoming unobservable**, and that it
+can afterwards be recognised as being about the same referent.
+
+> **⚑ Decided — this is the only concept v4 adds, and the only one with a measurement behind
+> it.** In the tunnel world, where the raw-input control is at chance by construction, storing
+> two numbers beat every architecture ever built here. Wren's readout is its *entire*
+> 2304-dimensional mesh state with nothing pooled, and it lost too — so persistence is not
+> destroyed on the way up the stack, it is never formed.
+>
+> Memory answers *what happened*; identity answers *which thing happened*. Without identity,
+> memory fragments. Object permanence appears in human development before language, before
+> episodic memory and before planning, which argues for putting this low and making it shared.
+
+**Ownership is layered even though the type is not.** A cross-cutting primitive that any layer
+may create is the architectural equivalent of a global variable and would dissolve the layering
+invariant below.
+
+| operation | permitted to |
+|---|---|
+| **create** | only the layer that can observe the referent — Layer 1 |
+| **retire** | only the creating layer |
+| **read, reference, annotate, relate** | any layer |
+| **write `id` or `created_at`** | nobody; immutable |
+
+**The primitive is falsifiable, and its test already exists.** Any implementation claiming
+entity persistence must pass gate `CGE-A-01`: beat frozen-at-entry, 2.26 cells, while blind.
+Without that clause this would be the most attractive unfalsifiable idea in the document.
+
+### Event — the unit of communication
+
+Everything that crosses a component boundary is an event: **sparse, timestamped, and carrying an
+optional entity reference.**
+
+```
+source        the component that emitted it
+kind          what sort of claim it makes
+value         the quantity
+entity        which entity it is about, or None
+at            when
+```
+
+Not a dense state vector, and not a bare scalar.
+
+> **⚑ Decided — the draft specified seven layers and never said what flows between them.**
+> ROS2 says messages, actor systems say messages, the internet says packets, Thousand Brains
+> says sensorimotor object representations. Leaving it implicit makes every interface contract
+> below unverifiable.
+>
+> Our evidence points at this answer from two directions. **Events beat dense state sharing:**
+> send-on-delta emission beat the best matched-rate control by 92.9%, and the policy transferred
+> to a frozen architecture's own trace. **A dense-vector carrier is measured to fail:** the one
+> architecture that made a shared state vector its carrier destroyed the signal, 0.69× → 6.56×.
+>
+> The entity reference resolves the tension between them. A bare scalar is sparse but cannot say
+> what it is about, which is exactly the Q2 failure; a latent vector can carry content but is the
+> carrier that failed. An event referencing an entity is sparse **and** attributable, and it lets
+> persistence cross a boundary without the layer above re-solving identity.
 
 ---
 
@@ -131,20 +218,20 @@ Full contract: [SPEC_L1_TOWER.md](SPEC_L1_TOWER.md).
 ### Layer 2 — Tower Cluster
 
 Collection of cooperative towers. Responsible for solving coherent local cognitive problems.
-Provides local consensus before higher-level integration. Coordinates specialised tower
-populations.
+Provides **local coordination** before higher-level integration, and coordinates specialised
+tower populations. **Summarising its members is permitted, not required.**
 
 Full contract: [SPEC_L2_CLUSTER.md](SPEC_L2_CLUSTER.md).
 
-> **⚑ Open — "consensus before integration" is the single most-failed operation in this
-> project's history, and as written it is a mandatory responsibility.** The legacy
-> Predictive Assembly took a mesh state that scored 0.69× persistence and produced a
-> workspace that scored 6.56× — the aggregation destroyed the signal. Heron's node layer then
-> lost to mean pooling at matched width, and every aggregation it tried lost to the raw frame.
+> **⚑ Decided — coordination is the responsibility; compression is an optional algorithm.**
+> The draft said "local consensus", and *consensus already assumes compression*. Aggregation has
+> now failed four times with four operators: the legacy assembly turned a 0.69× state into a
+> 6.56× workspace, and Heron's mean-pooling **control** beat both of its relational operators
+> (0.598 against 0.612 and 0.629).
 >
-> Consensus is a compression step, and compression is what has failed. See
-> [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) Q3: does a cluster that provably adds nothing have
-> to be permitted to be a pass-through?
+> So this layer's floor is `pass_through`: it must beat the concatenation of its own members
+> before it is permitted to summarise them. That inverts the burden of proof onto the compression
+> step, which is where four failures say it belongs.
 
 ### Layer 3 — Functional Region
 
@@ -162,11 +249,14 @@ Cross-regional cognitive services: working memory, semantic memory, episodic mem
 attention, planning, motivation, sleep, memory consolidation. These coordinate information
 across multiple regions.
 
-> **⚑ Open — five memory types are named and the project does not yet have one.** A
-> two-number memory currently beats every architecture built here. Specifying five varieties
-> of memory before one works is the mistake the build order exists to prevent. See
-> [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) Q4: which single memory service is required for the
-> first maturity level, and which are deferred?
+> **⚑ Decided — one required service, four deferred.** Exactly one is required at the first
+> maturity level: the **Persistent State Service**, which maintains state about a referent that
+> is currently unobservable. Short-term, working, episodic, semantic and procedural memory are
+> deferred to the Memory Specification and marked unevidenced.
+>
+> Five categories borrowed from psychology, in a project that does not yet have one working
+> memory of any kind — a two-number memory beats everything built here. The classification can
+> come after there is something to classify.
 
 ### Layer 5 — Synthetic Cortex
 
@@ -253,57 +343,67 @@ defined utility modules.
 > and all three lose to storing two numbers once. A contract satisfied by every failure
 > discriminates nothing.
 >
-> Version 4 therefore strengthens the clause: state must be **persistent and addressable
-> across unobservability**, not merely present. A component's state must survive the target
-> becoming invisible, and must be identifiable as being about the same thing afterwards. This
-> is what the frozen line never had, and it is the subject of
-> [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) Q2.
+> Version 4 therefore strengthens the clause: state must be **persistent and addressable across
+> unobservability**, not merely present. That requirement is what the `Entity` primitive exists
+> to carry, and gate `CGE-A-01` is what checks it.
 
-## Oscillation layer
+## Temporal Coordination Service
 
-OCA defines oscillatory coordination as an architectural service. **Oscillations are
-synchronisation mechanisms. They are not memory containers.** They coordinate timing,
-attention, synchronisation, communication windows, learning windows and offline
-consolidation. Multiple temporal scales should be supported. The exact implementation is
-intentionally unspecified.
+OCA defines temporal coordination as an **optional** architectural service. Its responsibility
+is to decide *when* components communicate, attend, and learn: timing, attention, communication
+windows, learning windows, offline consolidation, and multiple temporal scales.
 
-> **⚑ Open — "oscillations are not memory containers" is confirmed; that they coordinate
-> anything useful is not.** The negative half of the claim is well supported: a synchrony
-> graph read from real rotor phases scored *exactly* 1.00× persistence, carrying no content
-> whatsoever. Phase is a clock.
+**The responsibility is named; the mechanism is not.** Permitted implementations include
+oscillatory phase, event scheduling, asynchronous message passing, token passing, priority
+queues and temporal attention windows.
+
+One clause is normative because it is measured: **whatever implements this service is a
+synchronisation mechanism and not a memory container.** It coordinates when things happen; it
+does not carry content.
+
+An implementation that provides temporal coordination **and claims benefit from it** must show
+it beats the same system with the service ablated, on some gate, by its declared margin.
+
+> **⚑ Decided — the responsibility survives; oscillation specifically does not get to be
+> mandatory.** The negative clause is well supported: a synchrony graph read from Swift's real
+> rotor phases scored *exactly* 1.00× persistence, carrying no content.
 >
-> The positive half has three measurements against it and none for it. Phase-gated emission
-> cost a lone unit ~10%. Under channel contention — the setting where scheduling *should*
-> pay — it gave +0.9% with the sign flipping across budgets. Removing the oscillation engine
-> from Heron's tower layer changed its headline by less than 0.5%.
+> The positive claim has three measurements against it and none for it. Phase-gated emission
+> cost a lone unit ~10%. Under channel contention — the setting where scheduling *should* pay,
+> many senders and one wire — it gave +0.9% with the sign flipping across four budgets. Removing
+> Heron's oscillation engine entirely changed its headline by less than 0.5%.
 >
-> Making oscillation a named architecture-level service spends the specification's complexity
-> budget on the one mechanism with a perfect record of no payoff. See
-> [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) Q1.
+> None of that says temporal coordination is unnecessary. It says *that implementation* of it
+> did not pay. Naming the responsibility and leaving the mechanism open is what the evidence
+> supports, and it costs nothing to be right either way.
 
 ## Global cognitive state
 
 The architecture defines a global cognitive state abstraction whose purpose is to coordinate
-overall system behaviour. Possible modes include focused, exploratory, learning, planning,
-dreaming, consolidating, recovery and idle. The architecture defines responsibilities rather
-than implementation; future implementations may represent this state differently.
+overall system behaviour. It permits one or more global operational modes and **intentionally
+does not standardise the taxonomy of modes.**
 
-> **⚑ Evidence — eight modes are specified and the minimal version of this interface has
-> been built and measured at zero effect.** Heron's State Adapter received a global state
-> vector and modulated how each tower learned without touching what it knew — exactly this
-> abstraction, minimally. Removing it changed the headline by 0.4%.
+Implementations may define any number of modes, provided **each mode demonstrably alters at
+least one measurable system behaviour.** Names such as focused, exploratory, dreaming or
+consolidating are illustrative, not normative.
+
+> **⚑ Decided — keep the abstraction, drop the taxonomy.** Heron's State Adapter is the minimal
+> version of exactly this interface — a global vector that changed *how* each tower learned
+> without changing *what* it knew — and removing it altogether moved the headline by 0.4%.
 >
-> That does not refute the abstraction; a global mode may only matter once there is
-> consolidation and dreaming to switch between, and neither exists. It does mean the eight
-> modes are unevidenced, and the specification should say so rather than presenting them as
-> settled.
+> That does not refute the abstraction: a global mode plausibly needs consolidation and dreaming
+> to switch between, and neither has been built. It does mean eight named modes are speculation.
+> The pass condition above is much harder to argue with than a list.
 
 ## Memory
 
-Memory is distributed. The architecture distinguishes short-term, working, episodic, semantic
-and procedural memory. No specific storage mechanism is required.
+Memory is distributed. **One service is required** at the first maturity level:
 
-See the **⚑ Open** note under Layer 4.
+**Persistent State Service** — maintains state about a referent that is currently unobservable,
+keyed by `Entity`. Required. Its compliance test is gate `CGE-A-01`.
+
+Short-term, working, episodic, semantic and procedural memory are **deferred** to the Memory
+Specification and marked unevidenced. No specific storage mechanism is required for any of them.
 
 ## Sensorimotor loop
 

@@ -303,8 +303,82 @@ def gate_tunnel(version, seed=0, side=12, ticks=14000, warmup=3000, **kw):
     }
 
 
+def gate_path_integration(version, seed=0, side=12, ticks=14000, warmup=3000, **kw):
+    """Does the component integrate its own moves while blind? `CGE-A-09`.
+
+    **This gate exists because `CGE-A-01` turned out not to be measurable**, and the difference
+    between them is worth stating carefully because I got it wrong first.
+
+    A-01 scored absolute position against `frozen-at-entry`, a baseline *handed the true entry
+    coordinates*. An architecture has no such gift: it must encode where it is from a 5x5 view.
+    Measured, that is not possible in a braided maze -- position decodes from the raw view at
+    **4.92 cells while fully sighted**, against a chance of 8.58 and the baseline's 2.06. So no
+    architecture could pass A-01 regardless of whether it persists, and all four failed it by
+    similar margins for a reason that has nothing to do with persistence.
+
+    This gate removes the anchor from the question. The target is **displacement since entering
+    the tunnel**, not absolute position, so both sides are asked only about the part that can be
+    inferred: how far have I moved since I last knew where I was.
+
+    Controls, both at matched capacity:
+
+    * `no_integration` -- predict zero displacement. This is what holding still achieves, and it
+      is the honest analogue of frozen-at-entry now that the gift is removed.
+    * the raw frame -- at chance by construction, since every in-tunnel frame is identical.
+    """
+    from core.probes import decode_error
+    from core.world.maze import MazeConfig, MazeWorld
+
+    world = MazeWorld(MazeConfig(seed=seed, tunnels=True))
+    sensors = Sensors()
+    state = version.new(seed=0, side=side)
+    learn_until = int(ticks * 0.8)
+    rows = []
+
+    for t in range(ticks):
+        s_now, ret = sensors.observe(world)
+        state.learn = t < learn_until
+        version.tick(state, s_now)
+        if t > warmup and world.in_tunnel():
+            rows.append({"h": version.readout(state).ravel().copy(),
+                         "r": ret.ravel().copy(),
+                         "disp": world.pos.astype(float) - np.array(world._tunnel_entry,
+                                                                    dtype=float),
+                         "steps": world.steps_in_tunnel()})
+        world.step()
+
+    if len(rows) < 200:
+        return {"headline": None, "valid": False, "higher_is_better": True,
+                "reason": f"only {len(rows)} in-tunnel frames"}
+
+    Y = np.stack([r["disp"] for r in rows])
+    cut = int(len(rows) * 0.6)
+
+    def probe(key):
+        return decode_error(np.stack([r[key] for r in rows]), Y, n_components=32)
+
+    err_model = probe("h")
+    err_retina = probe("r")
+    # holding still: predict no displacement at all
+    err_still = np.linalg.norm(Y[cut:], axis=1)
+
+    beats = 1.0 - float(err_model.mean()) / max(float(err_still.mean()), 1e-9)
+    return {
+        "displacement_error": float(err_model.mean()),
+        "no_integration": float(err_still.mean()),
+        "headline": beats,
+        "higher_is_better": True,
+        "control": {"retina": float(err_retina.mean()),
+                    "no_integration": float(err_still.mean()),
+                    "n_frames": len(rows)},
+        # the frame must carry no displacement information, or the corridors are leaking
+        "valid": bool(float(err_retina.mean()) >= 0.85 * float(err_still.mean())),
+    }
+
+
 GATES = {
     "prediction": gate_prediction,
+    "path_integration": gate_path_integration,
     "maze": gate_maze,
     "identity": gate_identity,
     "coalitions": gate_coalitions,

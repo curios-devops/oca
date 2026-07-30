@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "versions": [
+      "corvus"
+    ],
+    "gates": [
+      "tunnel"
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "sides": [
+      12
+    ],
+    "ticks": null,
+    "out": "logs/corvus_tunnel.json"
+  },
+  "cells": {
+    "corvus|tunnel|12": {
+      "runs": [
+        {
+          "cells_error": 4.5719933761664375,
+          "frozen_at_entry": 2.148804677872452,
+          "headline": -1.1276914664450577,
+          "higher_is_better": true,
+          "control": {
+            "retina": 7.68681699382094,
+            "chance": 7.687207145661113,
+            "n_frames": 4262
+          },
+          "valid": true,
+          "seconds": 9.1
+        },
+        {
+          "cells_error": 3.493131548459126,
+          "frozen_at_entry": 2.410093302131797,
+          "headline": -0.4493760658018302,
+          "higher_is_better": true,
+          "control": {
+            "retina": 6.264357718876529,
+            "chance": 6.263607567721609,
+            "n_frames": 4704
+          },
+          "valid": true,
+          "seconds": 9.2
+        },
+        {
+          "cells_error": 4.978500374686841,
+          "frozen_at_entry": 2.2319785752760284,
+          "headline": -1.2305323311946,
+          "higher_is_better": true,
+          "control": {
+            "retina": 7.094408132830851,
+            "chance": 7.09454431327581,
+            "n_frames": 3667
+          },
+          "valid": true,
+          "seconds": 9.0
+        }
+      ],
+      "n": 3,
+      "valid": true,
+      "mean": -0.9358666211471626,
+      "sem": 0.24505023715948931,
+      "higher_is_better": true
+    }
+  }
+}
