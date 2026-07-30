@@ -1,4 +1,4 @@
-"""The race: Mirror, Wren, Swift and Heron solving the same maze, side by side.
+"""The race: Mirror, Wren, Swift, Heron and Corvus solving the same maze, side by side.
 
 A DEMONSTRATION, not a Cognitive Gate. See docs/corvus/SPEC_CGE.md section 9 for
 why it does not qualify: a continuous score, a shared planner that conflates
@@ -43,7 +43,7 @@ from core.world import Sensors
 from core.world.maze import MazeConfig, MazeWorld
 from exp09_maze import RADIUS, _plan, fit_probe, visible_mask, wall_probe
 
-ENTRANTS = ("mirror", "wren", "swift", "heron")
+ENTRANTS = ("mirror", "wren", "swift", "heron", "corvus")
 """Raw pixels races too, rather than sitting in a caption as the control.
 
 It has no memory and no parameters: at every step it decodes the wall map from the frame in

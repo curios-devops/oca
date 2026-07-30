@@ -1,34 +1,42 @@
 {
-  "raw": {
-    "label": "Raw pixels",
+  "mirror": {
+    "label": "Mirror",
     "exits": 30,
     "hidden_acc": 0.7733860894557845,
     "visible_acc": 1.0,
     "retina_hidden": 0.7733860894557845,
     "n_params": 0
   },
-  "v1": {
-    "label": "RPDU v1",
+  "wren": {
+    "label": "Wren",
     "exits": 53,
     "hidden_acc": 0.8406791657705497,
     "visible_acc": 1.0,
     "retina_hidden": 0.7733860894557845,
     "n_params": 614960
   },
-  "v2": {
-    "label": "RPDU v2",
+  "swift": {
+    "label": "Swift",
     "exits": 3,
     "hidden_acc": 0.7360062085738961,
     "visible_acc": 0.925661492099521,
     "retina_hidden": 0.7733860894557845,
     "n_params": 918832
   },
-  "dcn": {
-    "label": "DCN v3",
+  "heron": {
+    "label": "Heron",
     "exits": 0,
     "hidden_acc": 0.619331879634947,
     "visible_acc": 0.6851513721954787,
     "retina_hidden": 0.7733860894557845,
     "n_params": 293485
+  },
+  "corvus": {
+    "label": "Corvus",
+    "exits": 0,
+    "hidden_acc": 0.5481520645934886,
+    "visible_acc": 0.6353687271580566,
+    "retina_hidden": 0.7733860894557845,
+    "n_params": 166912
   }
 }

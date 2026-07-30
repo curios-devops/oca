@@ -52,8 +52,23 @@ def _quantise(belief, n) -> str:
                    for row in belief for v in row)
 
 
+def _path_integration() -> dict:
+    """The other gate's result, keyed by architecture, if it has been run.
+
+    Carried into the page because the two numbers *disagree*, and that disagreement is the most
+    useful thing the demo can show: a trophy is always a trophy at one question.
+    """
+    f = ROOT / "logs" / "scorecard_pathint.json"
+    if not f.exists():
+        return {}
+    cells = json.loads(f.read_text()).get("cells", {})
+    return {k.split("|")[0]: v.get("mean") for k, v in cells.items()
+            if v.get("mean") is not None}
+
+
 def compress_race(path: Path) -> dict:
     d = json.loads(path.read_text())
+    pathint = _path_integration()
     grid = d["grid"]
     n = len(grid)
     ents = []
@@ -62,6 +77,7 @@ def compress_race(path: Path) -> dict:
             "key": e["key"], "label": e["label"], "exits": e["exits"],
             "hits": e["hits"], "hidden_acc": e["hidden_acc"],
             "retina_hidden": e["retina_hidden"], "n_params": e["n_params"],
+            "path_integration": pathint.get(e["key"]),
             "pos": [s["pos"] for s in e["trace"]],
             "belief": [_quantise(s["belief"], n) for s in e["trace"]],
         })
