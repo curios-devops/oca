@@ -1,0 +1,166 @@
+{
+ "substrate": "corvus-v4.4-alpha (frozen, read-only)",
+ "ticks": 3000,
+ "results": {
+  "visible": [
+   {
+    "n_frames": 6926,
+    "n_slots": 9,
+    "valid": true,
+    "n_assemblies": 9,
+    "assembly_size": 5,
+    "budgets": [
+     8,
+     16,
+     32,
+     64,
+     128
+    ],
+    "curves": {
+     "best_single_tower": [
+      0.5173482497413822,
+      0.5996429405679581,
+      0.6240192336570227,
+      0.6240192336570227,
+      0.6240192336570227
+     ],
+     "all_towers_concatenated": [
+      0.5043391480628692,
+      0.5943738633329997,
+      0.5634051623452464,
+      0.5370871500317016,
+      0.5452907051923783
+     ],
+     "raw_pixels": [
+      0.6421287374445223,
+      0.7025097398805352,
+      0.7435314262355257,
+      0.7454913947008376,
+      0.7496485717622718
+     ],
+     "best_single_assembly": [
+      0.5515611443421097,
+      0.5668965028197683,
+      0.5333536160610004,
+      0.5162864046284246,
+      0.5433581105883138
+     ],
+     "vote_by_selection": [
+      0.5290567019554844,
+      0.5728314166416391,
+      0.5517983844729202,
+      0.5359653431274403,
+      0.5374007762705643
+     ],
+     "mean_of_hypotheses": [
+      0.5126660159508794,
+      0.5750593882437347,
+      0.5477626952147362,
+      0.55461815288484,
+      0.5317687998464978
+     ]
+    },
+    "best_single_tower": 0.6240192336570227,
+    "best_single_tower_at": 32,
+    "all_towers_concatenated": 0.5943738633329997,
+    "all_towers_concatenated_at": 16,
+    "raw_pixels": 0.7496485717622718,
+    "raw_pixels_at": 128,
+    "best_single_assembly": 0.5668965028197683,
+    "best_single_assembly_at": 16,
+    "vote_by_selection": 0.5728314166416391,
+    "vote_by_selection_at": 16,
+    "mean_of_hypotheses": 0.5750593882437347,
+    "mean_of_hypotheses_at": 16,
+    "kmeans_on_raw_patch": 0.5484960539927253,
+    "floors": {
+     "assembly_beats_best_tower": -0.05712273083725439,
+     "assembly_beats_kmeans": 0.01840044882704306,
+     "vote_beats_best_assembly": 0.005934913821870724,
+     "vote_beats_mean": -0.0022279716020956464,
+     "anything_beats_raw_pixels": -0.15527470842927216
+    }
+   }
+  ],
+  "occluded": [
+   {
+    "n_frames": 1204,
+    "n_slots": 9,
+    "valid": true,
+    "n_assemblies": 9,
+    "assembly_size": 5,
+    "budgets": [
+     8,
+     16,
+     32,
+     64,
+     128
+    ],
+    "curves": {
+     "best_single_tower": [
+      0.42545438883624775,
+      0.488190197260746,
+      0.46811094840210177,
+      0.46811094840210177,
+      0.46811094840210177
+     ],
+     "all_towers_concatenated": [
+      0.5046084934102851,
+      0.44910845034025326,
+      0.5412180205013352,
+      0.5085795503488673,
+      0.5126539753639417
+     ],
+     "raw_pixels": [
+      0.4978551124127832,
+      0.409613231113791,
+      0.4441726246877423,
+      0.43570505642174173,
+      0.4285985011628909
+     ],
+     "best_single_assembly": [
+      0.48467568266000516,
+      0.464785941941597,
+      0.5323542079421139,
+      0.47389956068567496,
+      0.4820225686967008
+     ],
+     "vote_by_selection": [
+      0.4920492721164614,
+      0.46821431647859424,
+      0.5515031441123266,
+      0.5036006546644844,
+      0.4305452666034973
+     ],
+     "mean_of_hypotheses": [
+      0.49012834869497807,
+      0.482901197346886,
+      0.5449134292359377,
+      0.5307433887501076,
+      0.4203204410371264
+     ]
+    },
+    "best_single_tower": 0.488190197260746,
+    "best_single_tower_at": 16,
+    "all_towers_concatenated": 0.5412180205013352,
+    "all_towers_concatenated_at": 32,
+    "raw_pixels": 0.4978551124127832,
+    "raw_pixels_at": 8,
+    "best_single_assembly": 0.5323542079421139,
+    "best_single_assembly_at": 32,
+    "vote_by_selection": 0.5515031441123266,
+    "vote_by_selection_at": 32,
+    "mean_of_hypotheses": 0.5449134292359377,
+    "mean_of_hypotheses_at": 32,
+    "kmeans_on_raw_patch": 0.5024205357911965,
+    "floors": {
+     "assembly_beats_best_tower": 0.04416401068136788,
+     "assembly_beats_kmeans": 0.029933672150917356,
+     "vote_beats_best_assembly": 0.019148936170212738,
+     "vote_beats_mean": 0.00658971487638893,
+     "anything_beats_raw_pixels": 0.05364803169954341
+    }
+   }
+  ]
+ }
+}
