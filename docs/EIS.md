@@ -65,25 +65,58 @@ Naming it is part of specifying the level, not a later refinement.
 
 ## The levels
 
-Seven, escalating. The final column is the only one that decides whether a level is real.
+Twelve capacities, ordered by cognitive complexity, each drawn from a protocol validated on humans
+and animals. The ordering is close to a Piaget-plus-comparative-psychology ladder, and that is the
+point: these are facultades, not tasks, and each one must be measurable by **more than one
+challenge** or the challenge is what got measured.
 
-| # | capability | anti-test — what passes it *without* the capability | status |
-|---|---|---|---|
-| 1 | **Learns something new without forgetting** | A model with enough spare capacity never forgets; interleaved replay passes without any architectural property. Anti-test must force capacity pressure and forbid replay. | `PROPOSED` — measurable today, and the closest to reachable |
-| 2 | **Generalises spontaneously** | A linear probe on raw pixels generalises. Every "generalisation" result here must clear the input it was computed from — which is `CGE-A-00`, still unpassed by anything. | `PROPOSED` |
-| 3 | **Forms concepts without supervision** | k-means on the raw input patch. It beat Heron's Layer 2 concept formation by **14×**. Any concept claim must beat clustering on pixels first. | `PROPOSED` — anti-test already exists and has already killed one claim |
-| 4 | **Transfers knowledge between domains** | Shared low-level statistics between the two domains. Anti-test: a frozen random projection of domain A that transfers equally well. | `UNMEASURABLE` — no second domain exists; the suite is vision plus a coarse touch map plus an efference copy |
-| 5 | **Plans over a long horizon** | A greedy policy plus a good world model looks like planning. Anti-test: greedy-with-lookahead-1 at matched compute. | `UNMEASURABLE` — no task here rewards planning |
-| 6 | **Discovers strategies nobody programmed** | The environment's own structure. Anti-test: exhaustive enumeration of what the action space makes trivially available. | `UNMEASURABLE` — and the level most vulnerable to being narrated rather than measured |
-| 7 | **Restructures its own knowledge to improve future decisions** | Ordinary continued learning. Anti-test: the same system with representation frozen and only the readout adapting. | `UNMEASURABLE` |
+The final column is the only one that decides whether a level is real. An **anti-test** is the
+cheapest system that passes the level *without* the capability.
 
-**Four of seven are `UNMEASURABLE` for want of a world, not for want of an architecture.** That
-is the honest state, and it is a finding about the *benchmark*: the current battery is a single
-modality plus proprioception. Levels 4–7 cannot be attempted without a second modality and a
-task with a horizon. The CGE catalogue already records the same limitation from the other
-direction — `cge.catalogue.audit()` reports no audio gate and no implemented cross-modal gate.
+| # | capability | protocol | anti-test — what passes it *without* the capability | status |
+|---|---|---|---|---|
+| 0 | **Prediction** | forecast `x(t+τ)` | copy-last, and the raw frame at the same horizon. Persistence degrades fastest, so everything looks better at longer τ | `IMPLEMENTED` as `CGE-B-05` at component level |
+| 1 | **Working memory** | delayed match-to-sample | a low-pass filter with a long enough time constant. The delay must exceed the system's measured state autocorrelation | `BUILDABLE NOW` — closest to reachable |
+| 2 | **Object permanence** | Piaget hiding, then visible → invisible displacement → container swap | frozen-at-entry, and any baseline handed the answer. This mistake already cost us `CGE-A-01` | `BUILDABLE NOW` |
+| 3 | **Identity / invariance** | same object rotated, occluded, re-lit, then a new instance | shared low-level statistics between the two views | `IMPLEMENTED` at level 1 only (chance, 0.51) |
+| 4 | **Categorization** | train on members, test on an unseen member of the class | k-means on the raw input patch. It beat Heron's concept formation by **14×** | `BLOCKED` — no labelled classes with held-out instances |
+| 5 | **Relational reasoning** | A>B, B>C ⇒ ? ; same/different | the absolute features of the objects, rather than the relation. Controls must hold features constant across relations | `BUILDABLE NOW` |
+| 6 | **Cognitive flexibility** | reversal learning: red→food, then blue→food | a system with no memory relearns instantly and looks maximally flexible. Must be scored against retention, not speed alone | `BUILDABLE NOW` |
+| 7 | **Spatial navigation** | maps, shortcuts, novel routes — not just solving | wall-following and other local policies solve many mazes with no map at all | partially — `spatial_memory` exists, shortcuts do not |
+| 8 | **Path integration** | dead reckoning with no landmarks: where did you start? | predicting zero displacement, which is what holding still achieves | `IMPLEMENTED` as `CGE-A-09`. Corvus **+0.572** |
+| 9 | **Planning** | Tower of Hanoi, Sokoban — greedy must fail | greedy with lookahead-1 at matched compute | `BLOCKED` — needs object manipulation; ours only moves |
+| 10 | **Causal reasoning** | lever → food, then break the lever; Aesop's-fable variants | association without intervention. The gate must include an action the agent chooses | `BLOCKED` — needs an action space with consequences |
+| 11 | **Social reasoning** | cooperation, competition, simplified theory of mind | **a model of the environment the other agent is reacting to.** That is what would be mistaken for theory of mind | `BLOCKED` — no second agent exists |
 
----
+**Four are blocked for want of a world, not an architecture**, and the reason is the same each
+time: our agent has a 5×5 view and four locomotion actions. Planning, causal reasoning and social
+reasoning all need an action space with consequences beyond moving; categorization needs classes
+with held-out members. That is a finding about the *benchmark*, and `cge.catalogue.audit()`
+records the same limitation from the other side.
+
+**Four are buildable now** — working memory, object permanence, cognitive flexibility, relational
+reasoning — and that is the right next batch, in that order. Delayed match-to-sample is the
+cheapest of them.
+
+### A protocol validated on animals is not automatically valid here
+
+Delayed match-to-sample means something for a crow because a crow could solve it many ways. Here
+it can be passed by a filter with a long enough time constant. **Importing a famous paradigm does
+not relieve it of needing its anti-test** — and the anti-test is the column above, not an
+afterthought.
+
+### Where the boundary with the CGE falls
+
+The same capability can legitimately appear in both batteries, at different levels, and object
+permanence is the clearest case: `CGE-A-09` asks whether a **layer's state** contains displacement
+while its referent is unobservable; a Piaget hiding task asks whether the **system behaves** as
+though the object still exists. Neither substitutes for the other.
+
+The test for which battery a capability belongs to is one question: **can you ask a single layer
+this?** Prediction, path integration, identity and object binding — yes, probe the layer's
+readout, so they are CGE. Working memory, object permanence, categorization, relational reasoning,
+flexibility, navigation, planning, causality and social reasoning — no. You cannot ask a neuron
+whether it does reversal learning. Those are EIS.
 
 ## The gate between CGE and EIS
 
