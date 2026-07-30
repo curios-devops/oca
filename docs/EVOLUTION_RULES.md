@@ -9,6 +9,27 @@ to keep the benchmark independent of the thing it measures.
 
 ---
 
+## R0 — Flag before implementing
+
+**A requirement that omits something load-bearing, or that contradicts a measurement already
+in the record, is not implemented and then discussed. It is flagged first and resolved
+together.** This binds whoever wrote the requirement — architect, agent, or implementer — and
+it binds equally when the requirement is well-argued and obviously reasonable.
+
+The two flags that produced this rule are the demonstration:
+
+- A freeze condition that would have tagged an architecture measured on **1 of 13** gates as a
+  reference point.
+- A rule against tuning-to-pass that, applied literally, would have discarded the project's
+  **only** passing result at its first defect.
+
+Both requirements were correct in motive and wrong in a detail that only shows up against the
+existing record. Implementing them and discussing afterwards would have put a false reference
+in Git and thrown away the one mechanism here that beat its own control.
+
+The flag must name what it costs: which measurement contradicts the requirement, or what
+becomes unmeasurable if it ships. *"I disagree"* is not a flag.
+
 ## R1 — Freeze on floor, not on intention
 
 An architecture is frozen and tagged when **every layer it declares has passed its own
@@ -104,17 +125,77 @@ The question *"what emerges when several clusters cooperate?"* is not answerable
 cluster has never been asked to beat its members. Asking it early does not produce an early
 answer; it produces an unfalsifiable one.
 
+## R6 — Versioning: generations and builds
+
+The model is a launch vehicle programme. **Each architecture is a ship with a mission — clear
+its gates.** It flies, it is repaired between flights, and when the problem turns out to be the
+airframe rather than a part, that ship does not fly again and its lessons go into the next one.
+
+The discipline that matters in that analogy is the one R2 already states: **defects are fixed
+on the current ship; design changes go into the next ship.** A vehicle is not redesigned to
+pass its own static fire.
+
+Three levels of identity, and they are not interchangeable:
+
+| level | form | changes when | example |
+|---|---|---|---|
+| **generation** | `OCA v<n>` + codename | the *design* changes — a new architecture | `OCA v4 "Corvus"` |
+| **build** | `<codename>-v<n>.<b>` | a **defect** is fixed under R2, same design | `corvus-v4.3` |
+| **freeze tag** | `<codename>-v<n>.<b>-alpha` | every declared floor passes (R1) | `corvus-v4.3-alpha` |
+
+A generation number is **never reused and never retired to make room**. Wren is `OCA v1`
+permanently, including in the graveyard — which is why every history file is titled
+`# Wren — OCA v1 (RPDU)` and not just `# Wren`.
+
+A build increment requires the R2 sentence in its commit: *would you have made this change if
+the gate did not exist?* If the answer is no, it is not a build. It is a new generation.
+
+### Builds so far
+
+| build | what changed | R2 verdict |
+|---|---|---|
+| `corvus-v4.1` | Layer 1 learned an action→view map | — |
+| `corvus-v4.2` | replaced it with additive displacement through a fixed injective projection | **defect** — the learned map was a function that provably does not exist (`\|A\|` = 0.0013 after 14,000 ticks) |
+| `corvus-v4.3` | anchor lagged by one tick | **defect** — the observability rule was applied to the wrong tick; 26% of in-tunnel frames were treated as sighted |
+
+`corvus-v4.3` is the build that passes `CGE-A-09`. It is **not tagged `-alpha`**, because R1 is
+not satisfied: Layer 0 is unmeasured and Layer 2 is `pass_through`.
+
+Heron carries one retroactive build for the same reason: `heron-v3.2` fixed the node leak
+(0.25 → 0.03) after the node was measured decorrelating faster than its own neurons. A genuine
+defect — and it **changed no conclusion**, which is what made the retirement a generation
+change rather than another build.
+
+### Mirror has no generation number, on purpose
+
+**Mirror is not `OCA v0`.** It is not an architecture in this lineage and was never designed.
+It is the zero-parameter control: reassemble the frame from the sensory patches, forecast the
+current frame at every horizon, keep nothing. Registered in
+[`cge/registry.py`](../cge/registry.py) under the key `raw`.
+
+It was promoted from a caption to a registered entrant for one reason: **as a control it is a
+number in a legend that readers skip, and as an entrant it is in the same table, in the same
+units, and cannot be skipped.** The promotion immediately earned itself — Mirror comes second
+in the maze race with 30 exits, ahead of Swift's 3 and Heron's 0, and decodes out-of-view walls
+better than Swift, Heron and Corvus.
+
+Giving it a version number would place it in the lineage, and it is not in the lineage. It is
+the floor the lineage has to clear. `CGE-A-00` is exactly that: *beat Mirror on a world you can
+see.* Four generations, none has.
+
 ---
 
 ## Status against these rules, 2026-07-30
 
 | rule | state |
 |---|---|
+| R0 flag before implementing | in force; two flags raised and both upheld |
 | R1 freeze condition | **not met.** Corvus L0 unmeasured (A-02 never re-run without the rotor); L1 passed 1 of 13; L2 is `pass_through` — compliance, not floor |
-| R2 defect vs tuning | in force; Corvus L1 v1→v3 recorded as defect fixes |
+| R2 defect vs tuning | in force; Corvus L1 v4.1→v4.3 recorded as defect fixes |
 | R3 benchmark integrity | in force; one retraction published (`CGE-A-01` → `DEPRECATED`, superseded by `CGE-A-09`) |
 | R4 graveyard audit | done — [`architecture-history/`](../architecture-history/) |
 | R5 no L3 yet | **blocked by R1**, correctly |
+| R6 versioning | in force; current build `corvus-v4.3`, **untagged** — R1 unsatisfied |
 
 **Two runs stand between the current state and a legitimate freeze:** `CGE-A-02` against
 Corvus's own Layer 0, and a declared floor for Layer 2 that is not `pass_through`.

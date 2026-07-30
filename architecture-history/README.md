@@ -17,17 +17,27 @@ Each file records: goals, strengths, weaknesses, gates passed, gates failed, les
 reason for replacement — plus the section that matters most, **the principle worth keeping vs
 the implementation to leave buried.**
 
-| version | codename | retired | file |
-|---|---|---|---|
-| v1 | **Wren** | 2026-07 | [WREN.md](WREN.md) |
-| v2 | **Swift** | 2026-07 | [SWIFT.md](SWIFT.md) |
-| v3 | **Heron** (DCN) | 2026-07 | [HERON.md](HERON.md) |
-| — | **Mirror** | *never retired* | the zero-parameter control, still a live entrant |
-| v4 | **Corvus** | live | [docs/corvus/](../docs/corvus/) |
+| designation | retired | file |
+|---|---|---|
+| **Wren** — OCA v1 (RPDU) | 2026-07 | [WREN.md](WREN.md) |
+| **Swift** — OCA v2 (RPDU mesh v2) | 2026-07 | [SWIFT.md](SWIFT.md) |
+| **Heron** — OCA v3 (DCN), build `heron-v3.2` | 2026-07 | [HERON.md](HERON.md) |
+| **Corvus** — OCA v4, build `corvus-v4.3` | live, untagged | [docs/corvus/](../docs/corvus/) |
+| **Mirror** — *no generation number* | never retired | the control, and still a live entrant |
 
 Live code lives in [`architectures/`](../architectures/). The frozen versions are still
 executable and still registered as benchmark entrants — freezing means *"no longer modified"*,
 not *"no longer run"*. `tests/test_frozen_architectures.py` enforces that.
+
+**A generation number is never reused and never dropped.** Wren is OCA v1 permanently, here in
+the graveyard as much as when it was live, which is why these files are titled
+`Wren — OCA v1` and not `Wren`. Builds within a generation, the freeze tag, and why Mirror has
+no number at all are defined in [EVOLUTION_RULES.md](../docs/EVOLUTION_RULES.md#r6).
+
+The programme model is a launch vehicle: **each architecture is a ship with a mission — clear
+its gates.** It is repaired between flights; when the fault turns out to be the airframe rather
+than a part, the ship does not fly again and its lessons go into the next one. This directory
+is where those ships are kept.
 
 ---
 

@@ -11,13 +11,17 @@ being usable at three.
 Corvids, throughout. The newest architecture is named for the birds that pass
 object-permanence tests, which is the problem all three frozen ones failed.
 
-| codename | key | status | mechanism | verdict |
+| designation | key | status | mechanism | verdict |
 |---|---|---|---|---|
-| **Mirror** | `raw` | control | no state at all — the current frame, and nothing else | the floor, and it beats two of the three |
-| **Wren** | `v1` | frozen | gradient flow on a learned energy landscape | best of the three; still loses to a two-number memory |
-| **Swift** | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling | best object binding of any version; worse prediction |
-| **Heron** | `dcn` | frozen | event-driven neurons into a reservoir with a resonance spectrum | fails 4 of 5 gates; loses to Mirror |
-| **Corvus** | `corvus` | **live** | entity beliefs corrected when observable, propagated when not | first floor gate ever passed here (+0.572); 1 of 13 |
+| **Mirror** — *no version* | `raw` | control | no state at all — the current frame, and nothing else | the floor, and it beats three of the four |
+| **Wren** — OCA v1 | `v1` | frozen | gradient flow on a learned energy landscape | best of the three; still loses to a two-number memory |
+| **Swift** — OCA v2 | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling | best object binding of any version; worse prediction |
+| **Heron** — OCA v3 | `dcn` | frozen at `v3.2` | event-driven neurons into a reservoir with a resonance spectrum | fails 4 of 5 gates; loses to Mirror |
+| **Corvus** — OCA v4 | `corvus` | **live**, `v4.3` | entity beliefs corrected when observable, propagated when not | first floor gate ever passed here (+0.572); 1 of 13 |
+
+Generations, builds and freeze tags are defined in
+[EVOLUTION_RULES.md](EVOLUTION_RULES.md#r6). A generation number is permanent: Wren is OCA v1
+in the graveyard exactly as it was when live.
 
 Retirement notes for the three frozen versions — goals, gates passed and failed, lessons, and
 which principle survives them — are in [`architecture-history/`](../architecture-history/).
@@ -28,12 +32,22 @@ The rules governing when a version freezes and what may be changed are in
 
 ## Mirror — the control, promoted to an entrant
 
-Zero parameters. No memory. At every step it reads what it needs out of the frame in front of
-it and forgets. It is registered as an architecture rather than kept as a caption for one
-reason: **as a control it is a number in a legend, and as an entrant it is in the same table,
-in the same units, and cannot be skipped over.**
+**Where it came from.** Nobody designed Mirror. It is the *raw-frame control* that every
+experiment in this project has printed next to its own result since the first one — the "retina
+control", key `raw`. Twenty lines in [`cge/registry.py`](../cge/registry.py): reassemble the
+frame from the sensory patches, forecast the current frame at every horizon, keep nothing.
+Zero parameters, no memory, no learning.
 
-It comes second in the maze race with 30 exits, ahead of Swift's 3 and Heron's 0.
+**Why it is in the table.** It was promoted from a caption to a registered entrant for one
+reason: **as a control it is a number in a legend that readers skip, and as an entrant it is in
+the same table, in the same units, and cannot be skipped.** The promotion earned itself
+immediately — Mirror comes second in the maze race with 30 exits, ahead of Swift's 3 and
+Heron's 0, and decodes out-of-view walls at 0.773 against Swift's 0.736, Heron's 0.619 and
+Corvus's 0.548. It beats three of the four designed architectures at their own task.
+
+**It has no generation number and never will.** It is not `OCA v0`; it is not in the lineage.
+It is the floor the lineage has to clear, and `CGE-A-00` is exactly that gate — *beat Mirror on
+a world you can see.* Four generations, none has.
 
 Anything that does not beat Mirror is not adding a representation. It is adding latency.
 

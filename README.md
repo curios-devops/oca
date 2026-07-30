@@ -143,13 +143,18 @@ whose absence let three architectures fail without any gate objecting: every lay
 Five entrants share the benchmark. **Three are frozen** — all three lost. Full
 [register](docs/ARCHITECTURES.md):
 
-| codename | key | status | mechanism |
+| designation | key | status | mechanism |
 |---|---|---|---|
-| **Mirror** | `raw` | control | no state at all — the current frame, and nothing else |
-| **Wren** | `v1` | frozen | gradient flow on a learned energy landscape |
-| **Swift** | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling |
-| **Heron** | `dcn` | frozen | event-driven neurons into a reservoir with a resonance spectrum |
-| **Corvus** | `corvus` | **live** | entity beliefs corrected when observable, propagated when not |
+| **Mirror** — *no version* | `raw` | control | no state at all — the current frame, and nothing else |
+| **Wren** — OCA v1 | `v1` | frozen | gradient flow on a learned energy landscape |
+| **Swift** — OCA v2 | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling |
+| **Heron** — OCA v3 | `dcn` | frozen at `v3.2` | event-driven neurons into a reservoir with a resonance spectrum |
+| **Corvus** — OCA v4 | `corvus` | **live**, `v4.3` | entity beliefs corrected when observable, propagated when not |
+
+Mirror is nobody's design. It is the raw-frame control every experiment here has printed since
+the first one, promoted from a caption to a registered entrant so it appears in the same table
+in the same units and cannot be skipped. It has no generation number because it is not in the
+lineage — it is the floor the lineage has to clear, and it beats three of the four designs.
 
 Corvus is named for the birds that pass object-permanence tests, because that is the problem all
 three frozen architectures failed. It is the first entrant here to clear a floor it declared
