@@ -1,8 +1,16 @@
 # The pose world — specification
 
-*Written before the architecture that needs it, because if the world cannot separate
-"recognises the object from a new viewpoint" from "matches pixels", nothing built on top of it
-is measurable.*
+***Level 5 of [the world curriculum](SPEC_WORLD_CURRICULUM.md).*** Written before the
+architecture that needs it, because if the world cannot separate "recognises the object from a
+new viewpoint" from "matches pixels", nothing built on top of it is measurable.
+
+**It is not the next rung of a ladder.** Levels 2–4 are built and no organism here has passed
+them, so the curriculum's own rule — *never advance while the current world is unbeaten* — says
+stop. This level is the exception that justifies itself: it is not a harder world, it is **the
+first world in which the question is asked fairly.** Everywhere else the raw-input control is
+strong, so every architecture has been competing against its own input and losing. Here the raw
+control is at chance by construction. Building it is going back to fix the measurement, not
+forward to a new challenge.
 
 ## Why it is needed
 
