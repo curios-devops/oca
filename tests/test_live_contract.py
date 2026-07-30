@@ -1,13 +1,17 @@
 """The rules the live architecture is held to, enforced before there is any code.
 
-These exist now, while `corvus/` is nearly empty, because that is when they are free. Written
+Written while the live package is still small, because that is when they are free. Written
 after the fact they would each be a refactor, and the specific failure they guard against --
 adapting a frozen model piece by piece until no behaviour can be attributed to any hypothesis
 -- happens one convenient import at a time.
 
-Three architectures are frozen: Wren, Swift and Heron, all under `architectures/`. All three
-satisfied every contract they were given. The tests here include the two requirements that
-would have caught what those contracts missed.
+**The file is named for the role, not the architecture.** It has been renamed twice already,
+following `dcn/` and then `corvus/`, and each rename was a chance for the guard to point at a
+directory that no longer existed and pass vacuously.
+
+Four architectures are frozen now: Wren, Swift, Heron and Corvus. All four satisfied every
+contract they were given. The tests here include the requirements that would have caught what
+those contracts missed.
 """
 
 import ast
@@ -16,8 +20,9 @@ import pathlib
 import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-LIVE = ROOT / "architectures" / "corvus"
-FROZEN = {"architectures.wren", "architectures.swift", "architectures.heron"}
+LIVE = ROOT / "architectures" / "jay"
+FROZEN = {"architectures.wren", "architectures.swift", "architectures.heron",
+          "architectures.corvus"}
 """The frozen packages, by module path. Named individually rather than as a prefix, because
 `architectures` is now the shared parent of the live package too -- a prefix guard would
 forbid Corvus from importing itself."""
@@ -60,8 +65,8 @@ def test_live_architecture_never_imports_from_a_frozen_one():
             if _is_frozen(mod):
                 offenders.append(f"{p.name}: {mod}")
     assert not offenders, (
-        "corvus/ must not import from a frozen architecture. Each of the three failed for a "
-        "reason that is now written down; re-justify the idea in docs/CORVUS/, not the "
+        "the live architecture must not import from a frozen one. Each of the three failed for a "
+        "reason that is now written down; re-justify the idea in its own spec, not the "
         f"import. Found: {offenders}")
 
 
