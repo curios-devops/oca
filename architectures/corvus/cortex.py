@@ -153,5 +153,7 @@ def predicted_retina(cortex: Cortex, tau: int, sensors) -> np.ndarray:
     job, which is why this lives at the boundary and not in the layer.
     """
     t = cortex.towers
-    pred = np.einsum("nid,nd->ni", t.W, t.entity_state())
+    # anchor subspace only, matching how W is learned: displacement says where the tower is,
+    # not what its patch looks like
+    pred = np.einsum("nid,nd->ni", t.W, t.entity_state()[:, :t.cfg.d_anchor])
     return sensors.from_patches(towers_to_patches(pred)).astype(np.float32)

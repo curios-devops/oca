@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "versions": [
+      "corvus",
+      "wren"
+    ],
+    "gates": [
+      "path_integration"
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "sides": [
+      12
+    ],
+    "ticks": null,
+    "out": "logs/scorecard_pathint_v44.json"
+  },
+  "cells": {
+    "corvus|path_integration|12": {
+      "runs": [
+        {
+          "displacement_error": 1.151599752956514,
+          "no_integration": 2.148804677872452,
+          "headline": 0.46407425262275503,
+          "higher_is_better": true,
+          "control": {
+            "retina": 2.2114196981824485,
+            "no_integration": 2.148804677872452,
+            "n_frames": 4262
+          },
+          "valid": true,
+          "seconds": 8.3
+        },
+        {
+          "displacement_error": 0.8019301081821772,
+          "no_integration": 2.410093302131797,
+          "headline": 0.6672617995855816,
+          "higher_is_better": true,
+          "control": {
+            "retina": 2.457316125516586,
+            "no_integration": 2.410093302131797,
+            "n_frames": 4704
+          },
+          "valid": true,
+          "seconds": 7.9
+        },
+        {
+          "displacement_error": 0.9273540145627737,
+          "no_integration": 2.2319785752760284,
+          "headline": 0.5845148224829676,
+          "higher_is_better": true,
+          "control": {
+            "retina": 2.302281573876871,
+            "no_integration": 2.2319785752760284,
+            "n_frames": 3667
+          },
+          "valid": true,
+          "seconds": 7.9
+        }
+      ],
+      "n": 3,
+      "valid": true,
+      "mean": 0.5719502915637681,
+      "sem": 0.05899066419953629,
+      "higher_is_better": true
+    },
+    "wren|path_integration|12": {
+      "runs": [
+        {
+          "displacement_error": 1.49412388022664,
+          "no_integration": 2.148804677872452,
+          "headline": 0.304672083222574,
+          "higher_is_better": true,
+          "control": {
+            "retina": 2.2114196981824485,
+            "no_integration": 2.148804677872452,
+            "n_frames": 4262
+          },
+          "valid": true,
+          "seconds": 39.5
+        },
+        {
+          "displacement_error": 1.6547841478898926,
+          "no_integration": 2.410093302131797,
+          "headline": 0.31339415514487,
+          "higher_is_better": true,
+          "control": {
+            "retina": 2.457316125516586,
+            "no_integration": 2.410093302131797,
+            "n_frames": 4704
+          },
+          "valid": true,
+          "seconds": 39.2
+        },
+        {
+          "displacement_error": 1.7216361217603453,
+          "no_integration": 2.2319785752760284,
+          "headline": 0.2286502474391221,
+          "higher_is_better": true,
+          "control": {
+            "retina": 2.302281573876871,
+            "no_integration": 2.2319785752760284,
+            "n_frames": 3667
+          },
+          "valid": true,
+          "seconds": 38.2
+        }
+      ],
+      "n": 3,
+      "valid": true,
+      "mean": 0.2822388286021887,
+      "sem": 0.026912330866211736,
+      "higher_is_better": true
+    }
+  }
+}

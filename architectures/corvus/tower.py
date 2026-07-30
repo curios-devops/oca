@@ -248,7 +248,8 @@ def build_stack(cfg: TowerConfig | None = None) -> TowerStack:
         # injective over the actions the body can take: distinct actions must produce distinct
         # displacements, or the accumulator cannot be inverted by any reader
         M=rng.normal(0, 1.0, (cfg.d_disp, cfg.n_proprio)),
-        W=np.zeros((n, cfg.n_inputs, D)),
+        # (n, n_inputs, d_anchor) -- appearance is forecast from the anchor subspace only
+        W=np.zeros((n, cfg.n_inputs, cfg.d_anchor)),
         frame=np.zeros((n, D)),
         err=np.ones(n), conf=np.zeros(n), novelty=np.ones(n), uncertainty=np.ones(n),
     )
@@ -338,14 +339,26 @@ def step(stack: TowerStack, visual: np.ndarray, proprio: np.ndarray) -> dict:
     if len(stack.hist) > tau + 1:
         stack.hist.pop(0)
     if len(stack.hist) > tau:
+        # **Appearance is predicted from the anchor alone, never from the displacement.**
+        #
+        # Displacement says where this tower is, not what its patch looks like, and mixing the
+        # two cost the prediction gate outright: measured, displacement runs 4-40x the anchor's
+        # magnitude, and the normalised LMS update divides by the whole frame's squared norm --
+        # so as the agent wandered, the effective learning rate on the part that actually
+        # carries appearance collapsed. 20.5x copy-last, with a standard deviation half the
+        # size of the mean, which is what a non-stationary predictor looks like.
+        #
+        # Keeping the two subspaces separate is what having an entity is *for*: the same thing,
+        # seen from a new place, has moved without changing.
         f_then, _ = stack.hist[0]
-        pred = np.einsum("nid,nd->ni", stack.W, f_then)
+        a_then = f_then[:, :cfg.d_anchor]
+        pred = np.einsum("nid,nd->ni", stack.W, a_then)
         e_x = visual - pred
         stack.err = np.linalg.norm(e_x, axis=1) / np.sqrt(cfg.n_inputs)
         if stack.learn:
-            norm = np.einsum("nd,nd->n", f_then, f_then) + 1e-8
+            norm = np.einsum("nd,nd->n", a_then, a_then) + 1e-8
             stack.W += (cfg.eta_pred / norm)[:, None, None] * np.einsum(
-                "ni,nd->nid", e_x, f_then)
+                "ni,nd->nid", e_x, a_then)
 
     stack.conf = 0.98 * stack.conf + 0.02 * np.exp(-stack.err)
     stack.novelty = np.clip(view_change / (np.median(view_change[np.isfinite(view_change)])

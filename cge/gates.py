@@ -41,7 +41,9 @@ def gate_prediction(version, seed=0, side=12, train=6000, test=1200, **kw):
         version.tick(state, tr["sensory"][t])
 
     state.learn = False
-    horizons = state.cfg.horizons
+    # Corvus publishes its horizons on the stack rather than on a per-layer config, because a
+    # layered architecture has one set of horizons and several configs. Ask the state first.
+    horizons = getattr(state, "horizons", None) or state.cfg.horizons
     errs = {tau: [] for tau in horizons}
     frames = te["retina"]
     for t in range(len(te["sensory"])):
