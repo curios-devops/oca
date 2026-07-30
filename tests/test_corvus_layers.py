@@ -1,7 +1,13 @@
-"""Corvus layers 0 and 2 — the mechanisms the R1 freeze condition rests on.
+"""Corvus Layer 0, and the retired Layer 2.
 
-Numbers live in `logs/`; these pin the *mechanisms*, so that a refactor cannot quietly change
-what `experiments/corvus_l0.py` and `experiments/corvus_l2.py` are measuring.
+Numbers live in `logs/`; these pin the *mechanisms*, so a refactor cannot quietly change what
+`experiments/corvus_l0.py` and the two `corvus_l2*` experiments are measuring.
+
+**Layer 2 is retired and these tests stay.** It was removed from the live stack because both of
+its jobs measured as nulls, not because the code was wrong, and a retired layer's numbers have to
+stay reproducible or the reason it was retired becomes a claim instead of a measurement. The
+contract rules it produced -- one floor per job, an always-on job must have one -- outlived it and
+are tested here against the declaration it left behind.
 """
 
 from __future__ import annotations
@@ -14,7 +20,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from architectures.corvus import cluster as L2
+from architectures.corvus.retired import cluster as L2
 from architectures.corvus import neuron as L0
 from architectures.corvus.contract import LAYERS, Floor, Layer
 from cge.components import gate_rate_distortion, summarise_rate_distortion
@@ -65,7 +71,7 @@ def test_a_neuron_holds_the_last_value_it_sent():
     assert np.all(pop.received()[silent] != pop.a[silent])
 
 
-# ------------------------------------------------------------------ layer 2
+# --------------------------------------------------- layer 2 (retired, kept reproducible)
 
 def _stack_and_pub(mode: str, n_towers: int = 17, width: int = 12):
     stack = L2.build_stack(L2.ClusterConfig(seed=0, mode=mode), n_towers=n_towers)
@@ -106,11 +112,11 @@ def test_the_always_on_job_has_a_floor():
     every tick in both modes and used to have nothing to beat. A layer whose unconditional work
     is unmeasured is compliant and useless, which is exactly what Heron's node layer was.
     """
-    jobs = {f.job: f for f in LAYERS["cluster"].floors}
+    jobs = {f.job: f for f in L2.RETIRED_LAYER.floors}
     assert set(jobs) == {"coordination", "compression"}
     assert jobs["coordination"].always_on
     assert not jobs["compression"].always_on
-    assert LAYERS["cluster"].floor.always_on, "the primary floor must govern the always-on job"
+    assert L2.RETIRED_LAYER.floor.always_on, "the primary floor must govern the always-on job"
 
 
 def test_a_layer_with_floors_only_over_optional_jobs_is_rejected():
@@ -132,8 +138,8 @@ def test_an_always_on_floor_may_not_name_its_own_job_as_the_baseline():
 # ------------------------------------------------------ membership: earned, not positional
 
 def test_the_three_membership_rules_are_selectable_and_differ():
-    """Connectivity, proximity and random must actually pick different towers, or `CGE-B-05`
-    is comparing a rule with itself."""
+    """Connectivity, proximity and random must actually pick different towers, or `CGE-B-10`
+    compared a rule with itself."""
     rng = np.random.default_rng(0)
     n_towers, width = 17, 12
     affinities = rng.normal(0, 1, (n_towers, n_towers))

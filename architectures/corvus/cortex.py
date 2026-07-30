@@ -23,7 +23,6 @@ import numpy as np
 
 from core.world.sensors import N_SOMATIC, N_VISUAL, P, RETINA
 
-from . import cluster as L2
 from . import tower as L1
 
 PATCH_SIDE = int(round(N_VISUAL ** 0.5))          # 8 patches across the retina
@@ -73,21 +72,23 @@ def towers_to_patches(tower_patches: np.ndarray) -> np.ndarray:
 
 
 class Cortex:
-    """Layers 0-2 wired together behind one entry point.
+    """Layers 0-1 wired together behind one entry point.
 
     Holds the layers rather than inheriting from them, so each remains independently replaceable
-    -- which is the point of the contract. The cluster layer reads the towers' *published* state
-    and their events, never their internals.
+    -- which is the point of the contract.
+
+    **There is no Layer 2.** It was built, both of its jobs were measured, and both were nulls:
+    compression -0.004 +/- 0.006 against passing its members through, coordination -0.000 +/-
+    0.001 against not grouping them at all. A level of abstraction that contributes nothing is a
+    relabelling, so it was retired to `architectures/corvus/retired/cluster.py` rather than
+    carried. Corvus is a two-layer architecture and says so.
     """
 
-    def __init__(self, seed: int = 0, use_entities: bool = True,
-                 cluster_mode: str = "pass_through", **kw):
+    def __init__(self, seed: int = 0, use_entities: bool = True, **kw):
         tower_kw = {k: v for k, v in kw.items() if k in L1.TowerConfig.__dataclass_fields__}
         self.towers = L1.build_stack(L1.TowerConfig(
             seed=seed, n_towers=N_TOWERS, n_inputs=INPUTS_PER_TOWER,
             n_proprio=N_PROPRIO, use_entities=use_entities, **tower_kw))
-        self.clusters = L2.build_stack(L2.ClusterConfig(seed=seed, mode=cluster_mode),
-                                      n_towers=N_TOWERS)
         self._learn = True
 
     # the gates set `state.learn`; propagate it to every layer
@@ -100,7 +101,6 @@ class Cortex:
         self._learn = bool(value)
         self.towers.learn = bool(value)
         self.towers.neurons.learn = bool(value)
-        self.clusters.learn = bool(value)
 
     @property
     def cfg(self):
@@ -108,6 +108,8 @@ class Cortex:
 
     @property
     def horizons(self) -> tuple[int, ...]:
+        """One set of horizons for the stack, not one per layer config -- which is what
+        `gate_prediction` reads."""
         return (1, 4, 16)
 
     @property
@@ -123,13 +125,12 @@ class Cortex:
         return self.towers.coalition
 
     def n_params(self) -> int:
-        return self.towers.n_params() + self.clusters.n_params()
+        return self.towers.n_params()
 
     def describe(self) -> dict:
-        d = {"layers": ["neuron", "tower", "cluster"], "n_params": self.n_params(),
+        d = {"layers": ["neuron", "tower"], "n_params": self.n_params(),
              "n_units": self.n_units, "readout_dim": int(self.h.shape[1])}
         d.update({f"tower.{k}": v for k, v in self.towers.describe().items()})
-        d.update({f"cluster.{k}": v for k, v in self.clusters.describe().items()})
         return d
 
 
@@ -140,10 +141,7 @@ def build_cortex(seed: int = 0, **kw) -> Cortex:
 def tick(cortex: Cortex, sensory: np.ndarray) -> dict:
     """One tick from raw sensory input. The only entry point a world needs."""
     visual, proprio = split_sensory(sensory)
-    out = L1.step(cortex.towers, visual, proprio)
-    out.update(L2.step(cortex.clusters, cortex.towers.publication(),
-                       cortex.towers.events()))
-    return out
+    return L1.step(cortex.towers, visual, proprio)
 
 
 def predicted_retina(cortex: Cortex, tau: int, sensors) -> np.ndarray:

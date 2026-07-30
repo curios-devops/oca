@@ -44,7 +44,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from architectures.corvus import cortex as corvus_cortex
-from architectures.corvus.contract import LAYERS
+from architectures.corvus.retired import cluster as L2
 from core.probes import whiten
 from core.world import Sensors
 from core.world.maze import MazeConfig, MazeWorld
@@ -52,10 +52,17 @@ from exp09_maze import RADIUS, visible_mask, wall_probe
 
 
 def collect(seed: int, ticks: int, warmup: int, side: int = 12):
-    """Drive the full cortex through the maze, recording both cluster readouts per tick."""
+    """Drive the cortex through the maze, recording both cluster readouts per tick.
+
+    Layer 2 is retired and no longer part of the cortex, so the cluster is driven here from the
+    towers' publications -- which is exactly how it was wired when it was live, since it only ever
+    read published state. That keeps this measurement reproducible after the removal.
+    """
     world = MazeWorld(MazeConfig(seed=seed))
     sensors = Sensors()
-    cx = corvus_cortex.build_cortex(seed=0, cluster_mode="summarise")
+    cx = corvus_cortex.build_cortex(seed=0)
+    clusters = L2.build_stack(L2.ClusterConfig(seed=0, mode="summarise", membership="proximity"),
+                              n_towers=corvus_cortex.N_TOWERS)
     learn_until = int(ticks * 0.8)
 
     PT, SM, TW, RT, W = [], [], [], [], []
@@ -63,9 +70,10 @@ def collect(seed: int, ticks: int, warmup: int, side: int = 12):
         s_now, ret = sensors.observe(world)
         cx.learn = t < learn_until
         corvus_cortex.tick(cx, s_now)
+        L2.step(clusters, cx.towers.publication(), cx.towers.events())
         if t > warmup:
-            PT.append(cx.clusters._passthrough.ravel().copy())
-            SM.append(cx.clusters.summary.ravel().copy())
+            PT.append(clusters._passthrough.ravel().copy())
+            SM.append(clusters.summary.ravel().copy())
             TW.append(cx.towers.publication().ravel().copy())
             RT.append(ret.ravel().copy())
             W.append(world.surrounding_walls(RADIUS))
@@ -112,7 +120,7 @@ def main() -> None:
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     args = ap.parse_args()
 
-    fl = LAYERS["cluster"].floor
+    fl = next(f for f in L2.RETIRED_LAYER.floors if f.job == "compression")
     print(f"CGE-B-03 -- Corvus Layer 2, {args.ticks} ticks, seeds {args.seeds}")
     print(f"declared floor: beat {fl.beats} by {fl.margin:+.2f}")
     print("target: out-of-view wall decode, matched capacity\n")

@@ -1,4 +1,4 @@
-"""Corvus Layer 2 — `CGE-B-05`, the coordination floor. Q7 option B.
+"""Corvus Layer 2 — `CGE-B-10`, the coordination floor. Q7 option B.
 
 Layer 2 does two jobs. Compression is optional, off by default, and measured at −0.004 ± 0.006
 (`CGE-B-03`). **Coordination runs on every tick in both modes and had nothing to beat** — the
@@ -51,9 +51,8 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from architectures.corvus import cluster as L2
+from architectures.corvus.retired import cluster as L2
 from architectures.corvus import cortex as corvus_cortex
-from architectures.corvus.contract import LAYERS
 from core.probes import fit_ridge
 from core.world import Sensors
 from core.world.maze import MazeConfig, MazeWorld
@@ -163,11 +162,11 @@ def main() -> None:
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     args = ap.parse_args()
 
-    layer = LAYERS["cluster"]
+    layer = L2.RETIRED_LAYER
     floors = [f for f in layer.floors if f.job == "coordination"]
     horizon = layer.horizon
 
-    print(f"CGE-B-05 -- Corvus Layer 2 coordination, {args.ticks} ticks, seeds {args.seeds}")
+    print(f"CGE-B-10 -- Corvus Layer 2 coordination, {args.ticks} ticks, seeds {args.seeds}")
     print(f"target: a tower's own state {horizon} ticks ahead, matched capacity")
     for f in floors:
         print(f"declared floor: beat {f.beats} by {f.margin:+.2f}")
@@ -202,7 +201,7 @@ def main() -> None:
     print(f"\n  => coordination floor: {'PASS' if passed else 'FAIL'}"
           + ("" if passed else "  -- grouping by connectivity does not beat every control"))
 
-    out = {"gate": "CGE-B-05", "layer": "cluster", "job": "coordination",
+    out = {"gate": "CGE-B-10", "layer": "cluster", "job": "coordination",
            "horizon": horizon, "ticks": args.ticks,
            "verdict": "PASS" if passed else "FAIL",
            "floors": {f.beats: f.margin for f in floors},

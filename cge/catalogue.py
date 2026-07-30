@@ -99,6 +99,22 @@ class Gate:
     """**What has actually failed this gate.** Empty means the gate has never discriminated,
     and a gate that has never discriminated does not count toward compliance."""
 
+    ood: str = ""
+    """**Which distribution shift this gate applies between fitting and scoring.**
+
+    Mandatory in the same sense as `control`: it may say "none", but it may not be silent.
+
+    Every gate in this project fits and scores on the *same* world with a *time* split. Nothing
+    is ever asked to transfer. That is precisely the hole through which a benchmark rewards
+    task-fitting rather than capability, and it applies to our own headline results -- nobody
+    knows whether Corvus's +0.572 on path integration survives a maze it was not trained in,
+    because no gate asked.
+
+    Declaring it per gate rather than adding a thirteenth "generalisation gate" is deliberate.
+    A gate runs once and is forgotten; a mandatory field puts the caveat on **every result the
+    gate has ever produced**, which is how `control` earned its place.
+    """
+
     anti_tests: tuple[str, ...] = ()
     """Deliberate attempts to break the abstraction: noise, delay, missing input, conflicting
     evidence, timing shifts, partial communication loss. Graceful degradation is the pass."""
@@ -111,6 +127,11 @@ class Gate:
     def __post_init__(self) -> None:
         if not self.control:
             raise ValueError(f"{self.id} declares no control")
+        if self.status is not Status.PROPOSED and not self.ood:
+            raise ValueError(
+                f"{self.id} declares no OOD condition. Say which distribution shift it applies "
+                "between fitting and scoring, or say 'none' -- but a gate that fits and scores "
+                "on one distribution and does not admit it is measuring the task.")
         if not self.levels:
             raise ValueError(f"{self.id} declares no applicable levels")
         if self.status is Status.STABLE and not self.has_ever_failed:
@@ -167,6 +188,7 @@ register(Gate(
     has_ever_failed="Wren, Swift and Heron. All three, at every horizon (1, 4, 16, 64 ticks). "
                     "Mirror -- literally the raw frame -- outscores all three.",
     anti_tests=("input noise sigma 0.0/0.1/0.3", "held-out time split, never random"),
+    ood="none. Fitted and scored on one physics world with a time split. The gate has never been asked whether an architecture that beats its input on world A still does on world B, and since nothing has passed it, that omission has cost nothing yet. It would the moment something passes.",
     implemented_by="cge.nodes.predictive_gain",
     notes="Most of this project's worlds are observable enough that the answer is already in "
           "the frame, which makes this gate close to unwinnable on them and is most of why "
@@ -191,6 +213,7 @@ register(Gate(
                     "Swift 5.10, Mirror 7.02 (= chance), Heron 8.56 (worse than chance).",
     anti_tests=("length of blindness swept 1-2, 3-4, 5-8, 9+ steps",
                 "the pixel control must land at chance or the corridors are leaking"),
+    ood="none, and irrelevant -- the gate was not measurable in-distribution either.",
     implemented_by="cge.gates.gate_tunnel",
     notes="DEPRECATED, superseded by CGE-A-09. This gate was not measurable and the defect was "
           "mine. It scored absolute position against `frozen-at-entry`, a baseline HANDED the "
@@ -222,6 +245,7 @@ register(Gate(
     anti_tests=("the raw frame must carry no displacement information, or the corridors leak",
                 "displacement rather than position, which removes the unattainable anchor"),
     depends_on=("CGE-A-01",),
+    ood="none, and this is the most expensive gap in the suite. Corvus's +0.572 was fitted and scored in the same braided maze. Whether path integration transfers to a maze it never saw is the difference between a capability and a fitted trajectory, and it is unmeasured. **First OOD variant to build.**",
     implemented_by="cge.gates.gate_path_integration",
     notes="Replaces CGE-A-01. The lesson generalises past this gate: a baseline given information "
           "the component must infer does not measure the component.",
@@ -243,6 +267,7 @@ register(Gate(
     has_ever_failed="Heron's first oscillation wiring: 19x worse reconstruction while emitting "
                     "MORE, because the rhythm was added into the transmitted value.",
     anti_tests=("noise sigma sweep", "a hard per-tick channel budget with dropped events"),
+    ood="partial, and the strongest transfer evidence in the project: the send-on-delta policy was applied to a FROZEN Wren unit's own trace -- a different architecture, different dynamics -- and reconstructed at NRMSE 0.123 at 15% of its rate. That is cross-architecture rather than cross-world, but it is a real shift.",
     implemented_by="cge.components.gate_rate_distortion",
     notes="Heron L0 passes at +92.9%, and the policy transferred to a frozen Wren unit's own "
           "trace. The strongest positive result in the project.",
@@ -264,6 +289,7 @@ register(Gate(
     has_ever_failed="Heron's tower layer, first build: 0.882 against its own members' 0.907 at "
                     "its declared horizon. Not one gate in the old battery detected it.",
     anti_tests=("real stream vs white noise, to show the comparison is not an artefact",),
+    ood="none. Timescales are measured on the same stream the component was fitted to.",
     implemented_by="cge.nodes.gate_horizon",
     notes="Cheap, and it caught a defect that would otherwise have been attributed to "
           "mechanisms. Fixing it changed no other conclusion, which made the other failures "
@@ -288,6 +314,7 @@ register(Gate(
                     "could not oscillate, synchronise, or carry a moving quantity. Discovered "
                     "empirically three times before it was proved on paper in minutes.",
     anti_tests=("ablate the mechanism and confirm the rhythm stops",),
+    ood="not applicable -- the component is driven with no input at all, so there is no fitting distribution to shift away from.",
     implemented_by="cge.components.gate_oscillation",
     notes="Belongs in Gate A because it is checkable before anything is trained, and because "
           "each of the three impossibilities above cost a full experimental cycle.",
@@ -308,6 +335,7 @@ register(Gate(
     levels=(0, 1, 2), modalities=(), cost="seconds",
     has_ever_failed="Heron L0's first wiring: 19x worse reconstruction while emitting more.",
     anti_tests=("the rejected wiring must still reproduce the failure it documents",),
+    ood="none.",
     implemented_by="cge.components.gate_oscillation",
     notes="Kept separate from A-04 because they pull in opposite directions: A-04 wants the "
           "rhythm to exist, A-05 wants it out of the payload. A single combined gate passed "
@@ -328,6 +356,7 @@ register(Gate(
     levels=(0, 1, 2, 3), modalities=(Modality.VISION, Modality.TOUCH), cost="seconds",
     has_ever_failed="",
     anti_tests=("input noise sweep", "missing input", "delayed feedback", "timing shift"),
+    ood="input noise, swept 0.0 / 0.1 / 0.3, applied at scoring only. A corruption shift rather than a world shift, and the only shift any gate here currently applies.",
     implemented_by="cge.components.gate_noise_robustness",
     notes="EXPERIMENTAL: nothing has failed it yet, so it does not count toward compliance. "
           "The likely reason is that the sweep is too gentle -- sigma 0.3 on a normalised "
@@ -354,6 +383,7 @@ register(Gate(
                     "Only Wren clears it, at 84.1%.",
     anti_tests=("maze braiding, because a DFS-carved maze let pixels score 94% on cells they "
                 "could not see -- the gate was measuring parity, not memory",),
+    ood="none. One maze topology, one seed per run, time split.",
     implemented_by="cge.gates.gate_maze",
     notes="The braiding anti-test is the clearest example in the suite of a gate that passed "
           "for the wrong reason until its control was taken seriously.",
@@ -377,6 +407,7 @@ register(Gate(
                     "permanence.",
     anti_tests=("probe local to the object, never whole-frame, to block elimination",
                 "balanced classes so a constant guess scores 0.5"),
+    ood="none. Occlusion is present during fitting as well as scoring.",
     implemented_by="cge.gates.gate_identity",
     notes="The local-probe requirement is not fussiness: a whole-frame probe can name the "
           "hidden object from the three still visible.",
@@ -401,6 +432,7 @@ register(Gate(
                     "the null. Swift is the only pass, at +0.124.",
     anti_tests=("paired shuffled null, which exposed an apparent MI of 0.449 as entirely bias",
                 "matched granularity across architectures"),
+    ood="none.",
     implemented_by="cge.gates.gate_coalitions",
     notes="The one gate where the OLDEST architecture wins. Swift's synchrony grouping binds "
           "14x better than the mechanism that replaced it -- and it was discarded on evidence "
@@ -426,6 +458,7 @@ register(Gate(
                 "within 5%, so neither factor was responsible",
                 "the exact operator as well as the sketch, so a negative cannot be blamed on "
                 "the approximation"),
+    ood="none. Compression is fitted and scored on the same trajectory.",
     implemented_by="cge.nodes.gate_relational",
     notes="This gate retired the strongest result the project ever produced. Its floor should "
           "be pass-through, which inverts the burden of proof onto the compression step.",
@@ -448,6 +481,7 @@ register(Gate(
     has_ever_failed="",
     anti_tests=("verify the publication contains no state vector, or the gate compares the "
                 "full state against a copy of itself",),
+    ood="none.",
     implemented_by="cge.nodes.gate_publication",
     notes="EXPERIMENTAL. Heron passes at 1.50x -- its only pass -- but the result needs its "
           "caveat: the bottleneck was cheap relative to a full state that was itself worse "
@@ -474,6 +508,7 @@ register(Gate(
                     "every horizon.",
     anti_tests=("normalise by the raw frame at the same tau, which changed the reading of "
                 "every horizon curve in the project",),
+    ood="a held-out test stream from the same world -- a time shift, not a distribution shift. The world, the objects and the dynamics are identical.",
     implemented_by="cge.gates.gate_prediction",
     notes="The anti-test is the important part. Scored against persistence alone, the first "
           "version of this gate concluded that everything on the bench was a 64-tick model.",
@@ -508,6 +543,7 @@ register(Gate(
                 "into the components it groups",
                 "grow every rule from identical seeds, so the rules differ only in which "
                 "components they pull in"),
+    ood="none. Membership is derived and scored on one trajectory, deliberately, because the layer does not feed back into the towers it groups. That makes the comparison clean and says nothing about transfer.",
     implemented_by="experiments.corvus_l2_coordination",
     notes="Written for Q7 option B after Layer 2 was found to have declared a floor only over "
           "an optional job while its unconditional job -- coordination -- had none. The gate "

@@ -189,13 +189,24 @@ see.* Four generations, none has.
 
 | rule | state |
 |---|---|
-| R0 flag before implementing | in force; two flags raised and both upheld |
-| R1 freeze condition | **not met.** Corvus L0 unmeasured (A-02 never re-run without the rotor); L1 passed 1 of 13; L2 is `pass_through` — compliance, not floor |
-| R2 defect vs tuning | in force; Corvus L1 v4.1→v4.3 recorded as defect fixes |
-| R3 benchmark integrity | in force; one retraction published (`CGE-A-01` → `DEPRECATED`, superseded by `CGE-A-09`) |
-| R4 graveyard audit | done — [`architecture-history/`](../architecture-history/) |
-| R5 no L3 yet | **blocked by R1**, correctly |
-| R6 versioning | in force; current build `corvus-v4.3`, **untagged** — R1 unsatisfied |
+| R0 flag before implementing | in force; three flags raised, all three upheld |
+| R1 freeze condition | **met.** L0 +0.917 ± 0.006, L1 +0.572 ± 0.059. L2 failed both its floors and was retired rather than carried |
+| R2 defect vs tuning | in force; `corvus-v4.1→v4.4` are all recorded defect fixes, none of which moved a conclusion |
+| R3 benchmark integrity | in force; one retraction published (`CGE-A-01` → `DEPRECATED`, superseded by `CGE-A-09`); every gate now declares its OOD condition |
+| R4 graveyard audit | done — [`architecture-history/`](../architecture-history/), now including a retired *layer* |
+| R5 no L3 yet | in force. Corvus is two layers and L3 is not specified |
+| R6 versioning | **`corvus-v4.4-alpha` tagged 2026-07-30** — the first freeze in this project |
 
-**Two runs stand between the current state and a legitimate freeze:** `CGE-A-02` against
-Corvus's own Layer 0, and a declared floor for Layer 2 that is not `pass_through`.
+### What the tag does and does not mean
+
+`corvus-v4.4-alpha` means **every layer it declares has cleared the floor it declared, before it
+was built, with a valid control and three seeds.** It is a reference point.
+
+It does not mean the architecture is good. The same build is **last of five on prediction**
+(21.2 × copy-last), **last on spatial memory** (−0.235 against raw pixels), and **at chance on
+identity**, where Mirror — which has no state at all — scores highest. `CGE-A-00` is unpassed by
+everything including this.
+
+Both statements are true and the tag records only the first. That is the point of freezing on
+declared floors rather than on results: a floor is a promise a layer made about itself, and this
+is the first architecture here to keep all of them.

@@ -378,11 +378,26 @@ def gate_path_integration(version, seed=0, side=12, ticks=14000, warmup=3000, **
     }
 
 
+# Keys name the **capacity measured**, never the world it is measured in.
+#
+# Three of these used to name a world (`maze`, `tunnel`) or a mechanism (`coalitions`), which is
+# how a benchmark quietly becomes a task list: rename the world and the capacity disappears. The
+# catalogue in `cge/catalogue.py` always got this right -- CGE-B-03 is "Aggregation earns its
+# place", not "maze" -- so this is the runner catching up with it.
+#
+# A capacity may be measured by more than one challenge. `spatial_memory` happens to be measured
+# in a maze today; that is a fact about our worlds, not about the capacity.
 GATES = {
     "prediction": gate_prediction,
     "path_integration": gate_path_integration,
-    "maze": gate_maze,
+    "spatial_memory": gate_maze,          # out-of-view wall decode: what is remembered, not walked
     "identity": gate_identity,
-    "coalitions": gate_coalitions,
-    "tunnel": gate_tunnel,
+    "object_binding": gate_coalitions,    # do groups carry object identity? perceptual, not social
+    "blind_localisation": gate_tunnel,    # CGE-A-01, DEPRECATED: the gate was not measurable
 }
+
+# Old keys keep resolving, because every scorecard and log this project has written uses them and
+# renaming a key must not orphan a record. Same rule as the architecture codenames.
+_ALIASES = {"maze": "spatial_memory", "coalitions": "object_binding", "tunnel":
+            "blind_localisation"}
+GATES.update({old: GATES[new] for old, new in _ALIASES.items()})

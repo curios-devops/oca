@@ -149,7 +149,7 @@ Five entrants share the benchmark. **Three are frozen** — all three lost. Full
 | **Wren** — OCA v1 | `v1` | frozen | gradient flow on a learned energy landscape |
 | **Swift** — OCA v2 | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling |
 | **Heron** — OCA v3 | `dcn` | frozen at `v3.2` | event-driven neurons into a reservoir with a resonance spectrum |
-| **Corvus** — OCA v4 | `corvus` | **live**, `v4.3` | entity beliefs corrected when observable, propagated when not |
+| **Corvus** — OCA v4 | `corvus` | **frozen** `v4.4-alpha` | entity beliefs corrected when observable, propagated when not |
 
 Mirror is nobody's design. It is the raw-frame control every experiment here has printed since
 the first one, promoted from a caption to a registered entrant so it appears in the same table

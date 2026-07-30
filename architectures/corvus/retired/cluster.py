@@ -1,4 +1,27 @@
-"""Layer 2 — Tower Cluster.
+"""Layer 2 — Tower Cluster. **RETIRED 2026-07-30. Not in the live stack.**
+
+Both of this layer's jobs were measured and both are nulls:
+
+    compression   beat pass_through          -0.004 +/- 0.006   CGE-B-03
+    coordination  beat independent_towers    -0.000 +/- 0.001   CGE-B-10
+
+The second is the one that retired it. A tower's cluster-mates tell it nothing about its own
+future that it does not already know -- at matched capacity, at the layer's own 64-tick horizon,
+across three seeds, and **however the members are grouped**: all four membership rules land
+within 0.007 NRMSE of each other, and on two of three seeds the best rule is no grouping at all.
+
+The layer is not underperforming. It is doing nothing measurable, and a level of abstraction that
+contributes nothing is a relabelling.
+
+Kept executable so `experiments/corvus_l2.py` and `experiments/corvus_l2_coordination.py` still
+reproduce those numbers. `register(...)` is removed, so it is no longer part of the contract and
+`check_stack` no longer sees it. Everything below is unchanged from the version that was measured.
+
+Original documentation follows.
+
+---
+
+Layer 2 — Tower Cluster.
 
 A collection of cooperative towers, responsible for **local coordination** before higher-level
 integration. Summarising its members is permitted and not required.
@@ -51,8 +74,8 @@ from dataclasses import dataclass, field, replace
 
 import numpy as np
 
-from .contract import Floor, Layer, register
-from .primitives import Event
+from ..contract import Floor, Layer
+from ..primitives import Event
 
 
 @dataclass(frozen=True)
@@ -229,7 +252,9 @@ def step(stack: ClusterStack, tower_publication: np.ndarray,
             "n_relations": len(stack.relations), "n_reforms": stack.n_reforms}
 
 
-register(Layer(
+# Declared, not registered. The floors below are what the layer was measured against;
+# keeping them readable is the point of retiring rather than deleting.
+RETIRED_LAYER = Layer(
     name="cluster",
     horizon=ClusterConfig().horizon,
     inputs_from="tower",
@@ -269,4 +294,4 @@ register(Layer(
     step=lambda s, u: step(s, u[0], u[1] if len(u) > 1 else None),
     readout=lambda s: s.readout(),
     describe=lambda s: s.describe(),
-))
+)

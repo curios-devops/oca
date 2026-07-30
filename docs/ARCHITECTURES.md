@@ -1,7 +1,6 @@
 # The architectures
 
-Five entrants share one benchmark. Three are frozen, one is a zero-parameter control, and one
-is live.
+Five entrants share one benchmark. **Four are frozen** and one is a zero-parameter control.
 
 Registry keys (`v1`, `v2`, `dcn`, `raw`) never change — they are written into every scorecard
 and log this project has produced, and renaming them would orphan the record. **Codenames are
@@ -17,7 +16,7 @@ object-permanence tests, which is the problem all three frozen ones failed.
 | **Wren** — OCA v1 | `v1` | frozen | gradient flow on a learned energy landscape | best of the three; still loses to a two-number memory |
 | **Swift** — OCA v2 | `v2` | frozen | Stuart–Landau limit-cycle oscillators, phase-gated coupling | best object binding of any version; worse prediction |
 | **Heron** — OCA v3 | `dcn` | frozen at `v3.2` | event-driven neurons into a reservoir with a resonance spectrum | fails 4 of 5 gates; loses to Mirror |
-| **Corvus** — OCA v4 | `corvus` | **live**, `v4.3` | entity beliefs corrected when observable, propagated when not | first floor gate ever passed here (+0.572); 1 of 13 |
+| **Corvus** — OCA v4 | `corvus` | **frozen** `v4.4-alpha` | entity beliefs corrected when observable, propagated when not | first architecture here to clear every floor it declared — and last of five on prediction |
 
 Generations, builds and freeze tags are defined in
 [EVOLUTION_RULES.md](EVOLUTION_RULES.md#r6). A generation number is permanent: Wren is OCA v1
@@ -104,9 +103,10 @@ Full detail: [SPEC_L2_NODE.md](heron/SPEC_L2_NODE.md),
 
 ## Corvus — `architectures/corvus/`
 
-OCA v4, layers 0–2 built. The smallest architecture in the project: **166,912 parameters**, a
-quarter of Wren's. Specifications in [docs/corvus/](corvus/), results in
-[RESULTS_CORVUS.md](corvus/RESULTS_CORVUS.md).
+**Frozen as `corvus-v4.4-alpha`, 2026-07-30 — the first freeze in this project.** Two layers,
+**158,208 parameters**, a quarter of Wren's. Specifications in [docs/corvus/](corvus/); results in
+[RESULTS_CORVUS.md](corvus/RESULTS_CORVUS.md), [RESULTS_R1_FREEZE.md](corvus/RESULTS_R1_FREEZE.md)
+and [RESULTS_COORDINATION.md](corvus/RESULTS_COORDINATION.md).
 
 It inherits exactly one thing in code: the layer contract, which is the third version of that
 file and the first written after knowing what the previous two failed to require. Wren, Swift
@@ -121,10 +121,20 @@ when the referent is observable, advance it by a predicted displacement when it 
 observability is *inferred*, never told. Getting there required retracting a published claim of
 this project's own; that retraction is the more important half of the result.
 
-**What is not yet known.** It has been run on **1 of 13** counting gates. Layer 0's sparse-event
-result is inherited from Heron and has never been re-measured without the rotor; Layer 2 is in
-`pass_through` and has never been asked to beat its members; every Gate B result is unrun. It is
-last in the maze at 0.548 against Mirror's 0.773, and zero maze exits against Wren's 53.
+**Both layers clear the floors they declared**, which is why it froze: L0 at **+0.917 ± 0.006**
+on sparse event coding — re-measured on its own traces, not inherited, and removing Heron's rotor
+cost −0.006 — and L1 at **+0.572 ± 0.059**.
+
+**It had a Layer 2 and no longer does.** Both of the cluster's jobs measured as nulls: compression
+−0.004 ± 0.006 against passing its members through, coordination −0.000 ± 0.001 against not
+grouping them at all. Removing it changed neither headline to four decimal places, which is the
+cleanest possible confirmation that it was inert. Retired to
+[CORVUS_L2_CLUSTER.md](../architecture-history/CORVUS_L2_CLUSTER.md).
+
+**And it is the worst entrant on Gate B.** Last of five on prediction (21.2× copy-last), last on
+spatial memory (−0.235 against raw pixels), at chance on identity where Mirror scores highest.
+Corvus is specialised for knowing where it is while blind and pays for it at forecasting what it
+can see. Frozen means *cleared every floor it declared*, not *good*.
 
 ---
 

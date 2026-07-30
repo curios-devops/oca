@@ -99,10 +99,11 @@ def _report(card, versions, gates, sides):
             print(f"{label:10s}{row}")
 
     print("\nheadline per gate:")
-    print("  prediction  16-step MSE as a fraction of copy-last (lower is better)")
-    print("  maze        out-of-view wall decode minus the raw-pixel control (higher)")
-    print("  identity    hidden-object kind, balanced accuracy, chance 0.50 (higher)")
-    print("  coalitions  object MI above a shuffled null (higher)")
+    print("  prediction         16-step MSE as a fraction of copy-last (lower is better)")
+    print("  spatial_memory     out-of-view wall decode minus the raw-pixel control (higher)")
+    print("  identity           hidden-object kind, balanced accuracy, chance 0.50 (higher)")
+    print("  object_binding     object MI above a shuffled null (higher)")
+    print("  path_integration   displacement while blind, vs predicting no movement (higher)")
     print("  '!' marks a cell whose control failed, so its number means nothing.")
 
     reasons = []
