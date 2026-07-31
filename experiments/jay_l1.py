@@ -36,7 +36,6 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from architectures.jay import cortex as jay_cortex
-from architectures.jay.retired import tower_binding  # noqa: F401  (registers the layer)
 from architectures.jay.contract import LAYERS
 from core.world import Sensors
 from core.world.pose import SHAPES, PoseConfig, PoseWorld
@@ -45,10 +44,10 @@ from validate_pose_world import balanced_accuracy, decode, nearest_template
 CHANCE = 1.0 / len(SHAPES)
 
 VARIANTS = {
-    "binding": {},
+    "canonical": {},
+    "no_canonical": {"canonicalise": False},
     "no_binding": {"use_binding": False},
     "shuffled_locations": {"shuffle_locations": True},
-    "features_only": {"features_only": True},
 }
 
 
@@ -187,7 +186,7 @@ def main() -> None:
         per = "  ".join(f"{v:.3f}" for v in r["per_seed"])
         print(f"  {name:20} {r['model_trained']:>8.3f} {r['model_heldout']:>9.3f}   {per}")
 
-    b = results.get("binding", {})
+    b = results.get("canonical", {})
     if b.get("model_heldout"):
         print(f"\n  {'raw frame':20} {b['raw_trained']:>8.3f} {b['raw_heldout']:>9.3f}   <- control")
         print(f"  {'nearest-template':20} {b['template_trained']:>8.3f} "
@@ -209,6 +208,8 @@ def main() -> None:
         print("\n  floors, on held-out poses:")
         verdicts = {}
         for f in floors:
+            if "canonical" in f.beats:
+                continue                       # scored in the ablation block below
             ctl = b["template_heldout"] if "template" in f.beats else b["raw_heldout"]
             d = b["model_heldout_min"] - ctl
             ok = bool(above_chance and d > f.margin)
@@ -217,13 +218,13 @@ def main() -> None:
             print(f"    vs {f.beats:38} {d:+.3f}  {'PASS' if ok else 'FAIL'}{note}")
 
         print("\n  ablation and controls, on held-out poses:")
-        for name in ("no_binding", "shuffled_locations", "features_only"):
+        for name in ("no_canonical", "no_binding", "shuffled_locations"):
             r = results.get(name, {})
             if not r.get("model_heldout"):
                 continue
             d = b["model_heldout"] - r["model_heldout"]
-            print(f"    binding vs {name:24} {d:+.3f}  "
-                  f"{'binding earns it' if d > 0.05 else 'BINDING IS DECORATION'}")
+            print(f"    canonical vs {name:22} {d:+.3f}  "
+                  f"{'earns it' if d > 0.05 else 'DECORATION'}")
         results["floor_verdicts"] = verdicts
 
     p = Path(__file__).resolve().parents[1] / "logs" / "jay_l1.json"

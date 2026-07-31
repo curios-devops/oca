@@ -140,12 +140,36 @@ Three levels of identity, and they are not interchangeable:
 | level | form | changes when | example |
 |---|---|---|---|
 | **generation** | `OCA v<n>` + codename | the *design* changes — a new architecture | `OCA v4 "Corvus"` |
-| **build** | `<codename>-v<n>.<b>` | a **defect** is fixed under R2, same design | `corvus-v4.3` |
+| **build** | `<codename>-v<n>.<b>` | a **defect** is fixed, or a mechanism is replaced before the architecture has ever frozen | `corvus-v4.3`, `jay-v5.2` |
 | **freeze tag** | `<codename>-v<n>.<b>-alpha` | every declared floor passes (R1) | `corvus-v4.3-alpha` |
 
 A generation number is **never reused and never retired to make room**. Wren is `OCA v1`
 permanently, including in the graveyard — which is why every history file is titled
 `# Wren — OCA v1 (RPDU)` and not just `# Wren`.
+
+### A generation is spent at freeze, not at rollout
+
+**A ship that has never flown is not retired — it is redesigned on the pad, and reflown.** Only
+a vehicle that has cleared R1 and carries a tag has spent its number.
+
+So replacing a *mechanism* inside an architecture that has never been frozen is a **build**, not
+a generation, even when the mechanism is replaced wholesale. Jay's first Layer 1 — feature-at-place
+binding — was built, gated and refuted without the architecture ever being tagged; the next
+attempt is `jay-v5.2`, not OCA v6.
+
+The alternative burns a generation number on every failed prototype and fills the graveyard with
+ships that never left the pad, which destroys the one thing the numbering is for: a permanent,
+ordered record of designs that actually flew.
+
+**The distinction is not a loophole, because R2 still binds inside it.** A build may replace a
+mechanism, but it may not replace one *in order to pass a gate the previous one failed on its own
+terms*. Jay L1 was retired because the property it claimed — pose invariance — was measured
+directly and found absent, not because a threshold was missed by a little. What replaces it has
+to declare its own floor before it is written, exactly as the first one did.
+
+Retired mechanisms go to `architecture-history/` and stay executable, whether they belonged to a
+frozen architecture or to one still on the pad. `CORVUS_L2_CLUSTER.md` and `JAY_L1_BINDING.md`
+are both there for the same reason: a refutation that cannot be re-run is a claim.
 
 A build increment requires the R2 sentence in its commit: *would you have made this change if
 the gate did not exist?* If the answer is no, it is not a build. It is a new generation.
@@ -195,7 +219,7 @@ see.* Four generations, none has.
 | R3 benchmark integrity | in force; one retraction published (`CGE-A-01` → `DEPRECATED`, superseded by `CGE-A-09`); every gate now declares its OOD condition |
 | R4 graveyard audit | done — [`architecture-history/`](../architecture-history/), now including a retired *layer* |
 | R5 no L3 yet | in force. Corvus is two layers and L3 is not specified |
-| R6 versioning | **`corvus-v4.4-alpha` tagged 2026-07-30** — the first freeze in this project |
+| R6 versioning | `corvus-v4.4-alpha` tagged 2026-07-30, the first freeze here. `jay-v5.1` refuted and replaced by `jay-v5.2` on the pad — a build, because Jay has never flown |
 
 ### What the tag does and does not mean
 
