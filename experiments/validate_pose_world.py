@@ -29,18 +29,44 @@ CHANCE = 1.0 / len(SHAPES)
 
 
 def collect(ticks: int, seed: int) -> dict:
+    """One row per **presentation**, not per tick.
+
+    The sensor is a fovea: a single frame is a fragment of the object and identifies nothing.
+    Asking a per-frame control to classify would only establish that fragments are fragments.
+    What each row carries is what a system with the whole episode could have:
+
+    * `R` -- the episode's frames pooled. Every frame, no idea where any of them came from.
+    * `I` -- the **perfect integrator**: every frame stitched back onto the canvas at the fovea
+      position it was taken from. Perfect integration, zero invariance. This is the control that
+      matters, and it is the analogue of `frozen-at-entry`: hand the baseline the easy half of
+      the problem -- where the sensor was -- and see whether the hard half remains.
+    """
     world = PoseWorld(PoseConfig(seed=seed))
     sensors = Sensors()
-    R, K, P, HO, EFF = [], [], [], [], []
+    cfg = world.cfg
+    R, I, K, P, HO, EFF = [], [], [], [], [], []
+    frames, canvas, cover = [], None, None
+    prev_ep = world.episode_t
     for _ in range(ticks):
         _, ret = sensors.observe(world)
-        R.append(ret.ravel().copy())
-        K.append(world.kind)
-        P.append(world.pose)
-        HO.append(world.is_held_out())
+        frames.append(ret.ravel().copy())
         EFF.append(world.efference().copy())
+        if canvas is None:
+            canvas = np.zeros((cfg.canvas, cfg.canvas), dtype=np.float64)
+            cover = np.zeros_like(canvas)
+        y, x = int(round(world.fovea[0])), int(round(world.fovea[1]))
+        h = ret.shape[0]
+        canvas[y:y + h, x:x + h] += ret
+        cover[y:y + h, x:x + h] += 1.0
+        k, p, ho = world.kind, world.pose, world.is_held_out()
         world.step()
-    return {"R": np.array(R), "kind": np.array(K), "pose": np.array(P),
+        if world.episode_t < prev_ep:
+            R.append(np.mean(frames, axis=0))
+            I.append((canvas / np.maximum(cover, 1.0)).ravel())
+            K.append(k); P.append(p); HO.append(ho)
+            frames, canvas, cover = [], None, None
+        prev_ep = world.episode_t
+    return {"R": np.array(R), "I": np.array(I), "kind": np.array(K), "pose": np.array(P),
             "held_out": np.array(HO), "eff": np.array(EFF)}
 
 
@@ -113,21 +139,28 @@ def bag_of_features(X: np.ndarray, ret_side: int) -> np.ndarray:
 
 def run(seed: int, ticks: int) -> dict:
     d = collect(ticks, seed)
-    R, kind, ho = d["R"], d["kind"], d["held_out"]
+    R, I, kind, ho = d["R"], d["I"], d["kind"], d["held_out"]
     ret_side = int(round(np.sqrt(R.shape[1])))
     tr, te = ~ho, ho
 
     out = {"seed": seed, "n_frames": int(len(R)),
            "n_trained_frames": int(tr.sum()), "n_heldout_frames": int(te.sum()),
            "chance": CHANCE}
-    if tr.sum() < 500 or te.sum() < 200:
-        return {**out, "valid": False, "reason": "not enough frames"}
+    if tr.sum() < 120 or te.sum() < 30:
+        return {**out, "valid": False, "reason": f"{tr.sum()} trained / {te.sum()} held-out"}
 
     # a held-out *time* split within the trained poses, so check 1 is not scored on frames the
     # probe was fitted to -- otherwise "pixels work on trained poses" is a tautology
     cut = int(tr.sum() * 0.7)
     tr_idx = np.flatnonzero(tr)
     fit, val = tr_idx[:cut], tr_idx[cut:]
+    te = np.flatnonzero(te)
+
+    # The perfect integrator: every frame put back where it came from. Perfect integration,
+    # zero invariance -- the ceiling an architecture has to beat to have contributed anything
+    # beyond stitching, and the proof that the cue survives a fovea at all.
+    out["integrator_trained"] = nearest_template(I[fit], kind[fit], I[val], kind[val])
+    out["integrator_heldout"] = nearest_template(I[fit], kind[fit], I[te], kind[te])
 
     # The raw control is the **best cheap use of the input**, not one arbitrary estimator.
     # "Beat your own input" is not a claim about linear probes: a first pass here scored the
@@ -142,7 +175,8 @@ def run(seed: int, ticks: int) -> dict:
 
     # choose the estimator on TRAINED poses, then ask whether *that* one generalises. Taking
     # the max of both columns independently would cherry-pick a control that does not exist.
-    best = "template" if out["template_trained"] >= out["ridge_trained"] else "ridge"
+    best = max(("template", "ridge", "integrator"),
+               key=lambda k: out[f"{k}_trained"])
     out["raw_control"] = best
     out["raw_trained"] = out[f"{best}_trained"]
     out["raw_heldout"] = out[f"{best}_heldout"]
@@ -175,14 +209,14 @@ def run(seed: int, ticks: int) -> dict:
     near = CHANCE
     out["gap"] = out["raw_trained"] - out["raw_heldout"]
     out["checks"] = {
-        "1_raw_well_above_chance_on_trained": out["raw_trained"] > 2 * near,
+        "1_cue_survives_a_fovea": out["integrator_trained"] > 2 * near,
         "2_raw_at_chance_on_heldout": out["raw_heldout"] < near + 0.10,
         "3_bag_of_features_at_chance": out["bag_trained"] < near + 0.10,
         "4_confusable_pair_at_chance_for_a_feature_bag": out["bag_confusable_pair"] < 0.60,
         "5_efference_delivered_every_tick": out["efference_delivered"],
         "6_memorisation_does_not_transfer": out["gap"] > 0.20,
     }
-    out["valid"] = bool(out["checks"]["1_raw_well_above_chance_on_trained"]
+    out["valid"] = bool(out["checks"]["1_cue_survives_a_fovea"]
                         and out["checks"]["2_raw_at_chance_on_heldout"]
                         and out["checks"]["6_memorisation_does_not_transfer"])
     return out
@@ -205,7 +239,8 @@ def main() -> None:
             print(f"    {r.get('reason')}\n")
             continue
         print(f"    raw control chosen on trained poses: {r['raw_control']}")
-        for k in ("ridge_trained", "ridge_heldout", "template_trained", "template_heldout",
+        for k in ("integrator_trained", "integrator_heldout",
+                  "ridge_trained", "ridge_heldout", "template_trained", "template_heldout",
                   "bag_trained", "bag_confusable_pair", "gap"):
             print(f"    {k:24} {r[k]:.3f}")
         for name, ok in r["checks"].items():

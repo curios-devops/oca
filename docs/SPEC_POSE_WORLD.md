@@ -77,34 +77,60 @@ does not.
 No 3D, no lighting, no textures, no new modality, no second agent. Those unlock EIS 9–11 and
 each is a separate project. This world does **one** thing: make pose exist.
 
-## Validity — measured
+## Validity — measured, with a real fovea
 
-`python experiments/validate_pose_world.py --ticks 40000 --seeds 0 1 2`
+`python experiments/validate_pose_world.py --ticks 60000 --seeds 0 1 2`
 
-**The world is VALID.** Four kinds, chance 0.250, ~33,000 trained and ~6,700 held-out frames per
-seed.
+**The world is VALID.** Four kinds, chance 0.250, 620 trained and 130 held-out *presentations*
+per seed. The fovea is 32px on a 120px canvas and the object spans ~106px, so **a single glance
+takes in under a third of the object's width.**
 
-| | seed 0 | seed 1 | seed 2 | mean |
-|---|---|---|---|---|
-| nearest-template, **trained** poses | 0.990 | 0.983 | 0.988 | **0.987** |
-| nearest-template, **held-out** poses | 0.171 | 0.171 | 0.132 | **0.158** |
-| linear probe, trained | 0.359 | 0.327 | 0.326 | 0.337 |
-| linear probe, held-out | 0.102 | 0.128 | 0.118 | 0.116 |
-| feature bag, all kinds | 0.287 | 0.293 | 0.260 | 0.280 |
-| feature bag, confusable pair *(chance 0.50)* | 0.541 | 0.602 | 0.495 | 0.546 |
-| **gap** | 0.819 | 0.811 | 0.857 | **0.829** |
+| control | trained poses | held-out poses |
+|---|---|---|
+| **perfect integrator** — every frame stitched back at the fovea position it came from | **0.887** | **0.257** |
+| episode's frames pooled, no place information | 0.264 | 0.239 |
+| linear probe on the pooled frames | 0.311 | 0.278 |
+| feature bag | 0.290 | — |
+| **chance** | **0.250** | **0.250** |
 
-**Memorisation is near-perfect on poses it has seen and below chance on poses it has not.** Not
-merely useless on held-out poses — *anti-correlated*, at 0.158 against a chance of 0.250. A
-memorised appearance at 60° actively misleads about the same object at 240°.
+### The result that matters, and it is about the problem rather than about us
 
-That is the first setting in this project where the raw-input control is at chance on a question
-we care about, and it is what makes `CGE-A-00` askable here.
+> **Perfect integration is 0.887 on poses it has seen and 0.257 — chance — on poses it has not.**
+
+The integrator is handed the easy half of the problem: it knows exactly where every fragment came
+from, so it reconstructs the object completely. It still cannot recognise that object at an
+orientation it was never shown.
+
+**Invariance is not a consequence of integration.** Stitching fragments correctly is necessary
+and demonstrably not sufficient, and that reframes what a Layer 1 has to supply: not a better way
+to accumulate, but whatever it is that survives a rotation once the accumulation is already
+perfect.
+
+It also gives the sharpest floor this project has had. **Beat 0.257 on held-out poses and you
+have invariance**, because the thing that beats it cannot be integration — integration is already
+at the ceiling and the ceiling is chance.
+
+### What the first two configurations got wrong
+
+| fovea | canvas | object | glance covers | integrator, held-out | |
+|---|---|---|---|---|---|
+| 64 | 96 | 66px | **97%** | — | not a fovea: one glance took in the whole object |
+| 32 | 96 | 66px | 48% | 0.195 | better, but the object still nearly fits |
+| **32** | **120** | **106px** | **30%** | **0.257** | ✅ |
+
+The 64px sensor is why two Layer 1 mechanisms could not have worked whatever they did: its
+per-tick feature was a *global* descriptor that already encoded the arrangement and therefore the
+pose. Binding a pose-dependent feature to a canonical place cannot produce pose invariance.
+
+Both times, the world was tuned against **its own declared checks with no architecture in the
+loop**, which is what the checks are for. This is the second such adjustment; a third would mean
+the design is wrong rather than the parameters.
 
 ### The checks
 
-1. **Raw control well above chance on trained poses** — the cue exists and the probe works.
-2. **Raw control at chance on held-out poses.** ✅ 0.158 vs 0.250.
+1. **The cue survives a fovea** — a perfect integrator reaches 0.887 on trained poses, so
+   fragments do contain the object even though no single one does.
+2. **The raw control is at chance on held-out poses.** ✅ 0.257 vs 0.250.
 3. **Feature bag at chance across kinds.** ✅ 0.280.
 4. Feature bag at chance on the confusable pair — 0.546 mean against 0.500, one of three seeds
    marginal at 0.602. Reported, and **not** part of the validity criterion: the histogram is

@@ -79,9 +79,14 @@ class TowerConfig:
     """Tuning widths, in bins. Wide enough that a location between two bins reaches both."""
 
     d_disp: int = 2
-    frame_extent: float = 6.0
-    """Half-range of the accumulated displacement in steps: the fovea traverses about six per
-    axis, and the place field spans a unit radius."""
+    """The place field is normalised by the largest displacement seen **so far in this episode**,
+    rather than by a constant.
+
+    A hand-set `frame_extent` is a fact about the body and the world together, and it has already
+    caused one silent failure: set to 30 where the accumulator ranged about +/-6, it collapsed
+    every trajectory onto a handful of central place cells. Shrinking the fovea from 64 to 32 and
+    growing the canvas from 96 to 120 would have broken it again, in the same invisible way.
+    Self-calibration removes the whole class of bug, and costs one running maximum."""
 
     horizon: int = 16
 
@@ -119,6 +124,7 @@ class TowerStack:
     P: np.ndarray                 # (d_feat, n_neurons)   fixed sensory encoder
     M: np.ndarray                 # (2, n_proprio)        the body's action -> step map
     disp: np.ndarray              # (n_towers, 2)         accumulated displacement
+    extent: np.ndarray            # (n_towers,)           running max |displacement| this episode
     bound: np.ndarray             # (n_towers, d_feat, n_r, n_a)  feature at polar place
     mass: np.ndarray              # (n_towers,)
     centroid: np.ndarray          # (n_towers, 2)
@@ -207,7 +213,8 @@ def build_stack(cfg: TowerConfig | None = None) -> TowerStack:
         cfg=cfg, rng=rng, neurons=neurons,
         P=rng.choice([-1.0, 1.0], (cfg.d_feat, cfg.n_neurons)) / np.sqrt(cfg.n_neurons),
         M=_proprio_to_delta(cfg.n_proprio),
-        disp=np.zeros((n, 2)), bound=np.zeros((n, cfg.d_feat, cfg.n_r, cfg.n_a)),
+        disp=np.zeros((n, 2)), extent=np.ones(n),
+        bound=np.zeros((n, cfg.d_feat, cfg.n_r, cfg.n_a)),
         mass=np.zeros(n), centroid=np.zeros((n, 2)),
     )
 
@@ -240,6 +247,7 @@ def new_episode(stack: TowerStack) -> None:
     """Clear the map. An object model belongs to one presentation."""
     stack.bound[:] = 0.0
     stack.disp[:] = 0.0
+    stack.extent[:] = 1.0
     stack.mass[:] = 0.0
     stack.centroid[:] = 0.0
 
@@ -257,7 +265,9 @@ def step(stack: TowerStack, visual: np.ndarray, proprio: np.ndarray) -> dict:
     stack.mass += m
     w = (m / (stack.mass + 1e-9))[:, None]
     stack.centroid += w * (stack.disp - stack.centroid)
-    rel = (stack.disp - stack.centroid) / cfg.frame_extent
+    off = stack.disp - stack.centroid
+    stack.extent = np.maximum(stack.extent, np.linalg.norm(off, axis=1))
+    rel = off / stack.extent[:, None]
 
     place = _polar_place(stack, rel)                                  # (n, n_r, n_a)
     stack.bound *= cfg.decay

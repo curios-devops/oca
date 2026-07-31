@@ -55,11 +55,22 @@ ACTIONS = ((-1, 0), (1, 0), (0, -1), (0, 1), (0, 0))    # up, down, left, right,
 
 @dataclass
 class PoseConfig:
-    size: int = 64
-    """What `render()` returns — the fovea's view, at the size every other world here uses."""
+    size: int = 32
+    """What `render()` returns — the fovea's view.
 
-    canvas: int = 96
-    """The object canvas the fovea moves within. Larger than `size`, so a frame is a fragment."""
+    **32, not 64, and that was a correction.** At 64 on a 96 canvas the sensor took in 97% of the
+    object's width in a single glance: not a fovea, a camera. Its per-tick feature was then a
+    *global* descriptor which already encoded the arrangement and therefore the pose, so no
+    architecture built on it could be pose-invariant however its places were canonicalised --
+    measured, twice, on two different Layer 1 mechanisms.
+
+    32 is also the floor `Sensors` allows: the retina is 32x32 and `retina()` downsamples by an
+    integer factor, so a smaller window cannot be transduced without changing the sensory
+    substrate for every other world."""
+
+    canvas: int = 120
+    """The object canvas the fovea moves within. Sized so a frame is genuinely a fragment: with
+    `object_radius=46` the object spans ~106px and the fovea sees under a third of it."""
 
     n_poses: int = 6
     """Orientations, evenly spaced. **Six at 60 degrees, chosen by the world's own validity
@@ -73,16 +84,17 @@ class PoseConfig:
     """Pose indices **never shown during training**. Scoring happens only on these, and the
     whole specification rests on the raw control being at chance here."""
 
-    object_radius: float = 26.0
+    object_radius: float = 46.0
     blob_radius: float = 7.0
     blob_softness: float = 2.0
     """Soft edges rather than hard discs: a hard disc aliases under rotation, and the aliasing
     pattern itself would become a pose cue."""
 
-    episode_len: int = 40
-    """Ticks before a new (kind, pose) is drawn. Long enough for a fovea to cross the object."""
+    episode_len: int = 80
+    """Ticks before a new (kind, pose) is drawn. Long enough for a fovea to cross the object --
+    and it has to be longer now that the fovea is smaller and the canvas larger."""
 
-    fovea_step: float = 5.0
+    fovea_step: float = 7.0
     seed: int = 0
     n_objects: int = 1
     """One object at a time, on purpose. Which object a probe is being asked about is the
