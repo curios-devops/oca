@@ -35,3 +35,22 @@ accumulating in more detail.
 
 Both are self-contained: no network requests, no external assets, and they follow the
 viewer's light or dark theme.
+
+## `pose.html` — looking through a keyhole
+
+The pose world, watchable. Three panels: the whole shape, which nothing in the system ever sees
+at once; the 32-pixel fovea, which is all it ever receives; and the picture being reassembled
+from those fragments, filling in as the eye sweeps.
+
+Every third presentation is at an angle **never shown during training**. It is the same shape,
+turned.
+
+The number under the panels is the finding: the reassembled picture recognises a shape at a
+familiar angle **0.887** of the time, and at an unseen angle **0.257** -- chance is 0.250. A
+perfect reconstruction still cannot recognise the object once it has been turned, so piecing the
+fragments together is not the same as understanding what they are.
+
+    make pose-demo && make serve      # then /pose.html
+
+Generated from a recorded run, so the page can never disagree with the world. `make check-demo`
+executes the page's own script against a stub DOM and asserts what a person would look for.

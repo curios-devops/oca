@@ -100,9 +100,17 @@ demo:
 # instead of six, and no Python test can see that.
 check-demo:
 	@node experiments/check_demo.js
+	@node experiments/check_pose_demo.js
 
-serve: demo
-	@echo "open http://127.0.0.1:8080"
+# The pose world, seen: the whole shape, the 32-pixel keyhole, and the picture being
+# reassembled from the fragments.
+pose-demo:
+	$(PY) experiments/make_pose_demo.py
+	@node experiments/check_pose_demo.js
+
+serve: demo pose-demo
+	@echo "open http://127.0.0.1:8080         the maze race"
+	@echo "open http://127.0.0.1:8080/pose.html   looking through a keyhole"
 	$(PY) -m http.server 8080 --bind 127.0.0.1 --directory demo
 
 e9t:

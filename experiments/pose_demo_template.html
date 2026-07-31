@@ -1,0 +1,188 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Looking through a keyhole</title>
+<style>
+  :root {
+    --bg: #0d1014; --fg: #e8eaed; --dim: #8a9199; --line: #232a31;
+    --seen: #4aa3ff; --new: #ff9f43; --ok: #35c987;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f7f8fa; --fg: #14181c; --dim: #5d666f; --line: #dde2e8; }
+  }
+  :root[data-theme="dark"] { --bg: #0d1014; --fg: #e8eaed; --dim: #8a9199; --line: #232a31; }
+  :root[data-theme="light"] { --bg: #f7f8fa; --fg: #14181c; --dim: #5d666f; --line: #dde2e8; }
+
+  body { margin: 0; padding: 24px 18px 40px; background: var(--bg); color: var(--fg);
+         font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -.02em; }
+  .sub { color: var(--dim); margin: 0 0 22px; }
+  .panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px; }
+  .panel { border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+           background: color-mix(in srgb, var(--fg) 3%, transparent); }
+  .panel h2 { font-size: 13px; margin: 0 0 2px; text-transform: uppercase;
+              letter-spacing: .08em; color: var(--dim); font-weight: 600; }
+  .panel p { font-size: 12.5px; color: var(--dim); margin: 0 0 10px; min-height: 34px; }
+  canvas { width: 100%; height: auto; display: block; border-radius: 8px;
+           image-rendering: pixelated; background: #000; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+         margin: 20px 0 10px; }
+  button { font: inherit; font-size: 14px; padding: 7px 16px; border-radius: 8px;
+           border: 1px solid var(--line); background: transparent; color: var(--fg);
+           cursor: pointer; }
+  button:hover { border-color: var(--dim); }
+  .tag { font-size: 12px; padding: 3px 9px; border-radius: 999px; font-weight: 600;
+         letter-spacing: .04em; }
+  .tag.seen { background: color-mix(in srgb, var(--seen) 20%, transparent); color: var(--seen); }
+  .tag.new  { background: color-mix(in srgb, var(--new) 22%, transparent); color: var(--new); }
+  .who { font-size: 19px; font-weight: 650; }
+  .who span { color: var(--dim); font-weight: 400; font-size: 14px; }
+  .note { border-top: 1px solid var(--line); margin-top: 26px; padding-top: 18px;
+          color: var(--dim); font-size: 14px; }
+  .note strong { color: var(--fg); }
+  .nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 10px 20px; margin: 14px 0 0; }
+  .nums div { border-left: 2px solid var(--line); padding-left: 10px; }
+  .nums b { display: block; font-size: 19px; font-weight: 650; }
+  .nums small { color: var(--dim); }
+</style>
+
+<main>
+  <h1>Looking through a keyhole</h1>
+  <p class="sub">It never sees the whole shape. It has to put one together.</p>
+
+  <div class="bar">
+    <button id="play">Pause</button>
+    <button id="next">Next shape</button>
+    <span class="who" id="who"></span>
+    <span class="tag" id="tag"></span>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <h2>The world</h2>
+      <p>The whole shape. Nothing in here ever gets to see this — the box is the only part it
+        is looking at right now.</p>
+      <canvas id="world"></canvas>
+    </div>
+    <div class="panel">
+      <h2>Its eye</h2>
+      <p>All it ever receives: a small window, moving. One glance covers under a third of the
+        shape.</p>
+      <canvas id="eye"></canvas>
+    </div>
+    <div class="panel">
+      <h2>What it has pieced together</h2>
+      <p>Every glance put back where it came from. Watch the shape appear out of the
+        fragments.</p>
+      <canvas id="built"></canvas>
+    </div>
+  </div>
+
+  <div class="note">
+    <p>Each shape is the <strong>same three blobs</strong> every time. Only their arrangement
+      differs — so you cannot tell them apart by what the pieces look like, only by where they
+      sit relative to each other. Two of the four share their distances from the centre exactly
+      and differ only in which blob went where.</p>
+    <p>Every so often a shape appears at an angle that was <span class="tag new">NEVER
+      SEEN</span> during training. It is the same shape, just turned.</p>
+    <div class="nums">
+      <div><b>0.887</b><small>recognising a shape at an angle it was trained on, from the
+        pieced-together picture</small></div>
+      <div><b>0.257</b><small>the same thing, at an angle never seen. Chance is 0.250.</small></div>
+    </div>
+    <p style="margin-top:16px"><strong>That second number is the whole problem.</strong> The
+      picture on the right is put back together perfectly — and it still cannot recognise the
+      shape once it has been turned. Piecing the fragments together is not the same as
+      understanding what they are. Nothing built here has managed the second part yet.</p>
+  </div>
+</main>
+
+<script>
+const D = __DATA__;
+const N = D.canvas_size, F = D.fovea;
+
+const worldC = document.getElementById('world');
+const eyeC   = document.getElementById('eye');
+const builtC = document.getElementById('built');
+for (const [c, size] of [[worldC, N], [eyeC, F], [builtC, N]]) {
+  c.width = size; c.height = size;
+}
+const wx = worldC.getContext('2d'), ex = eyeC.getContext('2d'), bx = builtC.getContext('2d');
+
+// declared before anything that uses them: `const` is hoisted but sits in the temporal dead
+// zone until evaluated, and referencing one above its declaration throws and kills the script.
+const whoEl = document.getElementById('who');
+const tagEl = document.getElementById('tag');
+const playEl = document.getElementById('play');
+
+let ep = 0, t = 0, running = true;
+let canvas = null, sum = null, cover = null;
+
+function loadEpisode(i) {
+  ep = ((i % D.episodes.length) + D.episodes.length) % D.episodes.length;
+  t = 0;
+  const e = D.episodes[ep];
+  canvas = new Float32Array(N * N);
+  for (let k = 0; k < N * N; k++) canvas[k] = (e.canvas.charCodeAt(k) - 48) / 9;
+  sum = new Float32Array(N * N);
+  cover = new Float32Array(N * N);
+  whoEl.innerHTML = e.name + ' <span>turned ' + Math.round(e.pose * 360 / D.n_poses) + '&deg;</span>';
+  tagEl.className = 'tag ' + (e.held_out ? 'new' : 'seen');
+  tagEl.textContent = e.held_out ? 'NEVER SEEN AT THIS ANGLE' : 'a familiar angle';
+}
+
+function paint(ctx, size, get) {
+  const img = ctx.createImageData(size, size);
+  for (let k = 0; k < size * size; k++) {
+    const v = Math.max(0, Math.min(1, get(k)));
+    const g = Math.round(v * 255);
+    img.data[k * 4] = g; img.data[k * 4 + 1] = g;
+    img.data[k * 4 + 2] = Math.round(g * 0.96 + 12); img.data[k * 4 + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+function draw() {
+  const e = D.episodes[ep];
+  const [fy, fx] = e.path[Math.min(t, e.path.length - 1)];
+
+  // the world, with everything outside the fovea dimmed -- so the box is visibly the only
+  // part being received, rather than a decoration drawn on top of a picture it already has
+  paint(wx, N, k => {
+    const y = (k / N) | 0, x = k % N;
+    const inside = y >= fy && y < fy + F && x >= fx && x < fx + F;
+    return canvas[k] * (inside ? 1 : 0.22);
+  });
+  wx.strokeStyle = getComputedStyle(document.documentElement)
+    .getPropertyValue('--seen').trim() || '#4aa3ff';
+  wx.lineWidth = 1.5;
+  wx.strokeRect(fx + 0.75, fy + 0.75, F - 1.5, F - 1.5);
+
+  paint(ex, F, k => canvas[(fy + ((k / F) | 0)) * N + fx + (k % F)]);
+
+  for (let y = 0; y < F; y++) for (let x = 0; x < F; x++) {
+    const k = (fy + y) * N + fx + x;
+    sum[k] += canvas[k]; cover[k] += 1;
+  }
+  paint(bx, N, k => (cover[k] ? sum[k] / cover[k] : 0));
+}
+
+let last = 0;
+function frame(now) {
+  if (running && now - last > 55) {
+    last = now;
+    draw();
+    if (++t >= D.episodes[ep].path.length) loadEpisode(ep + 1);
+  }
+  requestAnimationFrame(frame);
+}
+
+playEl.onclick = () => { running = !running; playEl.textContent = running ? 'Pause' : 'Play'; };
+document.getElementById('next').onclick = () => { loadEpisode(ep + 1); draw(); };
+
+loadEpisode(0);
+draw();
+requestAnimationFrame(frame);
+</script>
