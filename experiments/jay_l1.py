@@ -36,6 +36,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from architectures.jay import cortex as jay_cortex
+from architectures.jay.retired import tower_binding  # noqa: F401  (registers the layer)
 from architectures.jay.contract import LAYERS
 from core.world import Sensors
 from core.world.pose import SHAPES, PoseConfig, PoseWorld

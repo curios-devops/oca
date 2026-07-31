@@ -1,67 +1,80 @@
 {
- "ticks": 12000,
+ "ticks": 60000,
  "chance": 0.25,
  "results": {
+  "invariance": {
+   "same_object_across_poses": 0.5405101368626573,
+   "different_objects_same_pose": 0.5873885784721455,
+   "margin": -0.046878441609488286
+  },
   "binding": {
-   "model_trained": 0.21174242424242426,
-   "model_heldout": 0.1282894736842105,
-   "raw_trained": 0.3624242424242424,
-   "raw_heldout": 0.1879319510898458,
-   "template_trained": 0.666439393939394,
-   "template_heldout": 0.05671850079744817,
-   "control_heldout": 0.05671850079744817,
-   "model_heldout_min": 0.1282894736842105,
+   "model_trained": 0.25469269444593645,
+   "model_heldout": 0.20863633745215857,
+   "raw_trained": 0.44155987963395676,
+   "raw_heldout": 0.11278731969140778,
+   "template_trained": 0.9253874540353789,
+   "template_heldout": 0.04254750466898958,
+   "control_heldout": 0.04254750466898958,
+   "model_heldout_min": 0.19548477048477048,
    "per_seed": [
-    0.1282894736842105
+    0.2148452273679134,
+    0.21557901450379188,
+    0.19548477048477048
    ]
   },
   "no_binding": {
-   "model_trained": 0.2715151515151515,
-   "model_heldout": 0.2741228070175438,
-   "raw_trained": 0.3624242424242424,
-   "raw_heldout": 0.1879319510898458,
-   "template_trained": 0.666439393939394,
-   "template_heldout": 0.05671850079744817,
-   "control_heldout": 0.05671850079744817,
-   "model_heldout_min": 0.2741228070175438,
+   "model_trained": 0.2450040074310538,
+   "model_heldout": 0.21215845973979017,
+   "raw_trained": 0.44155987963395676,
+   "raw_heldout": 0.11278731969140778,
+   "template_trained": 0.9253874540353789,
+   "template_heldout": 0.04254750466898958,
+   "control_heldout": 0.04254750466898958,
+   "model_heldout_min": 0.20124048667605837,
    "per_seed": [
-    0.2741228070175438
+    0.20124048667605837,
+    0.2216098389182585,
+    0.21362505362505363
    ]
   },
   "shuffled_locations": {
-   "model_trained": 0.13295454545454546,
-   "model_heldout": 0.11513157894736842,
-   "raw_trained": 0.3624242424242424,
-   "raw_heldout": 0.1879319510898458,
-   "template_trained": 0.666439393939394,
-   "template_heldout": 0.05671850079744817,
-   "control_heldout": 0.05671850079744817,
-   "model_heldout_min": 0.11513157894736842,
+   "model_trained": 0.2536243183775604,
+   "model_heldout": 0.20470820340232065,
+   "raw_trained": 0.44155987963395676,
+   "raw_heldout": 0.11278731969140778,
+   "template_trained": 0.9253874540353789,
+   "template_heldout": 0.04254750466898958,
+   "control_heldout": 0.04254750466898958,
+   "model_heldout_min": 0.18813813813813812,
    "per_seed": [
-    0.11513157894736842
+    0.2148452273679134,
+    0.21114124470091053,
+    0.18813813813813812
    ]
   },
   "features_only": {
-   "model_trained": 0.2103030303030303,
-   "model_heldout": 0.18311403508771928,
-   "raw_trained": 0.3624242424242424,
-   "raw_heldout": 0.1879319510898458,
-   "template_trained": 0.666439393939394,
-   "template_heldout": 0.05671850079744817,
-   "control_heldout": 0.05671850079744817,
-   "model_heldout_min": 0.18311403508771928,
+   "model_trained": 0.24146319038784927,
+   "model_heldout": 0.25887192980486146,
+   "raw_trained": 0.44155987963395676,
+   "raw_heldout": 0.11278731969140778,
+   "template_trained": 0.9253874540353789,
+   "template_heldout": 0.04254750466898958,
+   "control_heldout": 0.04254750466898958,
+   "model_heldout_min": 0.23980251993797566,
    "per_seed": [
-    0.18311403508771928
+    0.2899975251608645,
+    0.23980251993797566,
+    0.24681574431574432
    ]
   },
   "floor_verdicts": {
    "nearest_template_on_held_out_poses": {
-    "delta": 0.07157097288676234,
+    "delta": 0.1529372658157809,
     "above_chance": false,
     "passed": false
    },
    "raw_frame": {
-    "delta": -0.0596424774056353,
+    "delta": 0.0826974507933627,
     "above_chance": false,
     "passed": false
    }

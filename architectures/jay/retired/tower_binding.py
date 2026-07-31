@@ -1,4 +1,33 @@
-"""Layer 1 — the Tower. OCA v5.
+"""Layer 1 — the Tower, feature-at-place binding. **REFUTED 2026-07-31. Not in the live stack.**
+
+Measured in the pose world, three seeds, with the invariance diagnostic that needs no probe:
+
+    same object across poses        0.541
+    different objects, same pose    0.587
+    margin                         -0.047     NOT POSE-INVARIANT
+
+**Two different objects look more alike than one object at two orientations.** The readout is
+more sensitive to pose than to identity, which is exactly backwards, and no probe fitted on top
+can repair it. Accuracy agrees: 0.209 on held-out poses and 0.255 on trained ones, against a
+chance of 0.250 -- at chance even on orientations it was shown, while the raw frame reaches
+0.442 and nearest-template 0.925.
+
+All three declared controls tie with the mechanism (-0.004, +0.004, -0.050), so the kill
+criterion in `docs/jay/SPEC_L1_TOWER.md` applies exactly as written.
+
+**Why, and it is structural rather than a bug.** The feature code is a random projection of raw
+patch activations and is **not rotation-covariant**. Binning away the rotation of *places* leaves
+the rotation of *features* untouched, so the (feature, place) pairs a rotated object produces are
+not the rotated pairs of the original -- they are different pairs. A reference frame needs an
+orientation as well as a position, and this tower has only a position.
+
+Kept executable so `experiments/jay_l1.py` still reproduces those numbers.
+
+Original documentation follows.
+
+---
+
+Layer 1 — the Tower. OCA v5.
 
 Corvus's tower held one anchor: *where am I*. It passes `CGE-A-09` at +0.572 and says nothing
 about *what is there*, and the aggregate-then-vote experiment showed the cost — one tower and
@@ -47,8 +76,8 @@ from dataclasses import dataclass, field, replace
 
 import numpy as np
 
-from . import neuron as L0
-from .contract import Floor, Layer, register
+from .. import neuron as L0
+from ..contract import Floor, Layer, register
 
 
 @dataclass(frozen=True)

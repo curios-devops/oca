@@ -81,9 +81,37 @@ reached |A| = 0.0013 after 14,000 ticks, because actions do not move a view-enco
 consistently. Displacement composes additively and is integrated through a fixed injective
 projection, needing no supervision. That decision stands.
 
+## Result — REFUTED, and the prior was scored
+
+`architecture-history/JAY_L1_BINDING.md` has the full entry. Headline:
+
+    same object across poses        0.541
+    different objects, same pose    0.587
+    invariance margin              -0.047     NOT POSE-INVARIANT
+
+Two different objects look more alike than one object at two orientations, and the tower sits at
+chance (0.255) even on orientations it was shown. All three declared controls tie with the
+mechanism, so the kill criterion below applies as written.
+
+**Why: a reference frame needs an orientation as well as a position, and this tower had only a
+position.** The feature code is a random projection of raw patch activations and is not
+rotation-covariant, so binning away the rotation of *places* leaves the rotation of *features*
+untouched.
+
+| prediction | confidence | outcome |
+|---|---|---|
+| binding beats its own ablation | 65% | **wrong** — −0.004, a tie |
+| beats nearest-template on held-out poses | 40% | **void** — the model is at chance |
+| clears `CGE-A-00` | 35% | **wrong** |
+| still passes `CGE-A-09` | 80% | not run; the layer was retired first |
+| `location_shuffled` at chance | 75% | **right**, and so was everything else |
+
+The 65% on the ablation was the most confident prediction here and the most wrong. Worth
+recording: the mechanism I was surest about is the one that tied with doing nothing.
+
 ## Honest prior
 
-Recorded before running, to be scored afterwards.
+Recorded before running, and scored above.
 
 | prediction | confidence |
 |---|---|

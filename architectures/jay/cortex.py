@@ -25,7 +25,7 @@ import numpy as np
 
 from core.world.sensors import N_SOMATIC, N_VISUAL, P, RETINA
 
-from . import tower as L1
+from .retired import tower_binding as L1
 
 PATCH_SIDE = int(round(N_VISUAL ** 0.5))          # 8 patches across the retina
 TOWER_SIDE = PATCH_SIDE // 2                      # 4 towers across, each taking 2x2
@@ -75,6 +75,13 @@ def towers_to_patches(tower_patches: np.ndarray) -> np.ndarray:
 
 class Cortex:
     """Layers 0-1 wired together behind one entry point.
+
+    **v5 has no accepted Layer 1.** The first candidate -- feature-at-place binding -- was built,
+    gated and refuted in a single session: its readout is more sensitive to pose than to identity
+    (margin -0.047) and it sits at chance even on orientations it was shown. It is wired here
+    only so that its numbers stay reproducible; see
+    `architecture-history/JAY_L1_BINDING.md` for what the next candidate must have that this one
+    lacked.
 
     Holds the layers rather than inheriting from them, so each remains independently replaceable
     -- which is the point of the contract.

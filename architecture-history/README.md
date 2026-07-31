@@ -23,6 +23,7 @@ the implementation to leave buried.**
 | **Swift** — OCA v2 (RPDU mesh v2) | 2026-07 | [SWIFT.md](SWIFT.md) |
 | **Heron** — OCA v3 (DCN), build `heron-v3.2` | 2026-07 | [HERON.md](HERON.md) |
 | **Corvus** — OCA v4, build `corvus-v4.4-alpha` | **frozen** 2026-07-30 | [docs/corvus/](../docs/corvus/) |
+| **Jay** — OCA v5, build `jay-v5.1` | live, untagged, **no accepted L1** | [docs/jay/](../docs/jay/) |
 | **Mirror** — *no generation number* | never retired | the control, and still a live entrant |
 
 Layers are retired the same way, and by the same rule:
@@ -30,6 +31,7 @@ Layers are retired the same way, and by the same rule:
 | retired layer | of | retired | file |
 |---|---|---|---|
 | **Tower Cluster (L2)** | Corvus, at `v4.4` | 2026-07-30 | [CORVUS_L2_CLUSTER.md](CORVUS_L2_CLUSTER.md) |
+| **Tower, feature-at-place binding (L1)** | Jay, `v5.1` | 2026-07-31 | [JAY_L1_BINDING.md](JAY_L1_BINDING.md) |
 
 Live code lives in [`architectures/`](../architectures/). The frozen versions are still
 executable and still registered as benchmark entrants — freezing means *"no longer modified"*,
